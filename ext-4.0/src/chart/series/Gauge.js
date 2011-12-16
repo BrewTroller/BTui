@@ -445,7 +445,14 @@ Ext.define('Ext.chart.series.Gauge', {
     },
 
     isItemInPoint: function(x, y, item, i) {
-        return false;
+        var chartBBox = this.chart.chartBBox;
+		  var centerX = this.centerX = chartBBox.x + (chartBBox.width / 2);
+		  var centerY = this.centerY = chartBBox.y + chartBBox.height;
+		  var outerRadius = Math.min(centerX - chartBBox.x, centerY - chartBBox.y);
+		  var innerRadius = outerRadius * +this.donut / 100;
+        var r = Math.sqrt(Math.pow(centerX-x, 2) + Math.pow(centerY-y,2));
+        return r > innerRadius && r < outerRadius;
+		
     },
     
     // @private shows all elements in the series.
