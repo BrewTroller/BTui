@@ -82,14 +82,12 @@ function Vessel(Index) {
 		
 		hasVolumeSensing = true;
 		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#volumeBar' + vesselIndex).show();
-		Ext.ComponentQuery.query('#' + vesselIndex).doLayout();	
 	}
 	
 	this.disableVolume = function() {
 		
 		hasVolumeSensing = false;
 		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#volumeBar' + vesselIndex).hide();
-		Ext.ComponentQuery.query('#' + vesselIndex).doLayout();
 	}
 	
 	this.hasVolumeSensing = function() {

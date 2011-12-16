@@ -73,6 +73,8 @@ Ext.define('BTUI.controller.Views', {
 			vessel = Ext.ComponentQuery.query('#2')[0].me;
 		}
 		
+		vessel.settingsWindow.hide();	//hide the settings window before making any modifications to ensure that it does hide the first time the save button is pressed
+		
 		//Enable or disable vessel volume
 		if ( vessel.settingsWindow.down('#hasVolume').getValue() != vessel.hasVolumeSensing() ) {
 			if ( vessel.settingsWindow.down('#hasVolume').getValue() ) {
@@ -98,8 +100,6 @@ Ext.define('BTUI.controller.Views', {
 				vessel.stopAutoUpdate();
 			}			
 		}
-		
-		vessel.settingsWindow.hide();	//hide the settings window
 	}
 	
 });
