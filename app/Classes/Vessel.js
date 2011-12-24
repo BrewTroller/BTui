@@ -133,21 +133,44 @@ function Vessel(Index) {
 		}
 	}
 	
+	//get the current vessel temperature setpoint
 	this.getSetPoint = function() {
 		
 	}
 	
+	//Get the Set Volume capactity of the Vessel
 	this.getCapacity = function() {
 		
 		return vesselCapacity;
 	}
 	
+	//Set the Temperature Setpoint for the Vessel
 	this.setSetPoint = function(newSetPoint) {
 		
 		var baseAddress = BrewTroller.getAddress();
 		var setPoint = BrewTroller.communicate(baseAddress+setSetPoint+'&'+newSetPoint);		
 	}
 	
+	//Set the temperature range of the Temperature Gauge chart
+	this.setTemperatureRange = function(newMin, newMax) {
+		
+		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].minimum = newMin;
+		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].maximum = newMax;
+		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).redraw();
+	}
+	
+	//Getters for temperature range of Temperature Gauge chart
+	this.getTemperatureMaximum = function() {
+		
+		return Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].maximum;
+	}
+	
+	this.getTemperatureMinimum = function() {
+		
+		return Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].minimum; 
+	}
+	
+	//Get last temperature reading from store
 	this.getTemperature = function() {
 		
 		return this.temperatureStore.getAt(0).data.temperature;

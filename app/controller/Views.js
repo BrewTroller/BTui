@@ -26,29 +26,62 @@ Ext.define('BTUI.controller.Views', {
 		
 			this.control({
 				'btEdit button[action=save]': {
-					click: this.saveAddress
+					click: this.saveBrewTroller
 				}
 			});		
 		
 	},
 	
 	BrewTrollerSettings: function() {
-		
-			console.log("Settings Tool Clicked");
-			if(!this.btedit){
-			this.btedit = Ext.widget('btEdit');
-			this.btedit.down('#btAddress').setValue(BrewTroller.getIPAddress());
+			
+			if(!this.btedit) {
+				this.btedit = Ext.widget('btEdit');
+			}
+			
+			this.btedit.down('#btAddress').setValue(BrewTroller.getIPAddress()); //Set currently set IP address into form
+			this.btedit.down('#hltDisplayOption').setValue(!Ext.ComponentQuery.query('#0')[0].hidden); 
+			this.btedit.down('#mltDisplayOption').setValue(!Ext.ComponentQuery.query('#1')[0].hidden); 
+			this.btedit.down('#ketDisplayOption').setValue(!Ext.ComponentQuery.query('#2')[0].hidden); 
 			this.btedit.show();
-			}
-			else{
-				this.btedit.down('#btAddress').setValue(BrewTroller.getIPAddress());
-				this.btedit.show();
-			}
 	},
 	
-	saveAddress: function() {
+	saveBrewTroller: function() {
 		
-		BrewTroller.setIPAddress(Ext.ComponentQuery.query('#btAddress')[0].getValue());
+		hlt = Ext.ComponentQuery.query('#0')[0];
+		mlt = Ext.ComponentQuery.query('#1')[0];
+		ket = Ext.ComponentQuery.query('#2')[0];
+		
+		editWindow = Ext.ComponentQuery.query('#btEdit')[0];
+		
+		//Check to see if vessel display options are different than current conditions, if they are set window displays accordingyly
+		if (editWindow.down('#hltDisplayOption').value != !(hlt.hidden)){	
+			if (editWindow.down('#hltDisplayOption').value){
+				hlt.show();
+			} 
+			else {
+				hlt.hide();
+			}
+		}
+		
+		if (editWindow.down('#mltDisplayOption').value != !(mlt.hidden)){
+			if (editWindow.down('#mltDisplayOption').value){
+				mlt.show();
+			} 
+			else {
+				mlt.hide();
+			}
+		}
+		
+		if (editWindow.down('#ketDisplayOption').value != !(ket.hidden)){
+			if (editWindow.down('#ketDisplayOption').value){
+				ket.show();
+			} 
+			else {
+				ket.hide();
+			}
+		}
+		
+		
 		Ext.ComponentQuery.query('#btEdit')[0].hide();		
 	},
 	
@@ -83,6 +116,11 @@ Ext.define('BTUI.controller.Views', {
 			else {
 				vessel.disableVolume();
 			}
+		}
+		
+		//Set temperature gauge range
+		if (vessel.settingsWindow.down('#temperatureMinimum').getValue() != vessel.getTemperatureMinimum() || vessel.settingsWindow.down('#temperatureMaximum').getValue() != vessel.getTemperatureMaximum){
+			vessel.setTemperatureRange(vessel.settingsWindow.down('#temperatureMinimum').getValue(), vessel.settingsWindow.down('#temperatureMaximum').getValue());
 		}
 		
 		//set update frequency

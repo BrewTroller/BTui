@@ -10,17 +10,42 @@ Ext.define('BTUI.view.btEdit', {
 		Ext.apply(this, {
 		id: 'btEdit',
 		items: [
-		{
-			xtype: 'form',
-			items: [
-				{
-					id: 'btAddress',
-					xtype: 'textfield',
-					name: 'address',
-					fieldLabel: 'IPv4 Address'
-				}
-			]
-		}],
+			{
+				xtype: 'fieldset',
+				flex: 1,
+				title: 'BrewTroller Address',
+				defaultType: 'textfield',
+				layout: 'anchor',
+				items: [
+					{
+						id: 'btAddress',
+						name: 'address',
+						fieldLabel: 'IPv4 Address',
+					}
+				]
+			},
+			{
+				xtype: 'fieldset',
+				flex: 1,
+				title: 'Vessel Display',
+				defaultType: 'checkbox',
+				layout: 'anchor',
+				items: [
+					{
+						id: 'hltDisplayOption',
+						fieldLabel: 'HLT'
+					},
+					{
+						id: 'mltDisplayOption',
+						fieldLabel: 'MLT'
+					},
+					{
+						id: 'ketDisplayOption',
+						fieldLabel: 'KETTLE'
+					}
+				]
+			}
+		 ],
 		
 		buttons: [
 			{
@@ -37,3 +62,4 @@ Ext.define('BTUI.view.btEdit', {
 		this.callParent(arguments);
 	}
 });
+

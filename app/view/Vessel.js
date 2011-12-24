@@ -24,7 +24,7 @@ Ext.define('BTUI.view.Vessel', {
             position: 'gauge',
             minimum: 0,
             maximum: 215,
-            steps: (215 / 15),
+            steps: 15,
             margin: 7
           }],
          series: [{
@@ -95,6 +95,7 @@ Ext.define('BTUI.view.Vessel', {
          width: 350,
          height: 400,
          margin: 10,
+			hidden: false,
          tools: [
          	{
             	type: 'gear',

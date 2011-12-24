@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>app/view/card/Home.js</string>
+	<string>app/view/Vessel.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,9 +26,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>1</integer>
+				<integer>27</integer>
 				<key>line</key>
-				<integer>12</integer>
+				<integer>24</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -40,79 +40,51 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>46</integer>
 				<key>line</key>
-				<integer>37</integer>
+				<integer>41</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>1</integer>
+			<integer>27</integer>
 		</dict>
 		<key>app/Classes/Vessel.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>1</integer>
+				<integer>46</integer>
 				<key>line</key>
-				<integer>36</integer>
+				<integer>135</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>5</integer>
-		</dict>
-		<key>app/app.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>29</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>app/controller/BrewTroller.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>22</integer>
-				<key>line</key>
-				<integer>45</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>15</integer>
+			<integer>135</integer>
 		</dict>
 		<key>app/controller/Views.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>113</integer>
-				<key>line</key>
 				<integer>3</integer>
+				<key>line</key>
+				<integer>123</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>102</integer>
 		</dict>
 		<key>app/store/Valves.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>23</integer>
+				<integer>38</integer>
 				<key>line</key>
-				<integer>24</integer>
+				<integer>8</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -124,72 +96,72 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>38</integer>
+				<integer>21</integer>
 				<key>line</key>
-				<integer>10</integer>
+				<integer>7</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
-		<key>app/view/Vessel.js</key>
+		<key>app/view/Valves.js.buttons</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>7</integer>
 				<key>line</key>
-				<integer>117</integer>
+				<integer>20</integer>
 			</dict>
 			<key>columnSelection</key>
 			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>92</integer>
+			<integer>1</integer>
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>9</integer>
+				<integer>5</integer>
 				<key>line</key>
-				<integer>98</integer>
+				<integer>14</integer>
 			</dict>
 			<key>selectTo</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>7</integer>
 				<key>line</key>
-				<integer>117</integer>
+				<integer>20</integer>
 			</dict>
+		</dict>
+		<key>app/view/Vessel.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>22</integer>
+				<key>line</key>
+				<integer>26</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>8</integer>
 		</dict>
 		<key>app/view/btEdit.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>3</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>11</integer>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>1</integer>
-		</dict>
-		<key>app/view/card/Home.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>11</integer>
-				<key>line</key>
-				<integer>20</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>15</integer>
 		</dict>
 		<key>app/view/card/Logging.js</key>
 		<dict>
@@ -210,28 +182,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>6</integer>
+				<integer>20</integer>
 				<key>line</key>
-				<integer>38</integer>
+				<integer>69</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>16</integer>
-		</dict>
-		<key>app/view/viewPanel.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>17</integer>
-				<key>line</key>
-				<integer>9</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>43</integer>
 		</dict>
 		<key>ext-4.0/ext-debug.js</key>
 		<dict>
@@ -263,37 +221,22 @@
 				<integer>20293</integer>
 			</dict>
 		</dict>
-		<key>index.html</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>7</integer>
-				<key>line</key>
-				<integer>19</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>index.html</string>
-		<string>app/view/Vessel.js</string>
-		<string>app/view/card/Home.js</string>
+		<string>app/view/Valves.js</string>
+		<string>app/controller/Views.js</string>
 		<string>app/Classes/Vessel.js</string>
+		<string>app/view/Vessel.js</string>
 		<string>app/view/btEdit.js</string>
 		<string>app/view/vesselSettings.js</string>
-		<string>app/controller/BrewTroller.js</string>
-		<string>app/controller/Views.js</string>
-		<string>app/view/viewPanel.js</string>
 		<string>app/Classes/BrewTroller.js</string>
+		<string>app/store/Valves.js</string>
+		<string>app/CSS/Styles.css</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{216, 287}, {1062, 715}}</string>
+	<string>{{216, 63}, {1062, 715}}</string>
 </dict>
 </plist>

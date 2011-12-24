@@ -48,6 +48,31 @@ Ext.define('BTUI.view.vesselSettings', {
 					}
 					]
 				},
+				{
+					xtype: 'fieldset',
+					flex: 1,
+					title: 'Temperature Range',
+					defaultType: 'numberfield',
+					layout: 'anchor',
+					items: [
+						{
+							fieldLabel: 'Minimum',
+							id: 'temperatureMinimum',
+							anchor: '100%',
+							value: '0',
+							minValue: '-25',
+							maxValue: '10', 
+						},
+						{
+							fieldLabel: 'Maximum',
+							id: 'temperatureMaximum',
+							anchor: '100%',
+							value: '215',
+							minValue: '10',
+							maxValue: '300',
+						}
+					]
+				}
 			]
 		}],
 		
