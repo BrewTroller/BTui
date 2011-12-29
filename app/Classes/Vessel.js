@@ -120,7 +120,7 @@ function Vessel(Index) {
 		
 		//stop the autoupdate task if it is running
 		if ( autoUpdate == true ) {
-			stopAutoUpdate();
+			this.stopAutoUpdate();
 		}
 		//set new interval		
 		updateTask.interval = newInterval;
@@ -129,7 +129,7 @@ function Vessel(Index) {
 		if ( autoUpdate == true ) {
 			
 			alert('starting auto update');
-			startAutoUpdate();
+			this.startAutoUpdate();
 		}
 	}
 	
@@ -206,21 +206,49 @@ function Vessel(Index) {
 	if ( BrewTroller.getIPAddress() != undefined) {	
 		var baseAddress = BrewTroller.getAddress();
 		
-		var temperature = BrewTroller.communicate(baseAddress+getTemp+vesselIndex);
-		var heatStatus = BrewTroller.communicate(baseAddress+getHeat+vesselIndex);
+		var tempCallback = function(vesselIndex, xhr) {
+			if(xhr.readyState == 4){
+				var temperature = JSON.parse(xhr.responseText);
+				if ( (temperature[2]/100) > 300 ){
+					temperature[2] = 0;	//A fix for erroneous readings coming back from BT. When no sensor is connected it likes to return values of 4.2B
+				}
+				var temp = temperature[2]/100;
+				Ext.ComponentQuery.query('#'+vesselIndex)[0].me.temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: 0});
+			}
+		}
+		
+		var heatCallback = function(vesselIndex, xhr) {
+			if (xhr.readyState == 4){
+				var heat = JSON.parse(xhr.responseText);
+				Ext.ComponentQuery.query('#'+vesselIndex)[0].me.temperatureStore.getAt(0).data.heatStatus = Number(heat[2]/1000);
+			}
+		}
+		
+		/*var temperature =*/ BrewTroller.communicate(baseAddress+getTemp+vesselIndex, tempCallback, vesselIndex);
+		/*var heatStatus =*/ BrewTroller.communicate(baseAddress+getHeat+vesselIndex, heatCallback, vesselIndex);
 		
 		if (hasVolumeSensing){
-		var volume = BrewTroller.communicate(baseAddress+getVol+vesselIndex);
+			
+			var volumeCallback = function(vesselIndex, xhr){
+				if (xhr.readyState == 4){
+					var volume = JSON.parse(xhr.responseText);
+					var store = Ext.ComponentQuery.query('#'+vesselIndex)[0].me.volumeStore;
+					store.removeAt(0);
+					store.add({volume: (Number(volume[2])/1000)});
+				}
+			}
+			
+		/*var volume =*/ BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselIndex);
 		
 		//REMOVE record from volume store and add a new one
 		//we have to remove the old one, because the bar chart interprets each record as a seperate bar
 		// for future logging capabilities the bar chart class should be modified to use only the first record in the store
-		this.volumeStore.removeAt(0);
-		this.volumeStore.add({volume: (Number(volume[2])/1000)});
+		//this.volumeStore.removeAt(0);
+		//this.volumeStore.add({volume: (Number(volume[2])/1000)});
 		}
 		
 		//Insert new record into store containing temperature and heat status
-		this.temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: (Number(heatStatus[2]))});
+		//this.temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: (Number(heatStatus[2]))});
 } else{
 	alert('You Must Set an IP address for the BrewTroller First!');
 };

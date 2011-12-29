@@ -33,16 +33,34 @@ function BrewTroller() {
 		return BrewTrollerBuild;
 	}	
 	
+	this.setVersionNumber = function(version) {
+		
+		BrewTrollerVersion = version;
+	}
+	
+	this.setBuild = function(build) {
+		
+		BrewTrollerBuild = build;
+	}
+	
 	this.setVersion = function() {
 		
-		var resp = this.communicate(this.getAddress()+'G');
+		var versionCallback = function(arg, xhr){
+			if (xhr.readyState == 4){
+				var resp = JSON.parse(xhr.responseText);
+				BrewTroller.setVersionNumber(resp[2]);
+				BrewTroller.setBuild(resp[3]);
+			}
+		}
 		
-		BrewTrollerVersion = resp[2];
-		BrewTrollerBuild = resp[3];
+		this.communicate(this.getAddress()+'G', versionCallback);
+		
+		//BrewTrollerVersion = resp[2];
+		//BrewTrollerBuild = resp[3];
 	}
 	
 	//Communicate function creates a new XHR request to the url passed as first parameter
-	this.communicate = function(commandAddress) {
+	this.communicate = function(commandAddress, callback, arg) {
 		
 		if ( !BrewTrollerAddress ){
 			alert('You Must configure the IP address of the BrewTroller First!');
@@ -61,14 +79,17 @@ function BrewTroller() {
 					xhr = new ActiveXObject("Microsoft.XMLHTTP");
 				}
 			}
-			xhr.open('GET', commandAddress, false);
+			xhr.open('GET', commandAddress, true);
+			xhr.onreadystatechange = function(){
+				callback(arg, xhr);
+			}
 			xhr.send(null);
 
-			var resp = JSON.parse(xhr.responseText);
+			//var resp = JSON.parse(xhr.responseText);
 
-			setUpTime(resp[0]);		
+			//setUpTime(resp[0]);		
 
-			return resp;
+			//return resp;
 		}
 	}
 	

@@ -81,6 +81,7 @@ Ext.define('BTUI.controller.Views', {
 			}
 		}
 		
+		BrewTroller.setIPAddress(editWindow.down('#btAddress').value);
 		
 		Ext.ComponentQuery.query('#btEdit')[0].hide();		
 	},
