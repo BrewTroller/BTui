@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>app/view/Vessel.js</string>
+	<string>app/Classes/Vessel.js</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -40,14 +40,28 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>46</integer>
+				<integer>24</integer>
 				<key>line</key>
-				<integer>41</integer>
+				<integer>10</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>27</integer>
+			<integer>0</integer>
+		</dict>
+		<key>app/Classes/Valve.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>1</integer>
+				<key>line</key>
+				<integer>33</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>23</integer>
 		</dict>
 		<key>app/Classes/Vessel.js</key>
 		<dict>
@@ -61,7 +75,21 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>135</integer>
+			<integer>202</integer>
+		</dict>
+		<key>app/app.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>21</integer>
+				<key>line</key>
+				<integer>21</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>app/controller/Views.js</key>
 		<dict>
@@ -77,14 +105,28 @@
 			<key>firstVisibleLine</key>
 			<integer>102</integer>
 		</dict>
+		<key>app/store/BrewTroller.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>3</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>app/store/Valves.js</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>38</integer>
+				<integer>22</integer>
 				<key>line</key>
-				<integer>8</integer>
+				<integer>20</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -140,14 +182,14 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>22</integer>
+				<integer>13</integer>
 				<key>line</key>
-				<integer>26</integer>
+				<integer>28</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>8</integer>
+			<integer>0</integer>
 		</dict>
 		<key>app/view/btEdit.js</key>
 		<dict>
@@ -225,6 +267,8 @@
 	<key>openDocuments</key>
 	<array>
 		<string>app/view/Valves.js</string>
+		<string>app/Classes/Valve.js</string>
+		<string>app/app.js</string>
 		<string>app/controller/Views.js</string>
 		<string>app/Classes/Vessel.js</string>
 		<string>app/view/Vessel.js</string>
@@ -232,11 +276,12 @@
 		<string>app/view/vesselSettings.js</string>
 		<string>app/Classes/BrewTroller.js</string>
 		<string>app/store/Valves.js</string>
+		<string>app/store/BrewTroller.js</string>
 		<string>app/CSS/Styles.css</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{216, 63}, {1062, 715}}</string>
+	<string>{{221, 217}, {1062, 715}}</string>
 </dict>
 </plist>
