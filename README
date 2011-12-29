@@ -1,0 +1,40 @@
+//
+//
+//   BTUI -- A JavaScript/HTML5 User Interface For the BrewTroller Project
+//   				www.BrewTroller.com
+//
+
+
+App is in ALPHA Stage!
+
+You must set the IP of the btnic module in the settings window
+
+The BTUI.tmproj file is a project file for the TextMate text editor for Mac,
+which I beleive is also compatible with the 'E' editor for Windows
+
+
+Currently Implemented:
+	
+	Vessel Volume and Temperature retrieval from BrewTroller
+	Manual Vessel Updates
+	Auto Updates with configurable interval
+	
+To DO:
+
+	get/set set points from/to BrewTroller
+	Valve profile refactoring / synchronizing with BrewTroller
+	Implement full settings from BrewTroller Menus
+	Add CSS code to build a theme, and make the appearance pretty :)
+	
+Latest Changes:
+	
+	Valve Profile view has been rebuilt using a grouped Grid view instead
+	buttons.
+	Added Valve class to handle logic pertaining to valves and valve
+	profiles.
+	
+
+
+App is based on the ExtJS 4 library, available at http://sencha.com
+	
+Currently All communication with the BrewTroller is done using JavaScript and XHR GET requests instead of using the Flash based transfers in the YUI library (Matt's initial Demo used it). This provided maximum compatibility with devices, but because JavaScript is Single threaded it can quickly slow down or crash the browser if the Auto Update frequency is set too high. The next version of the BTNic module firmware providing batch commands will help this problem considerably.

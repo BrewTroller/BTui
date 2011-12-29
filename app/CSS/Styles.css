@@ -1,0 +1,33 @@
+.navButton{
+	border-radius: 20px;
+}
+
+.text-wrap{
+	color: white;
+	text-align: center !important;
+	margin: 5px;
+	padding: 5px;
+}
+
+.button-wrap{
+	color: white;
+	text-align: center !important;
+	margin: 5px !important;
+    padding: 5px !important;
+	border-radius: 8px !important;
+	border:1px solid rgba(221, 221, 221, 0.4) !important;
+}
+
+.x-button-over{
+	color: black !important;
+	border:1px solid #dddddd !important;
+    /*background: #efefef*/
+    padding: 5px !important;
+}
+
+.x-button-selected {
+    border:1px solid #00ff00;
+    background: rgba(0, 239, 51, 0.3);
+    padding: 5px;
+}
+/*00ef33*/
