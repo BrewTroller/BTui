@@ -6,43 +6,71 @@ Ext.define('BTUI.controller.Views', {
 	
 	init: function() {
 		
+		//Views Controller controls setup
+		
+		//control that listens for the Save button click in a Vessel Settings window, and calls the saveVessel() function when one fires
 		this.control({
 			'vesselSettings button[action=save]':{
 				click: this.saveVessel
 			}
 		});
 		
+		//control that listens for the navBar Settings button click, and calls the BrewTrollerSettings() function when it fires
 		this.control({
 			'navPanel button[action=Settings]': {
 				click: this.BrewTrollerSettings
 			}
 		});
 		
+		//control that listens a navBar button fire (Home, Logging...), and calls the changeCard() function when one does
 		this.control({
 			'navPanel button': {
 				click: this.changeCard
 			}
 		});
 		
-			this.control({
-				'btEdit button[action=save]': {
-					click: this.saveBrewTroller
-				}
-			});		
+		//control that listens for the Save button click in the BrewTroller Settings window, and calls saveBrewTroller() when it fires
+		this.control({
+			'btEdit button[action=save]': {
+				click: this.saveBrewTroller
+			}
+		});
+		
+		//control that listens for the tempSet button click in a Vessel window, and calls tempSet() which creates a popup to set the set point, when it fires.
+		this.control({
+			'Vessel button[action=tempSet]':{
+				click: this.tempSet
+			}
+		});		
+		
+		//control that listens for the saveSetPoint button click in a setPoint popup window, and calls saveSetPoint() when it fires
+		this.control({
+			'button[action=saveSetPoint]':{
+				click: this.saveSetPoint
+			}
+		});
 		
 	},
 	
+	/*
+	//				BrewTrollerSettings controller Function
+	// Function to be called when the user clicks on the Settings button in the navbar
+	//	function creates a settings window, if one does not exist, then loads in appropriate values into the form fields
+	//	after all form fields have been set the function shows the edit window
+	*/
 	BrewTrollerSettings: function() {
 			
-			if(!this.btedit) {
-				this.btedit = Ext.widget('btEdit');
+			if(!this.editWindow) {
+				this.editWindow = Ext.widget('btEdit');
 			}
 			
-			this.btedit.down('#btAddress').setValue(BrewTroller.getIPAddress()); //Set currently set IP address into form
-			this.btedit.down('#hltDisplayOption').setValue(!Ext.ComponentQuery.query('#0')[0].hidden); 
-			this.btedit.down('#mltDisplayOption').setValue(!Ext.ComponentQuery.query('#1')[0].hidden); 
-			this.btedit.down('#ketDisplayOption').setValue(!Ext.ComponentQuery.query('#2')[0].hidden); 
-			this.btedit.show();
+			this.editWindow.down('#btAddress').setValue(BrewTroller.getIPAddress()); //Set currently set IP address into form
+			// make sure vessel display options match what is currently shown
+			this.editWindow.down('#hltDisplayOption').setValue(!Ext.ComponentQuery.query('#0')[0].hidden);
+			this.editWindow.down('#mltDisplayOption').setValue(!Ext.ComponentQuery.query('#1')[0].hidden); 
+			this.editWindow.down('#ketDisplayOption').setValue(!Ext.ComponentQuery.query('#2')[0].hidden); 
+			// show the edit window
+			this.editWindow.show();
 	},
 	
 	saveBrewTroller: function() {
@@ -139,6 +167,54 @@ Ext.define('BTUI.controller.Views', {
 				vessel.stopAutoUpdate();
 			}			
 		}
+	},
+	
+	tempSet: function(button, event, options) {
+		var vessel = button.ownerCt.ownerCt.me;
+		
+		var setPoint = Ext.create('Ext.Window', {
+			title: 'Edit Set Point',
+			vesselIndex: vessel.getVesselIndex(),
+			hidden: true,
+			layout: 'fit',
+			items: [
+				{
+					xtype: 'fieldset',
+					items: [
+						{
+							xtype: 'numberfield',
+							id: 'setPoint',
+							value: vessel.getSetPoint(),
+							maxValue: 220,
+							minValue: 0,
+						}
+					]
+				}
+			],
+			buttons: [
+				{
+					text: 'Save',
+					action: 'saveSetPoint'
+				},
+				{
+					text: 'Cancel',
+					handler: function(){
+						this.ownerCt.ownerCt.hide();
+						this.ownerCt.ownerCt.destroy();
+					}
+				}
+			]
+		});
+		setPoint.show();
+	},
+	
+	saveSetPoint: function(button, event, options){
+		var editWindow = button.ownerCt.ownerCt;
+		var vessel = Ext.ComponentQuery.query('#'+editWindow.vesselIndex)[0];
+		
+		vessel.me.setNewSetPoint(editWindow.down('#setPoint').value);
+		editWindow.hide();
+		editWindow.destroy();
 	}
 	
 });

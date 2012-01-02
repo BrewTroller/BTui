@@ -10,6 +10,9 @@ function Vessel(Index) {
 	var hasVolumeSensing = true;	//default to true
 	
 	var vesselCapacity;
+	var vesselDeadSpace;
+	var volumeTarget = 0;
+	var temperatureSetPoint = 0;
 	
 	//task for autoUpdate
 	var updateTask = {
@@ -38,7 +41,7 @@ function Vessel(Index) {
 	
 	this.temperatureStore = Ext.create('Ext.data.Store', {
 		fields: ['temperature', 'heatStatus'],
-		data: [{temperature: 12, heatStatus: 0}]
+		data: [{temperature: 0, heatStatus: 0}]
 	});
 	
 	this.volumeStore = Ext.create('Ext.data.Store', {
@@ -95,6 +98,11 @@ function Vessel(Index) {
 		return hasVolumeSensing;
 	}
 	
+	this.getVolumeTarget = function() {
+		
+		return volumeTarget;
+	}
+	
 	this.getVesselIndex = function() {
 		
 		return vesselIndex;
@@ -136,6 +144,7 @@ function Vessel(Index) {
 	//get the current vessel temperature setpoint
 	this.getSetPoint = function() {
 		
+		return temperatureSetPoint;
 	}
 	
 	//Get the Set Volume capactity of the Vessel
@@ -144,11 +153,22 @@ function Vessel(Index) {
 		return vesselCapacity;
 	}
 	
-	//Set the Temperature Setpoint for the Vessel
-	this.setSetPoint = function(newSetPoint) {
+	//Set the setpoint value, used only when setting the app's stored value to synchronize with the BT
+	this.setSetPoint = function(setPoint) {
 		
-		var baseAddress = BrewTroller.getAddress();
-		var setPoint = BrewTroller.communicate(baseAddress+setSetPoint+'&'+newSetPoint);		
+		temperatureSetPoint = setPoint;
+		Ext.ComponentQuery.query('#'+vesselIndex)[0].down('#tempDisplay'+vesselIndex).setText(temperatureSetPoint);
+	}
+	
+	//Set a new Temperature Setpoint for the Vessel, and update the value to the BT
+	this.setNewSetPoint = function(newSetPoint) {
+		
+		var callback = function(args, xhr){
+		}
+		
+		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, callback, vesselIndex);
+		temperatureSetPoint = newSetPoint;
+		Ext.ComponentQuery.query('#'+vesselIndex)[0].down('#tempDisplay'+vesselIndex).setText(temperatureSetPoint);		
 	}
 	
 	//Set the temperature range of the Temperature Gauge chart
@@ -220,12 +240,21 @@ function Vessel(Index) {
 		var heatCallback = function(vesselIndex, xhr) {
 			if (xhr.readyState == 4){
 				var heat = JSON.parse(xhr.responseText);
-				Ext.ComponentQuery.query('#'+vesselIndex)[0].me.temperatureStore.getAt(0).data.heatStatus = Number(heat[2]/1000);
+				Ext.ComponentQuery.query('#'+vesselIndex)[0].me.temperatureStore.getAt(0).data.heatStatus = Number(heat[2]);
 			}
 		}
 		
-		/*var temperature =*/ BrewTroller.communicate(baseAddress+getTemp+vesselIndex, tempCallback, vesselIndex);
-		/*var heatStatus =*/ BrewTroller.communicate(baseAddress+getHeat+vesselIndex, heatCallback, vesselIndex);
+		BrewTroller.communicate(baseAddress+getHeat+vesselIndex, heatCallback, vesselIndex);
+		BrewTroller.communicate(baseAddress+getTemp+vesselIndex, tempCallback, vesselIndex);
+
+		var setPointCallback = function(vesselIndex, xhr){
+			
+			var resp = JSON.parse(xhr.responseText);
+			Ext.ComponentQuery.query('#'+vesselIndex)[0].me.setSetPoint(resp[2])
+		}
+		
+		BrewTroller.communicate(BrewTroller.getAddress()+getSetPoint+vesselIndex, setPointCallback, vesselIndex);
+
 		
 		if (hasVolumeSensing){
 			
@@ -233,18 +262,15 @@ function Vessel(Index) {
 				if (xhr.readyState == 4){
 					var volume = JSON.parse(xhr.responseText);
 					var store = Ext.ComponentQuery.query('#'+vesselIndex)[0].me.volumeStore;
+					//REMOVE record from volume store and add a new one
+					//we have to remove the old one, because the bar chart interprets each record as a seperate bar
+					// for future logging capabilities the bar chart class should be modified to use only the first record in the store
 					store.removeAt(0);
 					store.add({volume: (Number(volume[2])/1000)});
 				}
 			}
 			
-		/*var volume =*/ BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselIndex);
-		
-		//REMOVE record from volume store and add a new one
-		//we have to remove the old one, because the bar chart interprets each record as a seperate bar
-		// for future logging capabilities the bar chart class should be modified to use only the first record in the store
-		//this.volumeStore.removeAt(0);
-		//this.volumeStore.add({volume: (Number(volume[2])/1000)});
+		 BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselIndex);
 		}
 		
 		//Insert new record into store containing temperature and heat status

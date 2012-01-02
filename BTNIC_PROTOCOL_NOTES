@@ -1,0 +1,6 @@
+Get Temperature -- q
+	When no temp sensor address has been defined for a 'zone' BT reports the temperature as 442949345.28 degrees
+	-- Currently as a fail-safe, the UI reports a temperature of 0 when it receives this, but it could be used to detect when there has been no sensor defined for a 'zone'
+	
+Get SetPoint -- t
+	Implementation for get SetPoint and set SetPoint are inconsistent with their Temperature counterpart. Calling btnic.cgi?q1 might return a value of 3190 for 31.90 degrees, whereas calling btnic.cgi?t0 would return a value of 31, assuming the set point is 31 degrees and the vessel has overshot its set point by .90 degrees. 

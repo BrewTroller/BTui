@@ -44,6 +44,29 @@ Ext.define('BTUI.view.btEdit', {
 						fieldLabel: 'KETTLE'
 					}
 				]
+			},
+			{
+				xtype: 'fieldset',
+				flex: 1,
+				title: 'Auto Update',
+				defaultType: 'checkbox',
+				layout: 'anchor',
+				items: [
+				{
+					fieldLabel: 'Auto Update',
+					id: 'autoUpdate',
+					inputValue: 'auto-update'
+				},
+				{
+					xtype: 'numberfield',
+					id: 'updateFrequency',
+					fieldLabel: 'Update Frequency',
+					anchor: '100%',
+					value: 2000,
+					maxValue: 60000, //set Maximum update interval to 1 minute
+					minValue: 1000,		  //set minimum update interval to 1 Second
+				}
+				]
 			}
 		 ],
 		

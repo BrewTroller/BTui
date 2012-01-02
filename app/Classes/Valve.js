@@ -27,8 +27,11 @@ function Valve() {
 		{name: 'Kettle Heat', 		bitMask: 32768},
 		{name: 'Kettle Idle', 		bitMask: 65536},
 		{name: 'User 1',				bitMask: 131072},
-		{name: 'User 2',				bitMask: 262144}
+		{name: 'User 2',				bitMask: 262144},
+		{name: 'User 3', 				bitMask: 524288}
 	];
+	
+	var getProfileStatus = 'w';
 	
 	//Public Class Variables
 	
@@ -65,7 +68,20 @@ function Valve() {
 		
 	}	
 	
-	this.update
+	this.updateStatus = function() {
+		
+		var callback = function(profiles, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var mask = Number(resp[2]);
+			var store = Ext.StoreManager.lookup('Valves');
+			for ( i = 0; i < 20; i++ ) {
+				var value = Boolean(mask & profiles[i].bitMask);
+				store.getAt(i).data.active = Boolean(mask & profiles[i].bitMask)
+			}
+			Ext.ComponentQuery.query('#Valves')[0].getView().refresh(); //Update the grid view
+		}
+		BrewTroller.communicate(BrewTroller.getAddress()+getProfileStatus, callback, profiles); 
+	}
 	
 	//Private Class functions
 	

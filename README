@@ -7,34 +7,85 @@
 
 App is in ALPHA Stage!
 
-You must set the IP of the btnic module in the settings window
+You must set the IP of the BTNic module in the settings window
 
 The BTUI.tmproj file is a project file for the TextMate text editor for Mac,
-which I beleive is also compatible with the 'E' editor for Windows
+which I believe is also compatible with the 'E' editor for Windows
+
+Known Issues: 
+	
+	When  Opening the Settings Window, app throws an 'Uncaught TypeError: Cannot read property 'xtype' of undefined' error, does not effect functionality of app, just an annoying error at this point.
 
 
 Currently Implemented:
 	
 	Vessel Volume and Temperature retrieval from BrewTroller
+	Vessel Temperature Set point Setting
 	Manual Vessel Updates
 	Auto Updates with configurable interval
 	
-To DO:
+To DO For Initial Release (In order of Priority):
 
-	get/set set points from/to BrewTroller
-	Valve profile refactoring / synchronizing with BrewTroller
+	Refactor application launch to allow BrewTroller Class to have a reference to each vessel instead of having to call Ext.ComponentQuery.query() each time we need the Vessel
+	Valve profile synchronizing with BrewTroller (and Clean Up Valve Display)
 	Implement full settings from BrewTroller Menus
-	Add CSS code to build a theme, and make the appearance pretty :)
+	Fully comment and Document Code...
+	Add CSS code to build a theme, and make the appearance pretty :) (this includes skinning the temperature and volume charts)
+	
+
+
+To DOs for Long Term (In order of Priority):
+	
+	Support for Chill Step / Support for AUX temperature Sensors
+	Persistent settings - Import / Export Settings for portability, Save in LocalStorage DB (Does not transfer browser to browser, prone to
+					loss (cookie clean-up/browsing data delete))
+	Vessel Customizations - Support for Steam, BIAB, Non-Standard Two Vessel, etc.
+	Recipes - Import / Export in BeerXML format
+	
+	
+
 	
 Latest Changes:
 	
-	Valve Profile view has been rebuilt using a grouped Grid view instead
-	buttons.
+	Started Valve profile synchronization between app and BT
+	Add Temperature getting/setting
 	Added Valve class to handle logic pertaining to valves and valve
 	profiles.
+	BrewTroller.Communicate() has been refactored to use Asynchronous requests, see guide below for use.
+	
+
+
+WishList for BTNic Architecture:
+
+	Way to retrieve Vessel Compile Options. EX: HLT as KET, RIMS, etc
+	Target Volume Retrieval
 	
 
 
 App is based on the ExtJS 4 library, available at http://sencha.com
 	
-Currently All communication with the BrewTroller is done using JavaScript and XHR GET requests instead of using the Flash based transfers in the YUI library (Matt's initial Demo used it). This provided maximum compatibility with devices, but because JavaScript is Single threaded it can quickly slow down or crash the browser if the Auto Update frequency is set too high. The next version of the BTNic module firmware providing batch commands will help this problem considerably.
+Currently All communication with the BrewTroller is done using JavaScript and XHR GET requests instead of using the Flash based transfers in the YUI library (Matt's initial Demo used it). This provided maximum compatibility with devices, but because JavaScript is Single threaded it can quickly slow down or crash the browser if the Auto Update frequency is set too high. The next version of the BTNic module firmware providing batch commands will help this problem considerably. **Asynchronous XHR has also helped considerably, although it still seems 	
+																possible to overload the Embedded Module, to the point it stops responding**
+
+
+
+Documentation:
+
+	BrewTroller.Communicate():
+		Base communication method for getting and sending data to BrewTroller. All communication is done Asynchronously, so all response
+		handling needs to be done in the callback function.
+		
+		Method REQUIRES the following arguments:
+			Command Address: Must be full address EX: http://10.0.1.21/btnic.cgi?q0
+			Callback function: function to be called when a response is returned from the BrewTrolller
+			Arguments:			Any arguments that need to be passed to the callback function
+			
+		Example Usage:
+		
+		var callbackFunction = function(args, xhr){	//FUNCTION MUST HAVE XHR ARGUMENT PASSED TO IT
+			var response = JSON.parse(xhr.responseText);	//parses the response into JSON array
+			//DO SOMETHING WITH RESPONSE HERE
+		};
+		
+		BrewTroller.Communicate('http://10.0.1.21/btnic.cgi?q0', callbackFunction, args); //args will generally be the vesselIndex of the
+																						  //calling vessel
