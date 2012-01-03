@@ -1,6 +1,6 @@
 //BTUI for BrewTroller Vessel Class
 
-function Vessel(Index) {
+function Vessel(Index, displayPanel) {
 	
 	//Private Class Variables
 	
@@ -32,6 +32,8 @@ function Vessel(Index) {
 	
 	var setSetPoint = 'X';
 	
+	// reference to this Vessel Instance's display panel
+	this.display = displayPanel;
 	//Vessel Settings Window
 	this.settingsWindow;
 		
@@ -84,13 +86,13 @@ function Vessel(Index) {
 	this.enableVolume = function() {
 		
 		hasVolumeSensing = true;
-		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#volumeBar' + vesselIndex).show();
+		this.display.down('#volumeBar' + vesselIndex).show();
 	}
 	
 	this.disableVolume = function() {
 		
 		hasVolumeSensing = false;
-		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#volumeBar' + vesselIndex).hide();
+		this.display.down('#volumeBar' + vesselIndex).hide();
 	}
 	
 	this.hasVolumeSensing = function() {
@@ -157,7 +159,7 @@ function Vessel(Index) {
 	this.setSetPoint = function(setPoint) {
 		
 		temperatureSetPoint = setPoint;
-		Ext.ComponentQuery.query('#'+vesselIndex)[0].down('#tempDisplay'+vesselIndex).setText(temperatureSetPoint);
+		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint);
 	}
 	
 	//Set a new Temperature Setpoint for the Vessel, and update the value to the BT
@@ -168,26 +170,28 @@ function Vessel(Index) {
 		
 		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, callback, vesselIndex);
 		temperatureSetPoint = newSetPoint;
-		Ext.ComponentQuery.query('#'+vesselIndex)[0].down('#tempDisplay'+vesselIndex).setText(temperatureSetPoint);		
+		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint);
 	}
 	
 	//Set the temperature range of the Temperature Gauge chart
 	this.setTemperatureRange = function(newMin, newMax) {
 		
-		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].minimum = newMin;
-		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].maximum = newMax;
-		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).redraw();
+		var tempGauge = this.display.down('#tempGauge' + vesselIndex);
+		
+		tempGauge.axes.items[0].minimum = newMin;
+		tempGauge.axes.items[0].maximim = newMax;
+		tempGauge.redraw();
 	}
 	
 	//Getters for temperature range of Temperature Gauge chart
 	this.getTemperatureMaximum = function() {
 		
-		return Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].maximum;
+		return this.display.down('#tempGauge' + vesselIndex).axes.items[0].maximum;
 	}
 	
 	this.getTemperatureMinimum = function() {
 		
-		return Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#tempGauge' + vesselIndex).axes.items[0].minimum; 
+		return this.display.down('#tempGauge' + vesselIndex).axes.items[0].minimum;
 	}
 	
 	//Get last temperature reading from store
@@ -211,6 +215,7 @@ function Vessel(Index) {
 		if (!this.settingsWindow){
 			this.settingsWindow = Ext.widget('vesselSettings');
 			this.settingsWindow.id = this.getVesselIndex() + ' Settings';
+			this.settingsWindow.vessel = this;
 		}
 			//Make sure that the checkbox values match current variable values
 			this.settingsWindow.down('#hasVolume').setValue(hasVolumeSensing);
@@ -233,14 +238,14 @@ function Vessel(Index) {
 					temperature[2] = 0;	//A fix for erroneous readings coming back from BT. When no sensor is connected it likes to return values of 4.2B
 				}
 				var temp = temperature[2]/100;
-				Ext.ComponentQuery.query('#'+vesselIndex)[0].me.temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: 0});
+				BrewTroller.Vessels[vesselIndex].temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: 0});
 			}
 		}
 		
 		var heatCallback = function(vesselIndex, xhr) {
 			if (xhr.readyState == 4){
 				var heat = JSON.parse(xhr.responseText);
-				Ext.ComponentQuery.query('#'+vesselIndex)[0].me.temperatureStore.getAt(0).data.heatStatus = Number(heat[2]);
+				BrewTroller.Vessels[vesselIndex].temperatureStore.getAt(0).data.heatStatus = Number(heat[2]);
 			}
 		}
 		
@@ -250,7 +255,7 @@ function Vessel(Index) {
 		var setPointCallback = function(vesselIndex, xhr){
 			
 			var resp = JSON.parse(xhr.responseText);
-			Ext.ComponentQuery.query('#'+vesselIndex)[0].me.setSetPoint(resp[2])
+			BrewTroller.Vessels[vesselIndex].setSetPoint(resp[2])
 		}
 		
 		BrewTroller.communicate(BrewTroller.getAddress()+getSetPoint+vesselIndex, setPointCallback, vesselIndex);
@@ -261,7 +266,7 @@ function Vessel(Index) {
 			var volumeCallback = function(vesselIndex, xhr){
 				if (xhr.readyState == 4){
 					var volume = JSON.parse(xhr.responseText);
-					var store = Ext.ComponentQuery.query('#'+vesselIndex)[0].me.volumeStore;
+					var store = BrewTroller.Vessels[vesselIndex].volumeStore;
 					//REMOVE record from volume store and add a new one
 					//we have to remove the old one, because the bar chart interprets each record as a seperate bar
 					// for future logging capabilities the bar chart class should be modified to use only the first record in the store
@@ -272,9 +277,6 @@ function Vessel(Index) {
 			
 		 BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselIndex);
 		}
-		
-		//Insert new record into store containing temperature and heat status
-		//this.temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: (Number(heatStatus[2]))});
 } else{
 	alert('You Must Set an IP address for the BrewTroller First!');
 };
@@ -303,7 +305,8 @@ function Vessel(Index) {
 		Ext.TaskManager.stop(updateTask);
 		
 		autoUpdate = false;
-	}
+	},
 	
 	this.setVesselName();
+	
 }

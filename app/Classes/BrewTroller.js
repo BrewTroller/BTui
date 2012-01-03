@@ -19,6 +19,7 @@ function BrewTroller() {
 	
 	//public class variables
 	this.valves = new Valve;
+	this.Vessels = [];
 		
 	//public class methods
 	
@@ -108,10 +109,8 @@ function BrewTroller() {
 	
 	this.syncVessels = function() {
 		
-		var vessels = Ext.ComponentQuery.query('Vessel');
-		
-		for ( i = 0; i < 3; i++ ){
-			vessels[i].me.manualUpdate();
+		for ( i = 0; i < Vessels.length; i++ ){
+			Vessels[i].manualUpdate();
 		}
 	}
 	
@@ -203,4 +202,8 @@ function BrewTroller() {
 		}
 	}
 	
+	this.InitSetup = function() {
+		
+		this.Vessels = [ Ext.ComponentQuery.query('#0')[0].me, Ext.ComponentQuery.query('#1')[0].me, Ext.ComponentQuery.query('#2')[0].me ];
+	}
 }

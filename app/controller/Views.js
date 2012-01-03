@@ -8,7 +8,14 @@ Ext.define('BTUI.controller.Views', {
 		
 		//Views Controller controls setup
 		
-		//control that listens for the Save button click in a Vessel Settings window, and calls the saveVessel() function when one fires
+		//control that listens for the Viewport to fire a beforerender evenet, and calls BTUIInit() function when it does
+		this.control({
+			'viewport': {
+				beforerender: this.BTUIInit
+			}
+		});
+		
+		//control that listens for the Save button click in a Vessel Settings window, and calls the saveVessel() function when one fire		
 		this.control({
 			'vesselSettings button[action=save]':{
 				click: this.saveVessel
@@ -50,19 +57,6 @@ Ext.define('BTUI.controller.Views', {
 			}
 		});
 		
-		//control that listens for the click event on an item in the Valve gridview
-		this.control({
-			'Valves':{
-				itemclick: this.valveClick 
-			}
-		});
-		
-		//control that listens for the double click event on an item in the Valve gridview
-		this.control({
-			'Valves':{
-				selectionchange: this.valveRightClick
-			}
-		});
 	},
 	
 	/*
@@ -79,9 +73,9 @@ Ext.define('BTUI.controller.Views', {
 			
 			this.editWindow.down('#btAddress').setValue(BrewTroller.getIPAddress()); //Set currently set IP address into form
 			// make sure vessel display options match what is currently shown
-			this.editWindow.down('#hltDisplayOption').setValue(!Ext.ComponentQuery.query('#0')[0].hidden);
-			this.editWindow.down('#mltDisplayOption').setValue(!Ext.ComponentQuery.query('#1')[0].hidden); 
-			this.editWindow.down('#ketDisplayOption').setValue(!Ext.ComponentQuery.query('#2')[0].hidden); 
+			this.editWindow.down('#hltDisplayOption').setValue(!BrewTroller.Vessels[0].display.hidden);
+			this.editWindow.down('#mltDisplayOption').setValue(!BrewTroller.Vessels[1].display.hidden); 
+			this.editWindow.down('#ketDisplayOption').setValue(!BrewTroller.Vessels[2].display.hidden); 
 			// set auto update options to match currently stored values
 			this.editWindow.down('#autoUpdate').setValue(BrewTroller.isAutoUpdate());
 			this.editWindow.down('#updateFrequency').setValue(BrewTroller.getUpdateFrequency());
@@ -91,37 +85,37 @@ Ext.define('BTUI.controller.Views', {
 	
 	saveBrewTroller: function() {
 		
-		hlt = Ext.ComponentQuery.query('#0')[0];
-		mlt = Ext.ComponentQuery.query('#1')[0];
-		ket = Ext.ComponentQuery.query('#2')[0];
+		var hlt = BrewTroller.Vessels[0];
+		var mlt = BrewTroller.Vessels[1];
+		var ket = BrewTroller.Vessels[2];
 		
 		editWindow = Ext.ComponentQuery.query('#btEdit')[0];
 		
 		//Check to see if vessel display options are different than current conditions, if they are set window displays accordingyly
-		if (editWindow.down('#hltDisplayOption').value != !(hlt.hidden)){	
+		if (editWindow.down('#hltDisplayOption').value != !(hlt.display.hidden)){	
 			if (editWindow.down('#hltDisplayOption').value){
-				hlt.show();
+				hlt.display.show();
 			} 
 			else {
-				hlt.hide();
+				hlt.display.hide();
 			}
 		}
 		
 		if (editWindow.down('#mltDisplayOption').value != !(mlt.hidden)){
 			if (editWindow.down('#mltDisplayOption').value){
-				mlt.show();
+				mlt.display.show();
 			} 
 			else {
-				mlt.hide();
+				mlt.display.hide();
 			}
 		}
 		
 		if (editWindow.down('#ketDisplayOption').value != !(ket.hidden)){
 			if (editWindow.down('#ketDisplayOption').value){
-				ket.show();
+				ket.display.show();
 			} 
 			else {
-				ket.hide();
+				ket.display.hide();
 			}
 		}
 		
@@ -143,7 +137,7 @@ Ext.define('BTUI.controller.Views', {
 			}			
 		}
 		
-		Ext.ComponentQuery.query('#btEdit')[0].hide();		
+		editWindow.hide();		
 	},
 	
 	changeCard: function(button) {
@@ -153,20 +147,9 @@ Ext.define('BTUI.controller.Views', {
 	},
 	
 	saveVessel: function(button, event, options) {
-		
-		var vesselId = button.ownerCt.ownerCt.id; //get the id of the vessel from the settingsWindow id
-		var vessel;
-		
-		if ( vesselId == '0 Settings' ) {
-			vessel = Ext.ComponentQuery.query('#0')[0].me;
-		}
-		else if ( vesselId == '1 Settings' ) {
-			vessel = Ext.ComponentQuery.query('#1')[0].me;
-		}
-		else if ( vesselId == '2 Settings' ) {
-			vessel = Ext.ComponentQuery.query('#2')[0].me;
-		}
-		
+	
+		var vessel = button.ownerCt.ownerCt.vessel;
+			
 		vessel.settingsWindow.hide();	//hide the settings window before making any modifications to ensure that it does hide the first time the save button is pressed
 		
 		//Enable or disable vessel volume
@@ -206,7 +189,7 @@ Ext.define('BTUI.controller.Views', {
 		
 		var setPoint = Ext.create('Ext.Window', {
 			title: 'Edit Set Point',
-			vesselIndex: vessel.getVesselIndex(),
+			vessel: vessel,
 			hidden: true,
 			layout: 'fit',
 			items: [
@@ -242,19 +225,15 @@ Ext.define('BTUI.controller.Views', {
 	
 	saveSetPoint: function(button, event, options){
 		var editWindow = button.ownerCt.ownerCt;
-		var vessel = Ext.ComponentQuery.query('#'+editWindow.vesselIndex)[0];
+		var vessel = editWindow.vessel;
 		
-		vessel.me.setNewSetPoint(editWindow.down('#setPoint').value);
+		vessel.setNewSetPoint(editWindow.down('#setPoint').value);
 		editWindow.hide();
 		editWindow.destroy();
 	},
-	
-	valveClick: function(item, record, html, index, e, options){
-		console.log('item clicked');
-	},
-	
-	valveRightClick: function(){
-		console.log('item change click');
+			
+	BTUIInit: function(){
+		BrewTroller.InitSetup();
 	}
 	
 });

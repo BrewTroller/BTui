@@ -14,7 +14,7 @@ Ext.define('BTUI.view.Vessel', {
 
 	initComponent: function() {
 
-		this.me = new Vessel(this.getId());
+		this.me = new Vessel(this.getId(), this);
 		  
 		toolbar = {
 			xtype: 'toolbar',
