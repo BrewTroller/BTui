@@ -9,8 +9,8 @@ Ext.define('BTUI.view.navPanel', {
 				type: 'hbox',
 				pack: 'center'
 			},
-			border: false,
-			bodyStyle: 'background-color: black;',
+			//border: false,
+			//bodyStyle: 'background-color: black;',
 			items: [
 				{
 					xtype: 'button',

@@ -32,23 +32,37 @@ function Valve() {
 	];
 	
 	var getProfileStatus = 'w';
+	var getProfileConfig = 'd';
 	
 	//Public Class Variables
 	
 	//Public Class functions
-	this.getProfileConfig = function(profile) {
-		
-	var index = store.lookup('profile', profile);
+	
+	// function takes the name of the profile as an argument, and searches the store for it, then parses its config flag set, 
+	//	and returns it as an array corresponding to each valve
+	this.getProfileConfigArray = function(profile) {
+	
+	var store = Ext.StoreManager.lookup('Valves');	
+	var index = store.find('profile', profile);
 	var config = store.getAt(index).data.config;
 	
 	var valveArray = [];
 	
 	for (i = 0; i < 32; i++){
 		mask = 1 << i;
-		valveArray[i] = config & mask;
+		valveArray[i] = ((config & mask) == mask ? 1 : 0);
 	}
 	
 	return valveArray;
+	}
+	
+	// function takes the name of a profile as an argument, seaches the store for it, and returns its raw config data
+	this.getProfileConfig = function(profile) {
+		
+		var store = Ext.StoreManager.lookup('Valves');
+		var index = store.find('profile', profile);
+		
+		return store.getAt(index).data.config;
 	}
 	
 	this.setProfileConfig = function(profile, newConfig) {
@@ -83,6 +97,17 @@ function Valve() {
 		BrewTroller.communicate(BrewTroller.getAddress()+getProfileStatus, callback, profiles); 
 	}
 	
+	this.updateAllConfig = function() {
+		
+		for ( i = 0; i < 20; i++ ) {
+			var callback = function(index, xhr) {
+				var store = Ext.StoreManager.lookup('Valves');
+				var resp = JSON.parse(xhr.responseText);
+				store.getAt(index).data.config = Number(resp[2]);
+			}
+			BrewTroller.communicate(BrewTroller.getAddress()+getProfileConfig+i, callback, i);
+		}
+	}
 	//Private Class functions
 	
 }

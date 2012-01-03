@@ -50,6 +50,19 @@ Ext.define('BTUI.controller.Views', {
 			}
 		});
 		
+		//control that listens for the click event on an item in the Valve gridview
+		this.control({
+			'Valves':{
+				itemclick: this.valveClick 
+			}
+		});
+		
+		//control that listens for the double click event on an item in the Valve gridview
+		this.control({
+			'Valves':{
+				selectionchange: this.valveRightClick
+			}
+		});
 	},
 	
 	/*
@@ -69,6 +82,9 @@ Ext.define('BTUI.controller.Views', {
 			this.editWindow.down('#hltDisplayOption').setValue(!Ext.ComponentQuery.query('#0')[0].hidden);
 			this.editWindow.down('#mltDisplayOption').setValue(!Ext.ComponentQuery.query('#1')[0].hidden); 
 			this.editWindow.down('#ketDisplayOption').setValue(!Ext.ComponentQuery.query('#2')[0].hidden); 
+			// set auto update options to match currently stored values
+			this.editWindow.down('#autoUpdate').setValue(BrewTroller.isAutoUpdate());
+			this.editWindow.down('#updateFrequency').setValue(BrewTroller.getUpdateFrequency());
 			// show the edit window
 			this.editWindow.show();
 	},
@@ -110,6 +126,22 @@ Ext.define('BTUI.controller.Views', {
 		}
 		
 		BrewTroller.setIPAddress(editWindow.down('#btAddress').value);
+		
+		//set update frequency
+		if ( editWindow.down('#updateFrequency').getValue() != BrewTroller.getUpdateFrequency() ){
+			BrewTroller.setUpdateFrequency(editWindow.down('#updateFrequency').getValue());
+		}
+		
+		//Start and stop auto updating
+		if ( editWindow.down('#autoUpdate').getValue() && !( BrewTroller.isAutoUpdate() ) ) {
+			BrewTroller.startAutoUpdate();
+		}
+		else {
+			
+			if ( BrewTroller.isAutoUpdate() && !( editWindow.down('#autoUpdate').getValue() ) ){
+				BrewTroller.stopAutoUpdate();
+			}			
+		}
 		
 		Ext.ComponentQuery.query('#btEdit')[0].hide();		
 	},
@@ -215,6 +247,14 @@ Ext.define('BTUI.controller.Views', {
 		vessel.me.setNewSetPoint(editWindow.down('#setPoint').value);
 		editWindow.hide();
 		editWindow.destroy();
+	},
+	
+	valveClick: function(item, record, html, index, e, options){
+		console.log('item clicked');
+	},
+	
+	valveRightClick: function(){
+		console.log('item change click');
 	}
 	
 });

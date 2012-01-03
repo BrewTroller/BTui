@@ -9,7 +9,7 @@ Ext.define('BTUI.view.card.Home', {
 				type: 'hbox',
 				pack: 'center'
 			},
-			bodyStyle: 'background-color: black; color: white; border: 0px !important',
+			//bodyStyle: 'background-color: black; color: white; border: 0px !important',
 			dockedItems: [
 				{
 					id: 'Valves',

@@ -23,14 +23,15 @@ Currently Implemented:
 	Vessel Temperature Set point Setting
 	Manual Vessel Updates
 	Auto Updates with configurable interval
+	BrewTroller Auto Updates (Currently just valve profile status)
 	
 To DO For Initial Release (In order of Priority):
 
-	Refactor application launch to allow BrewTroller Class to have a reference to each vessel instead of having to call Ext.ComponentQuery.query() each time we need the Vessel
-	Valve profile synchronizing with BrewTroller (and Clean Up Valve Display)
+	Add BrewTroller Manual Update button.
+	Refactor Class usage, so that the BrewTroller class is comprised of a Valves instance, and three Vessel instances. This requires an application launch refactoring. This will allow for more efficient usage of the commands batching in the next release of BTNic, as well as allow faster access to each vessel from the BrewTroller class instead of having to use Ext.ComponentQuery.query() all the time.
 	Implement full settings from BrewTroller Menus
 	Fully comment and Document Code...
-	Add CSS code to build a theme, and make the appearance pretty :) (this includes skinning the temperature and volume charts)
+	Add CSS code to build a theme, and make the appearance pretty :) (this includes skinning the temperature and volume charts) / Resolution independent scaling 
 	
 
 

@@ -7,6 +7,16 @@ function BrewTroller() {
 	var BrewTrollerBuild;
 	var BrewTrollerUpTime;
 	
+	var autoUpdate = false;
+	
+	//task for autoUpdate
+	var updateTask = {
+		run: function(){
+			BrewTroller.Sync();
+		},
+		interval: 10000 //Default update interval set to 10 seconds
+	};
+	
 	//public class variables
 	this.valves = new Valve;
 		
@@ -127,13 +137,70 @@ function BrewTroller() {
 			xhr.send(null);
 		}*/
 	}
-
-	//Private Class Methods
+	
+	this.initEEPROM = function() {
+		
+		var xhr = new XMLHttpRequest;
+		xhr.open('GET', this.getAddress()+'I', true);
+		xhr.send(null);
+	}
 
 	this.initSync = function() {
 		BrewTroller.setVersion();
 		BrewTroller.syncVessels();
+		BrewTroller.valves.updateAllConfig();
 		BrewTroller.valves.updateStatus();
+	}
+	
+	this.Sync = function() {
+		
+		BrewTroller.valves.updateStatus();
+	}
+	
+	this.startAutoUpdate = function(){
+		
+		if ( BrewTrollerAddress != undefined ) {
+		autoUpdate = true;
+		
+		Ext.TaskManager.start(updateTask);
+		} 
+		else{
+			alert('You Must Set an IP address for the BrewTroller First!');
+		}
+	}
+	
+	this.stopAutoUpdate = function(){
+		
+		Ext.TaskManager.stop(updateTask);
+		
+		autoUpdate = false;
+	}
+	
+	this.isAutoUpdate = function() {
+		
+		return autoUpdate;
+	}
+	
+	this.getUpdateFrequency = function() {
+		
+		return updateTask.interval;
+	}
+	
+	this.setUpdateFrequency = function(newInterval) {
+		
+		//stop the autoupdate task if it is running
+		if ( autoUpdate == true ) {
+			this.stopAutoUpdate();
+		}
+		//set new interval		
+		updateTask.interval = newInterval;
+		
+		//restart the autoupdate task if it was running
+		if ( autoUpdate == true ) {
+			
+			alert('starting auto update');
+			this.startAutoUpdate();
+		}
 	}
 	
 }
