@@ -73,7 +73,9 @@ Ext.define('BTUI.view.btEdit', {
 		buttons: [
 			{
 				text: 'Save',
-				action: 'save',
+				handler: function(){
+					BrewTroller.saveSettings();
+				}
 			},
 			{
 				text: 'Cancel',

@@ -10,7 +10,7 @@ Ext.define('BTUI.view.Valves', {
 		}); //Setup grouping feature. Data parameter to group by is setup in Store.
 		
 		Ext.apply(this, {
-			//bodyBorder: false,		//Prevent Panel Border
+			bodyBorder: false,		//Prevent Panel Border
 			border: 0,					//Prevent Panel Border
 			//preventHeader: true,		//Prevent Panel Header from showing
 			hideHeaders: true,		//Prevent Column Header from showing
@@ -22,9 +22,9 @@ Ext.define('BTUI.view.Valves', {
 			forceFit: true,
 			store: Ext.data.StoreManager.lookup('Valves'),
 			columns: [
-				{header: 'Profile', dataIndex: 'profile', flex: 1, /*tdCls: 'button-wrap'*/},
-				{header: 'active', dataIndex: 'active', hidden: true},
-				{header: 'config', dataIndex: 'config', hidden: true},
+				{header: 'Profile', dataIndex: 'profile', flex: 1, border: 0,},
+				{header: 'active', dataIndex: 'active', hidden: true, border: 0,},
+				{header: 'config', dataIndex: 'config', hidden: true, border: 0,},
 			],
 			viewConfig: {
 				//stripeRows: false,	//Prevent the Grid from alternating background colors of rows

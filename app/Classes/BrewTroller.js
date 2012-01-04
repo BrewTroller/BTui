@@ -12,7 +12,7 @@ function BrewTroller() {
 	//task for autoUpdate
 	var updateTask = {
 		run: function(){
-			BrewTroller.Sync();
+			BrewTroller.update();
 		},
 		interval: 10000 //Default update interval set to 10 seconds
 	};
@@ -20,9 +20,83 @@ function BrewTroller() {
 	//public class variables
 	this.valves = new Valve;
 	this.Vessels = [];
+	this.editWindow;
 		
 	//public class methods
 	
+	this.settings = function() {
+		
+			if(!this.editWindow) {
+				this.editWindow = Ext.widget('btEdit');
+			}
+			
+			this.editWindow.down('#btAddress').setValue(BrewTroller.getIPAddress()); //Set currently set IP address into form
+			// make sure vessel display options match what is currently shown
+			this.editWindow.down('#hltDisplayOption').setValue(!BrewTroller.Vessels[0].display.hidden);
+			this.editWindow.down('#mltDisplayOption').setValue(!BrewTroller.Vessels[1].display.hidden); 
+			this.editWindow.down('#ketDisplayOption').setValue(!BrewTroller.Vessels[2].display.hidden); 
+			// set auto update options to match currently stored values
+			this.editWindow.down('#autoUpdate').setValue(BrewTroller.isAutoUpdate());
+			this.editWindow.down('#updateFrequency').setValue(BrewTroller.getUpdateFrequency());
+			// show the edit window
+			this.editWindow.show();
+	},
+	
+	this.saveSettings = function() {
+	
+		var hlt = this.Vessels[0];
+		var mlt = this.Vessels[1];
+		var ket = this.Vessels[2];
+		var editWindow = this.editWindow;
+		
+		//Check to see if vessel display options are different than current conditions, if they are set window displays accordingyly
+		if (editWindow.down('#hltDisplayOption').value != !(hlt.display.hidden)){	
+			if (editWindow.down('#hltDisplayOption').value){
+				hlt.display.show();
+			} 
+			else {
+				hlt.display.hide();
+			}
+		}
+		
+		if (editWindow.down('#mltDisplayOption').value != !(mlt.hidden)){
+			if (editWindow.down('#mltDisplayOption').value){
+				mlt.display.show();
+			} 
+			else {
+				mlt.display.hide();
+			}
+		}
+		
+		if (editWindow.down('#ketDisplayOption').value != !(ket.hidden)){
+			if (editWindow.down('#ketDisplayOption').value){
+				ket.display.show();
+			} 
+			else {
+				ket.display.hide();
+			}
+		}
+		
+		BrewTroller.setIPAddress(editWindow.down('#btAddress').value);
+		
+		//set update frequency
+		if ( editWindow.down('#updateFrequency').getValue() != BrewTroller.getUpdateFrequency() ){
+			BrewTroller.setUpdateFrequency(editWindow.down('#updateFrequency').getValue());
+		}
+		
+		//Start and stop auto updating
+		if ( editWindow.down('#autoUpdate').getValue() && !( BrewTroller.isAutoUpdate() ) ) {
+			BrewTroller.startAutoUpdate();
+		}
+		else {
+			
+			if ( BrewTroller.isAutoUpdate() && !( editWindow.down('#autoUpdate').getValue() ) ){
+				BrewTroller.stopAutoUpdate();
+			}			
+		}
+		
+		editWindow.hide();	
+	};
 	
 	this.getAddress = function() {
 		
@@ -105,14 +179,14 @@ function BrewTroller() {
 			}
 			xhr.send(null);	//Send the request
 		}
-	}
+	};
 	
-	this.syncVessels = function() {
+	this.updateVessels = function() {
 		
-		for ( i = 0; i < Vessels.length; i++ ){
-			Vessels[i].manualUpdate();
+		for ( i = 0; i < this.Vessels.length; i++ ){
+			this.Vessels[i].manualUpdate();
 		}
-	}
+	};
 	
 	this.setIPAddress = function(ipAddress) {
 	
@@ -146,15 +220,21 @@ function BrewTroller() {
 
 	this.initSync = function() {
 		BrewTroller.setVersion();
-		BrewTroller.syncVessels();
+		BrewTroller.updateVessels();
 		BrewTroller.valves.updateAllConfig();
 		BrewTroller.valves.updateStatus();
 	}
 	
-	this.Sync = function() {
+	this.update = function() {
 		
 		BrewTroller.valves.updateStatus();
 	}
+	
+	this.updateAll = function() {
+		
+		this.update();
+		this.updateVessels();
+	},
 	
 	this.startAutoUpdate = function(){
 		
