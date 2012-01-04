@@ -1,6 +1,6 @@
 //BTUI for BrewTroller Vessel Class
 
-function Vessel(Index) {
+function Vessel(Index, displayPanel) {
 	
 	//Private Class Variables
 	
@@ -10,6 +10,9 @@ function Vessel(Index) {
 	var hasVolumeSensing = true;	//default to true
 	
 	var vesselCapacity;
+	var vesselDeadSpace;
+	var volumeTarget = 0;
+	var temperatureSetPoint = 0;
 	
 	//task for autoUpdate
 	var updateTask = {
@@ -29,6 +32,8 @@ function Vessel(Index) {
 	
 	var setSetPoint = 'X';
 	
+	// reference to this Vessel Instance's display panel
+	this.display = displayPanel;
 	//Vessel Settings Window
 	this.settingsWindow;
 		
@@ -38,7 +43,7 @@ function Vessel(Index) {
 	
 	this.temperatureStore = Ext.create('Ext.data.Store', {
 		fields: ['temperature', 'heatStatus'],
-		data: [{temperature: 12, heatStatus: 0}]
+		data: [{temperature: 0, heatStatus: 0}]
 	});
 	
 	this.volumeStore = Ext.create('Ext.data.Store', {
@@ -81,18 +86,23 @@ function Vessel(Index) {
 	this.enableVolume = function() {
 		
 		hasVolumeSensing = true;
-		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#volumeBar' + vesselIndex).show();
+		this.display.down('#volumeBar' + vesselIndex).show();
 	}
 	
 	this.disableVolume = function() {
 		
 		hasVolumeSensing = false;
-		Ext.ComponentQuery.query('#' + vesselIndex)[0].down('#volumeBar' + vesselIndex).hide();
+		this.display.down('#volumeBar' + vesselIndex).hide();
 	}
 	
 	this.hasVolumeSensing = function() {
 		
 		return hasVolumeSensing;
+	}
+	
+	this.getVolumeTarget = function() {
+		
+		return volumeTarget;
 	}
 	
 	this.getVesselIndex = function() {
@@ -120,7 +130,7 @@ function Vessel(Index) {
 		
 		//stop the autoupdate task if it is running
 		if ( autoUpdate == true ) {
-			stopAutoUpdate();
+			this.stopAutoUpdate();
 		}
 		//set new interval		
 		updateTask.interval = newInterval;
@@ -129,25 +139,62 @@ function Vessel(Index) {
 		if ( autoUpdate == true ) {
 			
 			alert('starting auto update');
-			startAutoUpdate();
+			this.startAutoUpdate();
 		}
 	}
 	
+	//get the current vessel temperature setpoint
 	this.getSetPoint = function() {
 		
+		return temperatureSetPoint;
 	}
 	
+	//Get the Set Volume capactity of the Vessel
 	this.getCapacity = function() {
 		
 		return vesselCapacity;
 	}
 	
-	this.setSetPoint = function(newSetPoint) {
+	//Set the setpoint value, used only when setting the app's stored value to synchronize with the BT
+	this.setSetPoint = function(setPoint) {
 		
-		var baseAddress = BrewTroller.getAddress();
-		var setPoint = BrewTroller.communicate(baseAddress+setSetPoint+'&'+newSetPoint);		
+		temperatureSetPoint = setPoint;
+		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint);
 	}
 	
+	//Set a new Temperature Setpoint for the Vessel, and update the value to the BT
+	this.setNewSetPoint = function(newSetPoint) {
+		
+		var callback = function(args, xhr){
+		}
+		
+		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, callback, vesselIndex);
+		temperatureSetPoint = newSetPoint;
+		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint);
+	}
+	
+	//Set the temperature range of the Temperature Gauge chart
+	this.setTemperatureRange = function(newMin, newMax) {
+		
+		var tempGauge = this.display.down('#tempGauge' + vesselIndex);
+		
+		tempGauge.axes.items[0].minimum = newMin;
+		tempGauge.axes.items[0].maximim = newMax;
+		tempGauge.redraw();
+	}
+	
+	//Getters for temperature range of Temperature Gauge chart
+	this.getTemperatureMaximum = function() {
+		
+		return this.display.down('#tempGauge' + vesselIndex).axes.items[0].maximum;
+	}
+	
+	this.getTemperatureMinimum = function() {
+		
+		return this.display.down('#tempGauge' + vesselIndex).axes.items[0].minimum;
+	}
+	
+	//Get last temperature reading from store
 	this.getTemperature = function() {
 		
 		return this.temperatureStore.getAt(0).data.temperature;
@@ -168,6 +215,7 @@ function Vessel(Index) {
 		if (!this.settingsWindow){
 			this.settingsWindow = Ext.widget('vesselSettings');
 			this.settingsWindow.id = this.getVesselIndex() + ' Settings';
+			this.settingsWindow.vessel = this;
 		}
 			//Make sure that the checkbox values match current variable values
 			this.settingsWindow.down('#hasVolume').setValue(hasVolumeSensing);
@@ -183,21 +231,52 @@ function Vessel(Index) {
 	if ( BrewTroller.getIPAddress() != undefined) {	
 		var baseAddress = BrewTroller.getAddress();
 		
-		var temperature = BrewTroller.communicate(baseAddress+getTemp+vesselIndex);
-		var heatStatus = BrewTroller.communicate(baseAddress+getHeat+vesselIndex);
-		
-		if (hasVolumeSensing){
-		var volume = BrewTroller.communicate(baseAddress+getVol+vesselIndex);
-		
-		//REMOVE record from volume store and add a new one
-		//we have to remove the old one, because the bar chart interprets each record as a seperate bar
-		// for future logging capabilities the bar chart class should be modified to use only the first record in the store
-		this.volumeStore.removeAt(0);
-		this.volumeStore.add({volume: (Number(volume[2])/1000)});
+		var tempCallback = function(vesselIndex, xhr) {
+			if(xhr.readyState == 4){
+				var temperature = JSON.parse(xhr.responseText);
+				if ( (temperature[2]/100) > 300 ){
+					temperature[2] = 0;	//A fix for erroneous readings coming back from BT. When no sensor is connected it likes to return values of 4.2B
+				}
+				var temp = temperature[2]/100;
+				BrewTroller.Vessels[vesselIndex].temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: 0});
+			}
 		}
 		
-		//Insert new record into store containing temperature and heat status
-		this.temperatureStore.insert(0, {temperature: (Number(temperature[2])/100), heatStatus: (Number(heatStatus[2]))});
+		var heatCallback = function(vesselIndex, xhr) {
+			if (xhr.readyState == 4){
+				var heat = JSON.parse(xhr.responseText);
+				BrewTroller.Vessels[vesselIndex].temperatureStore.getAt(0).data.heatStatus = Number(heat[2]);
+			}
+		}
+		
+		BrewTroller.communicate(baseAddress+getHeat+vesselIndex, heatCallback, vesselIndex);
+		BrewTroller.communicate(baseAddress+getTemp+vesselIndex, tempCallback, vesselIndex);
+
+		var setPointCallback = function(vesselIndex, xhr){
+			
+			var resp = JSON.parse(xhr.responseText);
+			BrewTroller.Vessels[vesselIndex].setSetPoint(resp[2])
+		}
+		
+		BrewTroller.communicate(BrewTroller.getAddress()+getSetPoint+vesselIndex, setPointCallback, vesselIndex);
+
+		
+		if (hasVolumeSensing){
+			
+			var volumeCallback = function(vesselIndex, xhr){
+				if (xhr.readyState == 4){
+					var volume = JSON.parse(xhr.responseText);
+					var store = BrewTroller.Vessels[vesselIndex].volumeStore;
+					//REMOVE record from volume store and add a new one
+					//we have to remove the old one, because the bar chart interprets each record as a seperate bar
+					// for future logging capabilities the bar chart class should be modified to use only the first record in the store
+					store.removeAt(0);
+					store.add({volume: (Number(volume[2])/1000)});
+				}
+			}
+			
+		 BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselIndex);
+		}
 } else{
 	alert('You Must Set an IP address for the BrewTroller First!');
 };
@@ -226,7 +305,8 @@ function Vessel(Index) {
 		Ext.TaskManager.stop(updateTask);
 		
 		autoUpdate = false;
-	}
+	},
 	
 	this.setVesselName();
+	
 }
