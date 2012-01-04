@@ -10,22 +10,72 @@ Ext.define('BTUI.view.btEdit', {
 		Ext.apply(this, {
 		id: 'btEdit',
 		items: [
-		{
-			xtype: 'form',
-			items: [
+			{
+				xtype: 'fieldset',
+				flex: 1,
+				title: 'BrewTroller Address',
+				defaultType: 'textfield',
+				layout: 'anchor',
+				items: [
+					{
+						id: 'btAddress',
+						name: 'address',
+						fieldLabel: 'IPv4 Address',
+					}
+				]
+			},
+			{
+				xtype: 'fieldset',
+				flex: 1,
+				title: 'Vessel Display',
+				defaultType: 'checkbox',
+				layout: 'anchor',
+				items: [
+					{
+						id: 'hltDisplayOption',
+						fieldLabel: 'HLT'
+					},
+					{
+						id: 'mltDisplayOption',
+						fieldLabel: 'MLT'
+					},
+					{
+						id: 'ketDisplayOption',
+						fieldLabel: 'KETTLE'
+					}
+				]
+			},
+			{
+				xtype: 'fieldset',
+				flex: 1,
+				title: 'Auto Update',
+				defaultType: 'checkbox',
+				layout: 'anchor',
+				items: [
 				{
-					id: 'btAddress',
-					xtype: 'textfield',
-					name: 'address',
-					fieldLabel: 'IPv4 Address'
+					fieldLabel: 'Auto Update',
+					id: 'autoUpdate',
+					inputValue: 'auto-update'
+				},
+				{
+					xtype: 'numberfield',
+					id: 'updateFrequency',
+					fieldLabel: 'Update Frequency',
+					anchor: '100%',
+					value: 2000,
+					maxValue: 60000, //set Maximum update interval to 1 minute
+					minValue: 1000,		  //set minimum update interval to 1 Second
 				}
-			]
-		}],
+				]
+			}
+		 ],
 		
 		buttons: [
 			{
 				text: 'Save',
-				action: 'save',
+				handler: function(){
+					BrewTroller.saveSettings();
+				}
 			},
 			{
 				text: 'Cancel',
@@ -37,3 +87,4 @@ Ext.define('BTUI.view.btEdit', {
 		this.callParent(arguments);
 	}
 });
+

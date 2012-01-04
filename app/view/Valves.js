@@ -1,40 +1,40 @@
 Ext.define('BTUI.view.Valves', {
-	extend: 'Ext.panel.Panel',
+	extend: 'Ext.grid.Panel',
 	alias: 'widget.Valves',
 	
-	initComponent: function() {
+	initComponent: function(){
+		
+		var grouping = Ext.create('Ext.grid.feature.Grouping', {
+			groupHeaderTpl:  '<tpl if="name == true">Active ({rows.length})</tpl><tpl if="name == false">Idle ({rows.length})</tpl>',
+			startCollapsed: false,
+		}); //Setup grouping feature. Data parameter to group by is setup in Store.
+		
 		Ext.apply(this, {
-			dock: 'left',
+			bodyBorder: false,		//Prevent Panel Border
+			border: 0,					//Prevent Panel Border
+			//preventHeader: true,		//Prevent Panel Header from showing
+			hideHeaders: true,		//Prevent Column Header from showing
+			//bodyStyle: 'background-color: black',
+			frameHeader: false,		//Prevent Panel Header
 			width: 130,
-			border: false,
-			autoScroll: true,
-			bodyStyle: 'background-color: black;',
-			items: [
-				Ext.create('Ext.view.View', {
-					store: 'Valves',
-					tpl: [
-						'<tpl for=".">',
-							'<div class="button-wrap" id="{profile}">',
-							'<span class="text-wrap">{profile}</span>',
-							'</div>',
-						'</tpl>'
-					],
-					multiSelect: true,
-					simpleSelect: true,
-					overItemCls: 'x-button-over',
-					trackOver: true,
-					selectedItemCls: 'x-button-selected',
-					itemSelector: 'div.button-wrap',
-					
-					listeners: {
-						selectionchange: function(dv, nodes){
-							
-						}
-					}
-				})
-			]
+			dock: 'left',
+			simpleSelect: true,
+			forceFit: true,
+			store: Ext.data.StoreManager.lookup('Valves'),
+			columns: [
+				{header: 'Profile', dataIndex: 'profile', flex: 1, border: 0,},
+				{header: 'active', dataIndex: 'active', hidden: true, border: 0,},
+				{header: 'config', dataIndex: 'config', hidden: true, border: 0,},
+			],
+			viewConfig: {
+				//stripeRows: false,	//Prevent the Grid from alternating background colors of rows
+			   plugins: {				//Add a Drag and Drop plugin that allows the list to be re-ordered
+			   	ptype: 'gridviewdragdrop',
+			      dragText: 'Drag and drop to reorganize'
+			   }
+			},
+			features: [grouping],
 		});
 		this.callParent(arguments);
 	}
-	
 });

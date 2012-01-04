@@ -6,73 +6,42 @@ Ext.define('BTUI.controller.Views', {
 	
 	init: function() {
 		
+		//Views Controller controls setup
+		
+		//control that listens for the Viewport to fire a beforerender evenet, and calls BTUIInit() function when it does
+		this.control({
+			'viewport': {
+				beforerender: this.BTUIInit
+			}
+		});
+		
+		//control that listens for the Save button click in a Vessel Settings window, and calls the saveVessel() function when one fire		
 		this.control({
 			'vesselSettings button[action=save]':{
 				click: this.saveVessel
 			}
 		});
 		
+		//control that listens for the tempSet button click in a Vessel window, and calls tempSet() which creates a popup to set the set point, when it fires.
 		this.control({
-			'navPanel button[action=Settings]': {
-				click: this.BrewTrollerSettings
+			'Vessel button[action=tempSet]':{
+				click: this.tempSet
+			}
+		});		
+		
+		//control that listens for the saveSetPoint button click in a setPoint popup window, and calls saveSetPoint() when it fires
+		this.control({
+			'button[action=saveSetPoint]':{
+				click: this.saveSetPoint
 			}
 		});
 		
-		this.control({
-			'navPanel button': {
-				click: this.changeCard
-			}
-		});
-		
-			this.control({
-				'btEdit button[action=save]': {
-					click: this.saveAddress
-				}
-			});		
-		
-	},
-	
-	BrewTrollerSettings: function() {
-		
-			console.log("Settings Tool Clicked");
-			if(!this.btedit){
-			this.btedit = Ext.widget('btEdit');
-			this.btedit.down('#btAddress').setValue(BrewTroller.getIPAddress());
-			this.btedit.show();
-			}
-			else{
-				this.btedit.down('#btAddress').setValue(BrewTroller.getIPAddress());
-				this.btedit.show();
-			}
-	},
-	
-	saveAddress: function() {
-		
-		BrewTroller.setIPAddress(Ext.ComponentQuery.query('#btAddress')[0].getValue());
-		Ext.ComponentQuery.query('#btEdit')[0].hide();		
-	},
-	
-	changeCard: function(button) {
-	
-		viewPanel = Ext.ComponentQuery.query('#viewPanel')[0];
-		viewPanel.getLayout().setActiveItem('card'+[button.action]);
 	},
 	
 	saveVessel: function(button, event, options) {
-		
-		var vesselId = button.ownerCt.ownerCt.id; //get the id of the vessel from the settingsWindow id
-		var vessel;
-		
-		if ( vesselId == '0 Settings' ) {
-			vessel = Ext.ComponentQuery.query('#0')[0].me;
-		}
-		else if ( vesselId == '1 Settings' ) {
-			vessel = Ext.ComponentQuery.query('#1')[0].me;
-		}
-		else if ( vesselId == '2 Settings' ) {
-			vessel = Ext.ComponentQuery.query('#2')[0].me;
-		}
-		
+	
+		var vessel = button.ownerCt.ownerCt.vessel;
+			
 		vessel.settingsWindow.hide();	//hide the settings window before making any modifications to ensure that it does hide the first time the save button is pressed
 		
 		//Enable or disable vessel volume
@@ -83,6 +52,11 @@ Ext.define('BTUI.controller.Views', {
 			else {
 				vessel.disableVolume();
 			}
+		}
+		
+		//Set temperature gauge range
+		if (vessel.settingsWindow.down('#temperatureMinimum').getValue() != vessel.getTemperatureMinimum() || vessel.settingsWindow.down('#temperatureMaximum').getValue() != vessel.getTemperatureMaximum){
+			vessel.setTemperatureRange(vessel.settingsWindow.down('#temperatureMinimum').getValue(), vessel.settingsWindow.down('#temperatureMaximum').getValue());
 		}
 		
 		//set update frequency
@@ -100,6 +74,58 @@ Ext.define('BTUI.controller.Views', {
 				vessel.stopAutoUpdate();
 			}			
 		}
-	}
+	},
 	
+	tempSet: function(button, event, options) {
+		var vessel = button.ownerCt.ownerCt.me;
+		
+		var setPoint = Ext.create('Ext.Window', {
+			title: 'Edit Set Point',
+			vessel: vessel,
+			hidden: true,
+			layout: 'fit',
+			items: [
+				{
+					xtype: 'fieldset',
+					items: [
+						{
+							xtype: 'numberfield',
+							id: 'setPoint',
+							value: vessel.getSetPoint(),
+							maxValue: 220,
+							minValue: 0,
+						}
+					]
+				}
+			],
+			buttons: [
+				{
+					text: 'Save',
+					action: 'saveSetPoint'
+				},
+				{
+					text: 'Cancel',
+					handler: function(){
+						this.ownerCt.ownerCt.hide();
+						this.ownerCt.ownerCt.destroy();
+					}
+				}
+			]
+		});
+		setPoint.show();
+	},
+	
+	saveSetPoint: function(button, event, options){
+		var editWindow = button.ownerCt.ownerCt;
+		var vessel = editWindow.vessel;
+		
+		vessel.setNewSetPoint(editWindow.down('#setPoint').value);
+		editWindow.hide();
+		editWindow.destroy();
+	},
+			
+	BTUIInit: function(){
+		BrewTroller.InitSetup();
+	},
+
 });
