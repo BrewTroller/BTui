@@ -4,6 +4,8 @@
 //   				www.BrewTroller.com
 //
 
+NOTE: This is the feature update that will be made to this app, as it will be transitioning to a full handwritten HTML5/JS/CSS3 application. This is because it has become very difficult to use ExtJS to generate the markup using its predefined classes. It seems that events fire at different points in different browsers, making it very difficult to capture the events we need to finish setting up the interface and Custom JS classes that handle BrewTroller functionality. ExtJS will still provide the charting and store plugins for Vessel displays. However, in its current state, this app is functional for monitoring, with simple option changing (Temperature Set Points).
+
 
 App is in ALPHA Stage!
 
@@ -29,7 +31,6 @@ To DO For Initial Release (In order of Priority):
 
 	Implement full settings from BrewTroller Menus
 	Fully comment and Document Code...
-	Move away from relying completely on ExtJS to build the site, use it as a plugin for charting and such instead.
 	Add CSS code to build a theme, and make the appearance pretty :) (this includes skinning the temperature and volume charts) / Resolution independent scaling 
 	
 
