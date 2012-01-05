@@ -14,7 +14,7 @@ which I believe is also compatible with the 'E' editor for Windows
 
 Known Issues: 
 	
-	When  Opening the Settings Window, app throws an 'Uncaught TypeError: Cannot read property 'xtype' of undefined' error, does not effect functionality of app, just an annoying error at this point.
+	Changing the minimum value in Vessel config window causes the gauge needle to respond to the new minimum, but the original axis labels remain. Changing the maximum works as expected.
 
 
 Currently Implemented:
@@ -29,6 +29,7 @@ To DO For Initial Release (In order of Priority):
 
 	Implement full settings from BrewTroller Menus
 	Fully comment and Document Code...
+	Move away from relying completely on ExtJS to build the site, use it as a plugin for charting and such instead.
 	Add CSS code to build a theme, and make the appearance pretty :) (this includes skinning the temperature and volume charts) / Resolution independent scaling 
 	
 
@@ -37,7 +38,7 @@ To DOs for Long Term (In order of Priority):
 	
 	Support for Chill Step / Support for AUX temperature Sensors
 	Persistent settings - Import / Export Settings for portability, Save in LocalStorage DB (Does not transfer browser to browser, prone to
-					loss (cookie clean-up/browsing data delete))
+loss (cookie clean-up/browsing data delete)) Another option would be to store the settings on an SD card on the BTNic board
 	Vessel Customizations - Support for Steam, BIAB, Non-Standard Two Vessel, etc.
 	Recipes - Import / Export in BeerXML format
 	

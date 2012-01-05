@@ -36,7 +36,8 @@ function Vessel(Index, displayPanel) {
 	this.display = displayPanel;
 	//Vessel Settings Window
 	this.settingsWindow;
-		
+	//Vessel setpoint window
+	this.setPointWindow;
 	
 	//Public Class Variables
 	// The store variables must be public in order for the charts to access them
@@ -110,7 +111,6 @@ function Vessel(Index, displayPanel) {
 		return vesselIndex;
 	}
 	
-	
 	this.getVesselName = function(){
 	
 		return vesselName;
@@ -153,13 +153,24 @@ function Vessel(Index, displayPanel) {
 	this.getCapacity = function() {
 		
 		return vesselCapacity;
-	}
+	};
+	
+	//opens a window to change setpoint value in
+	this.changeSetPoint = function() {
+				
+		if (!this.setPointWindow) {
+			this.setPointWindow = Ext.widget('setPointEdit');
+			this.setPointWindow.vessel = this;
+			this.setPointWindow.down('#setPoint').value = this.getSetPoint();
+		};
+		this.setPointWindow.show();
+	};
 	
 	//Set the setpoint value, used only when setting the app's stored value to synchronize with the BT
 	this.setSetPoint = function(setPoint) {
 		
 		temperatureSetPoint = setPoint;
-		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint);
+		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint + String.fromCharCode(186));
 	}
 	
 	//Set a new Temperature Setpoint for the Vessel, and update the value to the BT
@@ -170,7 +181,7 @@ function Vessel(Index, displayPanel) {
 		
 		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, callback, vesselIndex);
 		temperatureSetPoint = newSetPoint;
-		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint);
+		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint + String.fromCharCode(186));
 	}
 	
 	//Set the temperature range of the Temperature Gauge chart
@@ -179,7 +190,7 @@ function Vessel(Index, displayPanel) {
 		var tempGauge = this.display.down('#tempGauge' + vesselIndex);
 		
 		tempGauge.axes.items[0].minimum = newMin;
-		tempGauge.axes.items[0].maximim = newMax;
+		tempGauge.axes.items[0].maximum = newMax;
 		tempGauge.redraw();
 	}
 	
@@ -223,7 +234,44 @@ function Vessel(Index, displayPanel) {
 			this.settingsWindow.down('#updateFrequency').setValue(updateTask.interval);
 		
 			this.settingsWindow.show();
-	}
+	};
+	
+	this.saveSettings = function() {
+		
+		this.settingsWindow.hide();	//hide the settings window before making any modifications to ensure that it does hide the first time the save button is pressed
+		
+		//Enable or disable vessel volume
+		if (this.settingsWindow.down('#hasVolume').getValue() != this.hasVolumeSensing()) {
+			if (this.settingsWindow.down('#hasVolume').getValue()) {
+				this.enableVolume();
+			}
+			else {
+				this.disableVolume();
+			}
+		}
+		
+		//Set temperature gauge range
+		if (this.settingsWindow.down('#temperatureMinimum').getValue() != this.getTemperatureMinimum() || this.settingsWindow.down('#temperatureMaximum').getValue() != this.getTemperatureMaximum){
+			this.setTemperatureRange(this.settingsWindow.down('#temperatureMinimum').getValue(), this.settingsWindow.down('#temperatureMaximum').getValue());
+		}
+		
+		//set update frequency
+		if (this.settingsWindow.down('#updateFrequency').getValue() != this.getUpdateFrequency()){
+			this.setUpdateFrequency(this.settingsWindow.down('#updateFrequency').getValue());
+		}
+		
+		//Start and stop auto updating
+		if (this.settingsWindow.down('#autoUpdate').getValue() && !(this.isAutoUpdate()) ) {
+			this.startAutoUpdate();
+		}
+		else {
+			
+			if (this.isAutoUpdate() && !(this.settingsWindow.down('#autoUpdate').getValue() ) ){
+				this.stopAutoUpdate();
+			}			
+		}
+		
+	};
 	
 	this.updateVessel = function(){
 		

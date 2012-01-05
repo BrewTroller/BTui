@@ -2,12 +2,12 @@
     <div id="content">
 		<nav>
             <ul id="appleNav">
-                <li><a id="Home">Home</a></li>
-                <li><a id="Recipes">Recipes</a></li>
-                <li><a id="Logging">Logging</a></li>
-                <li><a id="Settings">Settings</a></li>
-                <li><a id="UpdateBT">Update BT</a></li>
-                <li><a id="UpdateALL">Update All</a></li>
+                <li><a id="Home" onclick="BTUI.view.switchCard(this.id);">Home</a></li>
+                <li><a id="Recipe" onclick="BTUI.view.switchCard(this.id);">Recipes</a></li>
+                <li><a id="Logging" onclick="BTUI.view.switchCard(this.id);">Logging</a></li>
+                <li><a id="Settings" onclick="BrewTroller.settings();">Settings</a></li>
+                <li><a id="UpdateBT" onclick="BrewTroller.update();">Update BT</a></li>
+                <li><a id="UpdateALL" onclick="BrewTroller.updateAll();">Update All</a></li>
             </ul>
         </nav>
     </div>
