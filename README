@@ -4,6 +4,8 @@
 //   				www.BrewTroller.com
 //
 
+NOTE: This is the feature update that will be made to this app, as it will be transitioning to a full handwritten HTML5/JS/CSS3 application. This is because it has become very difficult to use ExtJS to generate the markup using its predefined classes. It seems that events fire at different points in different browsers, making it very difficult to capture the events we need to finish setting up the interface and Custom JS classes that handle BrewTroller functionality. ExtJS will still provide the charting and store plugins for Vessel displays. However, in its current state, this app is functional for monitoring, with simple option changing (Temperature Set Points).
+
 
 App is in ALPHA Stage!
 
@@ -14,7 +16,7 @@ which I believe is also compatible with the 'E' editor for Windows
 
 Known Issues: 
 	
-	When  Opening the Settings Window, app throws an 'Uncaught TypeError: Cannot read property 'xtype' of undefined' error, does not effect functionality of app, just an annoying error at this point.
+	Changing the minimum value in Vessel config window causes the gauge needle to respond to the new minimum, but the original axis labels remain. Changing the maximum works as expected.
 
 
 Currently Implemented:
@@ -37,7 +39,7 @@ To DOs for Long Term (In order of Priority):
 	
 	Support for Chill Step / Support for AUX temperature Sensors
 	Persistent settings - Import / Export Settings for portability, Save in LocalStorage DB (Does not transfer browser to browser, prone to
-					loss (cookie clean-up/browsing data delete))
+loss (cookie clean-up/browsing data delete)) Another option would be to store the settings on an SD card on the BTNic board
 	Vessel Customizations - Support for Steam, BIAB, Non-Standard Two Vessel, etc.
 	Recipes - Import / Export in BeerXML format
 	

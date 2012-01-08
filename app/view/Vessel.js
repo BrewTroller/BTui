@@ -21,8 +21,8 @@ Ext.define('BTUI.view.Vessel', {
 			id: 'toolbar' + this.getId(),
 			dock: 'top',
 			items: [
-				{ xtype: 'button', id: 'tempSet'+this.getId(), text: 'Temperature Set Point', action: 'tempSet'},
-				{ xtype: 'tbtext', id: 'tempDisplay'+this.getId(), text: this.me.getSetPoint()},
+				{ xtype: 'button', id: 'tempSet'+this.getId(), text: 'Temperature Set Point:', handler: function(){this.ownerCt.ownerCt.me.changeSetPoint();} },
+				{ xtype: 'tbtext', id: 'tempDisplay'+this.getId(), text: this.me.getSetPoint() + String.fromCharCode(186)},
 				{ xtype: 'tbspacer', width: 80},
 				{ xtype: 'button', id: 'volSet'+this.getId(), text: 'Volume Target', action: 'volSet'},
 				{ xtype: 'tbtext', id: 'volTarget'+this.getId(), text: this.me.getVolumeTarget()}
@@ -121,7 +121,7 @@ Ext.define('BTUI.view.Vessel', {
          	{
             	type: 'gear',
                handler: function(event, toolEl, panel, tc) {
-									panel.ownerCt.me.settings(event, toolEl, panel, tc);
+									panel.ownerCt.me.settings();
 					}
             },
 				{
@@ -133,7 +133,7 @@ Ext.define('BTUI.view.Vessel', {
 				{
 					type: 'close',
 					handler: function(event, toolEl, panel, tc) {
-									panel.ownerCt.hide();
+									panel.ownerCt.me.settingsWindow.hide();
 					}
 				}
          ],

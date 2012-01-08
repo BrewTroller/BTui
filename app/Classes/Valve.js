@@ -41,19 +41,19 @@ function Valve() {
 	// function takes the name of the profile as an argument, and searches the store for it, then parses its config flag set, 
 	//	and returns it as an array corresponding to each valve
 	this.getProfileConfigArray = function(profile) {
-	
-	var store = Ext.StoreManager.lookup('Valves');	
-	var index = store.find('profile', profile);
-	var config = store.getAt(index).data.config;
-	
-	var valveArray = [];
-	
-	for (i = 0; i < 32; i++){
-		mask = 1 << i;
-		valveArray[i] = ((config & mask) == mask ? 1 : 0);
-	}
-	
-	return valveArray;
+
+		var store = Ext.StoreManager.lookup('Valves');	
+		var index = store.find('profile', profile);
+		var config = store.getAt(index).data.config;
+
+		var valveArray = [];
+
+		for (i = 0; i < 32; i++){
+			mask = 1 << i;
+			valveArray[i] = ((config & mask) == mask ? 1 : 0);
+		}
+
+		return valveArray;
 	}
 	
 	// function takes the name of a profile as an argument, seaches the store for it, and returns its raw config data
@@ -69,6 +69,11 @@ function Valve() {
 		
 		
 	}
+	
+	this.editProfile = function(profileIndex) {
+		
+		alert('Come To the Darkside! We have exactly ' + profileIndex + ' Cookies!');
+	};
 	
 	this.getProfileStatus = function(profile) {
 		
@@ -108,6 +113,20 @@ function Valve() {
 			BrewTroller.communicate(BrewTroller.getAddress()+getProfileConfig+i, callback, i);
 		}
 	}
+	
+	this.initSetup = function() {
+		
+		var rows = Ext.ComponentQuery.query('gridpanel')[0].items.items[0].all.elements;
+		
+		var clickfunction = function() {
+			BrewTroller.valves.editProfile(this.rowIndex);
+		};
+		
+		for (i = 0; i < 20; i++){
+			rows[i].onclick = clickfunction;
+		};
+	};
+	
 	//Private Class functions
 	
 }

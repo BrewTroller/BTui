@@ -12,13 +12,12 @@ Ext.define('BTUI.view.Valves', {
 		Ext.apply(this, {
 			bodyBorder: false,		//Prevent Panel Border
 			border: 0,					//Prevent Panel Border
-			//preventHeader: true,		//Prevent Panel Header from showing
+			frame: false,
+			preventHeader: true,		//Prevent Panel Header from showing
 			hideHeaders: true,		//Prevent Column Header from showing
-			//bodyStyle: 'background-color: black',
 			frameHeader: false,		//Prevent Panel Header
 			width: 130,
 			dock: 'left',
-			simpleSelect: true,
 			forceFit: true,
 			store: Ext.data.StoreManager.lookup('Valves'),
 			columns: [

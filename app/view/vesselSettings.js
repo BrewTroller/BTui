@@ -80,7 +80,9 @@ Ext.define('BTUI.view.vesselSettings', {
 			{
 				text: 'Save',
 				scope: this,
-				action: 'save'
+				handler: function(){
+					this.vessel.saveSettings();
+				}
 			},
 			{
 				text: 'Cancel',
