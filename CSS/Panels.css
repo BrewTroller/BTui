@@ -9,19 +9,19 @@
 
 #HLTWrapper {
 	position: absolute;
-	left: 110px;
+	left: 100px;
 	top: 100px;
 }
 
 #MLTWrapper {
 	position: absolute;
-	left: 485px;
+	left: 475px;
 	top: 100px;
 }
 
 #KETWrapper {
 	position: absolute;
-	left: 860px;
+	left: 850px;
 	top: 100px;
 }
 
@@ -78,16 +78,16 @@
 }
 
 .tempset {
-	height: 50px;
-	width: 20px;
+	height: 62px;
+	width: 25px;
 	position: relative;
-	left: 275px;
-	top: -50px;
+	left: 270px;
+	top: -55px;
 }
 
 .settings {
 	position: relative;
-	top: 65px;
+	top: 55px;
 	left: 5px;
 }
 
@@ -95,12 +95,13 @@
 	height: 50px;
 	width: 50px;
 	position: relative;
-	top: 60px;
+	top: 50px;
 	left: 205px;
 }
 
 .vesselButton {
 	fill-opacity: 0.5;
+	-webkit-transition: all 1s;
 	-moz-transition: all 1s;
 }
 

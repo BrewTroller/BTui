@@ -81,7 +81,6 @@ We also remove the borders, since they don't need them. */
     -moz-border-radius:4px 0 0 4px;
     -webkit-border-radius:4px 0 0 4px;
     border-radius:4px 0 0 4px;
-    
     border-left:none;
 }
 
@@ -89,7 +88,6 @@ We also remove the borders, since they don't need them. */
     -moz-border-radius:0 4px 4px 0;
     -webkit-border-radius:0 4px 4px 0;
     border-radius:0 4px 4px 0;
-    
     border-right:none;
 }
 

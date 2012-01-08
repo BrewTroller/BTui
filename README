@@ -7,9 +7,14 @@
 
 App is in ALPHA Stage!
 
+Info: 
+	This app must be run in a RECENT browser, like Chrome 16+, Safari 5+, Firefox 7, Mobile Safari on iOS 5+, Android 3+ (device dependant), IE is entirely untested, but could easily be supported with ChromeFrame. This is due to the use of recent additions to HTML5 and CSS3, including XHR Level 2, and SVG. Although the app will render in a mobile device browser at this time none of the functionality will work as the 'tap' events do not have listeners attached.
+	
 
-Latest Changes:
 
+Latest Changes (most recent first):
+
+	Added skeleton for BrewTroller Settings window, and show and hide functionality
 	Switched to new app build with no ExtJS(yet?). Built by hand using HTML5/CSS3/JS
 	Currently has no JS implementation, so no functionality just an interface.
 
