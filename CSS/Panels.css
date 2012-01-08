@@ -1,0 +1,164 @@
+/*Define Custom Font*/
+@font-face {
+	font-family: DataIdent; src:url("../Resources/chintzy.ttf");
+}
+@font-face {
+	font-family: LCDBold; src:url("../Resources/LCD2B.ttf");
+}
+
+
+#HLTWrapper {
+	position: absolute;
+	left: 110px;
+	top: 100px;
+}
+
+#MLTWrapper {
+	position: absolute;
+	left: 485px;
+	top: 100px;
+}
+
+#KETWrapper {
+	position: absolute;
+	left: 860px;
+	top: 100px;
+}
+
+.VesselWrapper {
+	width: 350px;
+	height: 400px;
+	background-color: rgba(121, 121, 121, .67);
+	box-shadow: 2px 3px 7px 3px #000;
+	border-style: solid;
+	border-width: 2px;
+	border-color: rgba(5, 5, 70, 0.80);
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	-webkit-transition: all .25s;
+	-moz-transition: all .25s;
+}
+
+.VesselWrapper:hover {
+	box-shadow: 8px 12px 20px 3px #000;
+}
+
+.vesselTitle {
+	text-align: center;
+	width: 100%;
+	height: 30px;
+	background-image: -webkit-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,1) 50%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ 0,10,210*/
+	background-image: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+	border-radius: 20px;
+}
+
+.VesselWrapper h1{
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif; letter-spacing:-0.5px; font-size:25px;
+	-webkit-text-stroke: 1px, #0000FF;
+	color: #FFFFFF;
+}
+
+.vesselItem h2{
+	font-family: DataIdent, Helvetica, Arial, sans-serif;
+	font-size: 40px;
+	letter-spacing: 3px;
+	word-spacing: 0px;
+}
+
+.vesselItem h3{
+	font-family: DataIdent, Helvetica, Arial, sans-serif;
+	font-size: 25px;
+	letter-spacing: 2px;
+	word-spacing: 0%;
+}
+
+.buttonWrapper {
+	height: 75px;
+	width: 75px;
+}
+
+.tempset {
+	height: 50px;
+	width: 20px;
+	position: relative;
+	left: 275px;
+	top: -50px;
+}
+
+.settings {
+	position: relative;
+	top: 65px;
+	left: 5px;
+}
+
+.update {
+	height: 50px;
+	width: 50px;
+	position: relative;
+	top: 60px;
+	left: 205px;
+}
+
+.vesselButton {
+	fill-opacity: 0.5;
+	-moz-transition: all 1s;
+}
+
+.vesselButton:hover {
+	fill-opacity: 1.0;
+	stroke: #FFFFFF;
+	stroke-width: 0.6;
+	stroke-opacity: 0.8;
+}
+.temp {
+	position: relative;
+	left: 50px;
+	top: 20px;
+	text-shadow: 2px 3px 1px #FFFFFF;
+}
+
+.tempTarget {
+	position: relative;
+	left: 60px;
+	top: 20px;
+	text-shadow: 2px 3px 1px #FFFFFF;
+}
+
+.heat {
+	position: relative;
+	left: 90px;
+	top: 20px;
+	text-shadow: 2px 3px 1px #FFFFFF;
+}
+
+.volume {
+	position: relative;
+	top: 30px;
+	left: 15px;
+	text-shadow: 2px 3px 1px #FFFFFF;
+}
+
+.volTarget {
+	position: relative;
+	left: 60px;
+	top: 30px;
+	text-shadow: 2px 3px 1px #FFFFFF;
+}
+
+.data {
+	position: relative;
+	left: 35px;
+	font-family: LCDBold, Helvetica, Arial, sans-serif;
+	word-spacing: 0px;
+}
+
+.seperator {
+	height: 2px;
+	background-image: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(0,0,0, 0.75) 25%, rgba(0, 0, 0, 1) 50%, rgba(0,0,0, 0.75) 75%, rgba(0, 0, 0, 0) 100%);
+	background-image: -moz-linear-gradient(left, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+}
+
+div.VesselWrapper div:nth-child(6) {
+	position: relative;
+	top: 0px;
+}
