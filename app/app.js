@@ -1,4 +1,4 @@
-Ext.require(['Ext.chart.*', 'Ext.data.Store', 'Ext.data.proxy.*', 'Ext.window.MessageBox']);
+Ext.require(['Ext.chart.*', 'Ext.data.Store', 'Ext.data.proxy.*']);
 
 Ext.application({
 	name: 'BTUI',
