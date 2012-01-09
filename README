@@ -14,6 +14,7 @@ Info:
 
 Latest Changes (most recent first):
 
+	Completed BrewTroller Settings dialog port from ExtJS app, need to port BrewTroller Class to add back functionality
 	Added skeleton for BrewTroller Settings window, and show and hide functionality
 	Switched to new app build with no ExtJS(yet?). Built by hand using HTML5/CSS3/JS
 	Currently has no JS implementation, so no functionality just an interface.
