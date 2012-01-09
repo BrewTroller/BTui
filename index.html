@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
 		Remove this if you use the .htaccess -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
 		<title>BrewTroller</title>
 		<meta name="description" content="" />
 		<meta name="author" content="Eric Yanush" />
@@ -164,6 +164,39 @@
 	<!--Start BT Settings Window-->
 	<div id="btSettings">
 		<div id="settingsTitle"><h1>BrewTroller Settings</h1></div>
+		<div id="btsettingsForm">
+			<form onsubmit="return false;">
+				<label class="btSettingsInputLabel" for="btAddress">Address:</label>
+				<input class="btSettingsInput" id="btAddress" type="url" placeholder="http://address"/><br />
+				<div class="fieldsetWrapper">
+					<h1>Vessel Display</h1>
+					<div class="btSettingsInputLabel">HLT:</div>
+					<div class="checkbox">
+						<input id="hltDisp" type="checkbox" />
+						<label for="hltDisp">HLT:</label>
+					</div>
+					<div class="btSettingsInputLabel">MLT:</div>
+					<div class="checkbox">
+						<input id="mltDisp" type="checkbox" />
+						<label for="mltDisp">MLT:</label>
+					</div>
+					<div class="btSettingsInputLabel">Kettle:</div>
+					<div class="checkbox">
+						<input id="ketDisp" type="checkbox" />
+						<label for="ketDisp">Kettle:</label>
+					</div>
+				</div>
+				<div class="fieldsetWrapper">
+					<div class="btSettingsInputLabel">Auto Update:</div>
+					<div class="checkbox">
+						<input id="btAutoUpdate" name="btAutoUpdate" type="checkbox" value="1" />
+						<label for="btAutoUpdate">Auto Update:</label>
+					</div>
+					<label class="btSettingsInputLabel" for="btUpdateFrequency">Frequency:</label>
+					<input class="btSettingsInput" id="btUpdateFrequency" type="number" placeholder="500 - 100,000" min="500" max="100000" step="10"/><br />
+				</div>
+			</form>
+		</div>
 		<svg viewBox="0 0 32 25" class="buttonWrapper save">
 			<path class="settingsButton" onclick="BTUI.viewPort.saveBTSettings();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
 		</svg>
@@ -172,5 +205,35 @@
 		</svg>
 	</div>
 	<!--End BT Settings Window-->
+	
+	
+	 
+<!--[if IE]>
+    <script type="text/javascript" 
+     src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+
+    <style>
+     .chromeFrameInstallDefaultStyle {
+       position: absolute; !important
+       width: 100%; /* default is 800px */
+       border: 5px solid blue;
+     }
+    </style>
+
+    <div id="prompt">
+     <!-- if IE without GCF, prompt goes here -->
+    </div>
+ 
+    <script>
+     // The conditional ensures that this code will only execute in IE,
+     // Therefore we can use the IE-specific attachEvent without worry
+     window.attachEvent("onload", function() {
+       CFInstall.check({
+         mode: "inline", // the default
+         node: "prompt"
+       });
+     });
+    </script>
+  <![endif]-->
 	</body>
 </html>
