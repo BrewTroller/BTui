@@ -43,6 +43,7 @@ WishList for BTNic Architecture:
 
 	Way to retrieve Vessel Compile Options. EX: HLT as KET, RIMS, etc
 	Target Volume Retrieval
+	Unit retrieval Metric / Imperial
 	WebSockets capable Server ( would decrease loads on network, as BT could "push" new data to the connected clients )(maybe hard to implement, would only be beneficial for WebKit browsers and FireFox)
 
 

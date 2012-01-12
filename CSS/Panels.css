@@ -59,16 +59,19 @@
 }
 
 .vesselItem h2{
-	font-family: DataIdent, Helvetica, Arial, sans-serif;
+	font-family: "Ludida Grande", Helvetica, Arial, sans-serif;
 	font-size: 40px;
-	letter-spacing: 3px;
+	
 	word-spacing: 0px;
+	color: #000000;
+	text-shadow: 2px 3px 1px #FFFFFF;
+	
 }
 
 .vesselItem h3{
-	font-family: DataIdent, Helvetica, Arial, sans-serif;
+	font-family: "Ludida Grande", Helvetica, Arial, sans-serif;
 	font-size: 25px;
-	letter-spacing: 2px;
+	
 	word-spacing: 0%;
 }
 
@@ -81,7 +84,7 @@
 	height: 62px;
 	width: 25px;
 	position: relative;
-	left: 270px;
+	left: 300px;
 	top: -55px;
 }
 
@@ -114,8 +117,7 @@
 .temp {
 	position: relative;
 	left: 50px;
-	top: 20px;
-	text-shadow: 2px 3px 1px #FFFFFF;
+	top: 20px;	
 }
 
 .tempTarget {
@@ -136,7 +138,6 @@
 	position: relative;
 	top: 30px;
 	left: 15px;
-	text-shadow: 2px 3px 1px #FFFFFF;
 }
 
 .volTarget {

@@ -1,0 +1,63 @@
+#valvesWrapper h1{
+	font-size: 58px;
+	margin-bottom: 25px;
+	height: 68px;
+}
+
+#valvesWrapper h3{
+	font-size: 22px;
+	margin-bottom: 25px;
+}
+
+#valvesWrapper p{
+	margin-bottom: 20px;
+}
+
+#valvesWrapper {
+	background-color: #686868;
+	min-height: 100% !important;
+	height: auto !importarnt;
+	width: 150px;
+	color: #FFF;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 10;
+	margin-left: -150px;
+	-webkit-transition:all .5s ease-in-out;
+	-moz-transition:all .5s ease-in-out;
+	border-right: solid 2px #000;
+}
+
+#valvesWrapper:hover {
+	margin-left: 0px;
+}
+
+#valvesWrapper ul{
+	list-style: none;
+	display: block;
+	text-align: center;
+	width: 70%;
+	margin: 10px;
+	background-color:#575757;
+	border: solid 2px #000000;
+	box-shadow: 3px 2px 2px #000000;
+}
+
+#valvesActivator {
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+	-webkit-transform: rotate(-90deg);
+	-moz-transform: rotate(-90deg);
+	background-color: rgba(59, 55, 56, 1);
+	display: block;
+	text-align: center;
+	font-size: 20px;
+	width: 125px;
+	height: 30px;
+	padding: 10px 0px 5px 0px;
+	color: #D3D3D3;
+	border: solid 2px #000000;
+	position: relative;
+	top: 100px;
+	right: -110px;
+}

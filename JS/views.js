@@ -60,19 +60,12 @@ views = function(){
 	
 	this.saveBTSettings = function() {
 		
-		//Get value of the address field
-		var address = document.getElementById('btAddress').value;
-		
-		//Get values of Vessel Display check boxes
-		var hltDisp = document.getElementById('hltDisp').checked;
-		var mltDisp = document.getElementById('mltDisp').checked;
-		var ketDisp = document.getElementById('ketDisp').checked;
-		
-		//Get Values of Auto Update Settings
-		var autoUpdate = document.getElementById('btAutoUpdate').checked;
-		var updateFreq = document.getElementById('btUpdateFrequency').value;
-		
+		BrewTroller.saveSettings();
 		
 		this.closeBTSettings();
+	};
+	
+	this.hideVessel = function(elID) {
+		alert('Whoops... This has not been implemented yet!');
 	}
 };

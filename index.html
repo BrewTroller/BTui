@@ -2,11 +2,10 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
-		Remove this if you use the .htaccess -->
+		<!-- Force IE to use Chrome Frame-->
 		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
 		<title>BrewTroller</title>
-		<meta name="description" content="" />
+		<meta name="description" content="Web Interface for BrewTroller" />
 		<meta name="author" content="Eric Yanush" />
 		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
@@ -16,6 +15,9 @@
 		<link rel="stylesheet" type="text/css" href="CSS/BTUI.css" />
 		
 		<!--JavaScript File Includes-->
+		<script type="text/javascript" src="JS/Classes/Valve.js"></script>
+		<script type="text/javascript" src="JS/Classes/Vessel.js"></script>
+		<script type="text/javascript" src="JS/Classes/BrewTroller.js"></script>
 		<script type="text/javascript" src="JS/views.js"></script>
 		<script type="text/javascript" src="JS/BTUI.js"></script>
 		
@@ -30,8 +32,8 @@
 		                <li><a id="Recipes">Recipes</a></li>
 		                <li><a id="Logging">Logging</a></li>
 		                <li><a id="Settings" onclick="BTUI.viewPort.showBTSettings();">Settings</a></li>
-		                <li><a id="UpdateBT">Update BT</a></li>
-		                <li><a id="UpdateALL">Update All</a></li>
+		                <li><a id="UpdateBT" onclick="BrewTroller.update();">Update BT</a></li>
+		                <li><a id="UpdateALL" onclick="BrewTroller.updateAll();">Update All</a></li>
 		            </ul>
 		        </nav>
 		    </div>
@@ -40,11 +42,14 @@
 	
 	<!--Start Valve Profile Panels-->
 		<div id="valvesWrapper">
-			<div id="active">
-				
-			</div>
-			<div id="idle">
-				
+			<ul id="active">
+				<li>active 1</li>
+			</ul>
+			<ul id="idle">
+				<li>idle 1</li>
+				<li>test 2</li>
+			</ul>
+				<div id="valvesActivator">Valves</div>
 			</div>
 		</div>
 	<!--End Valve Profile Panels-->	
