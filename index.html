@@ -7,7 +7,6 @@
 		<title>BrewTroller</title>
 		<meta name="description" content="Web Interface for BrewTroller" />
 		<meta name="author" content="Eric Yanush" />
-		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -39,20 +38,6 @@
 		    </div>
 		</div>
 		<!--End Navigation Bar-->
-	
-	<!--Start Valve Profile Panels-->
-		<div id="valvesWrapper">
-			<ul id="active">
-				<li>active 1</li>
-			</ul>
-			<ul id="idle">
-				<li>idle 1</li>
-				<li>test 2</li>
-			</ul>
-				<div id="valvesActivator">Valves</div>
-			</div>
-		</div>
-	<!--End Valve Profile Panels-->	
 	
 		
 	<!--Start Vessel Panels-->
@@ -162,6 +147,41 @@
 		<!--End Kettle Panel-->
 	<!--End Vessel Panels-->
 	
+	<!--Start Valve Profile Panels-->
+	<div id="testWrap">
+		<div id="valvesWrapper">
+			<ul id="active">
+				<li>Active</li>
+				<li id="">Fill HLT</li>
+				<li>Fill Mash</li>
+				<li>Add Grain</li>
+				<li>Mash Heat</li>
+				<li>Mash Idle</li>
+				<li>Sparge In</li>
+				<li>Sparge Out</li>
+				<li>Boil Additions</li>
+				<li>Kettle Lid</li>
+				<li>Chiller H20</li>
+				<li>Chiller Beer</li>
+				<li>Boil Recirc</li>
+				<li>Drain</li>
+				<li>HLT Heat</li>
+				<li>HLT Idle</li>
+				<li>Kettle Heat</li>
+				<li>Kettle Idle</li>
+				<li>User 1</li>
+				<li>User 2</li>
+				<li>User 3</li>
+			</ul>
+			<ul id="idle">
+				<li>Idle</li>
+			</ul>
+				
+			</div>
+			<div id="valvesActivator">Valves</div>
+		</div>
+	<!--End Valve Profile Panels-->	
+	
 	<!--Blanket for use when displaying settings windows-->
 	<div id="windowBlanket"></div><!--Define a "Blanket" div to overlay the page with when the settings popup is visible-->
 	<!--End Blanket-->
@@ -226,7 +246,6 @@
     </style>
 
     <div id="prompt">
-     <!-- if IE without GCF, prompt goes here -->
     </div>
  
     <script>

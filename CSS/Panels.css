@@ -10,24 +10,24 @@
 #HLTWrapper {
 	position: absolute;
 	left: 100px;
-	top: 100px;
+	top: 80px;
 }
 
 #MLTWrapper {
 	position: absolute;
 	left: 475px;
-	top: 100px;
+	top: 80px;
 }
 
 #KETWrapper {
 	position: absolute;
 	left: 850px;
-	top: 100px;
+	top: 80px;
 }
 
 .VesselWrapper {
 	width: 350px;
-	height: 400px;
+	height: 360px;
 	background-color: rgba(121, 121, 121, .67);
 	box-shadow: 2px 3px 7px 3px #000;
 	border-style: solid;
@@ -90,7 +90,7 @@
 
 .settings {
 	position: relative;
-	top: 55px;
+	top: 10px;
 	left: 5px;
 }
 
@@ -98,7 +98,7 @@
 	height: 50px;
 	width: 50px;
 	position: relative;
-	top: 50px;
+	top: 5px;
 	left: 205px;
 }
 
@@ -117,13 +117,15 @@
 .temp {
 	position: relative;
 	left: 50px;
-	top: 20px;	
+	top: 20px;
+	width: 275px;	
 }
 
 .tempTarget {
 	position: relative;
 	left: 60px;
 	top: 20px;
+	width: 200px;
 	text-shadow: 2px 3px 1px #FFFFFF;
 }
 
@@ -131,19 +133,22 @@
 	position: relative;
 	left: 90px;
 	top: 20px;
+	width: 175px;
 	text-shadow: 2px 3px 1px #FFFFFF;
 }
 
 .volume {
 	position: relative;
-	top: 30px;
+	top: 0px;
 	left: 15px;
+	width: 350px;
 }
 
 .volTarget {
 	position: relative;
 	left: 60px;
-	top: 30px;
+	top: 0px;
+	width: 200px;
 	text-shadow: 2px 3px 1px #FFFFFF;
 }
 
@@ -162,5 +167,5 @@
 
 div.VesselWrapper div:nth-child(6) {
 	position: relative;
-	top: 0px;
+	top: -20px;
 }

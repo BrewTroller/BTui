@@ -13,35 +13,63 @@
 	margin-bottom: 20px;
 }
 
-#valvesWrapper {
-	background-color: #686868;
-	min-height: 100% !important;
-	height: auto !importarnt;
-	width: 150px;
-	color: #FFF;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	z-index: 10;
-	margin-left: -150px;
+#valvesWrapper{
+	width: 785px;
+	height: 140px;
+	margin-left: 25px;
+	color: #FFF;	
 	-webkit-transition:all .5s ease-in-out;
 	-moz-transition:all .5s ease-in-out;
-	border-right: solid 2px #000;
+	display: -webkit-box; display: -moz-box;
+	-webkit-box-orient: vertical; -moz-box-orient: vertical;
+	position: relative; top: 10px;
+
+	
 }
 
-#valvesWrapper:hover {
+#testWrap {
+	margin-left: -850px;
+	position: relative;
+	top: 405px;
+	width: 850px;
+	height: 160px;
+	-webkit-transition: all 1s ease-in-out; -moz-transition: all 1s ease-in-out;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(69,72,77,.90)), color-stop(100%,rgba(0,0,0,.90)));
+	background: -moz-linear-gradient(top, rgba(69,72,77,0.90) 0%, rgba(0,0,0,0.90) 100%);	
+}
+
+#testWrap:hover {
 	margin-left: 0px;
 }
 
 #valvesWrapper ul{
+	font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 	list-style: none;
-	display: block;
 	text-align: center;
-	width: 70%;
-	margin: 10px;
-	background-color:#575757;
-	border: solid 2px #000000;
-	box-shadow: 3px 2px 2px #000000;
+	width: 785px;
+	padding-bottom: 3px;
+	background-color: rgba(121, 121, 121, .67);
+	border: dashed 1px;
+	-webkit-box-flex: 1; -moz-box-flex: 1;
+}
+
+#valvesWrapper ul:first-child{
+	margin-bottom: 10px;
+}
+
+#valvesWrapper li:not(:first-child){
+	font-size: 12px;
+	display: inline-block;
+	margin-right: 3px;
+	width: 81px;	/* apply the width of the widest element to all of them, so that we don't end up with line breaks in awkward positions*/
+}
+
+#valvesWrapper li:first-child{
+	font-size: 18px;
+	text-align: left;
+	display: block;
+	margin-left: 6px;
+	
 }
 
 #valvesActivator {
@@ -52,12 +80,14 @@
 	display: block;
 	text-align: center;
 	font-size: 20px;
-	width: 125px;
+	width: 160px;
 	height: 30px;
-	padding: 10px 0px 5px 0px;
+	padding-bottom: 4px;
+	padding-top: 4px;
 	color: #D3D3D3;
 	border: solid 2px #000000;
 	position: relative;
-	top: 100px;
-	right: -110px;
+	top: -81px;
+	right: -789px;
+	
 }
