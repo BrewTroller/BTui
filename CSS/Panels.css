@@ -1,11 +1,25 @@
 /*Define Custom Font*/
 @font-face {
-	font-family: DataIdent; src:url("../Resources/chintzy.ttf");
-}
-@font-face {
-	font-family: LCDBold; src:url("../Resources/LCD2B.ttf");
+    font-family: 'RobotoRegular';
+    src: url('../Resources/roboto-regular-webfont.eot');
+    src: url('../Resources/roboto-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Resources/roboto-regular-webfont.woff') format('woff'),
+         url('../Resources/roboto-regular-webfont.ttf') format('truetype'),
+         url('../Resources/roboto-regular-webfont.svg#RobotoRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 
+@font-face {
+    font-family: 'RobotoBold';
+    src: url('../Resources/roboto-bold-webfont.eot');
+    src: url('../Resources/roboto-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../Resources/roboto-bold-webfont.woff') format('woff'),
+         url('../Resources/roboto-bold-webfont.ttf') format('truetype'),
+         url('../Resources/roboto-bold-webfont.svg#RobotoBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 
 #HLTWrapper {
 	position: absolute;
@@ -53,13 +67,13 @@
 }
 
 .VesselWrapper h1{
-	font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif; letter-spacing:-0.5px; font-size:25px;
+	font-family: RobotoRegular, "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif; letter-spacing:-0.5px; font-size:25px;
 	-webkit-text-stroke: 1px, #0000FF;
 	color: #FFFFFF;
 }
 
 .vesselItem h2{
-	font-family: "Ludida Grande", Helvetica, Arial, sans-serif;
+	font-family: RobotoRegular, "Ludida Grande", Helvetica, Arial, sans-serif;
 	font-size: 40px;
 	
 	word-spacing: 0px;
@@ -69,7 +83,7 @@
 }
 
 .vesselItem h3{
-	font-family: "Ludida Grande", Helvetica, Arial, sans-serif;
+	font-family: RobotoRegular, "Ludida Grande", Helvetica, Arial, sans-serif;
 	font-size: 25px;
 	
 	word-spacing: 0%;
@@ -85,12 +99,12 @@
 	width: 25px;
 	position: relative;
 	left: 300px;
-	top: -55px;
+	top: -65px;
 }
 
 .settings {
 	position: relative;
-	top: 10px;
+	top: 0px;
 	left: 5px;
 }
 
@@ -98,7 +112,7 @@
 	height: 50px;
 	width: 50px;
 	position: relative;
-	top: 5px;
+	top: -5px;
 	left: 205px;
 }
 
@@ -117,14 +131,14 @@
 .temp {
 	position: relative;
 	left: 50px;
-	top: 20px;
+	top: 10px;
 	width: 275px;	
 }
 
 .tempTarget {
 	position: relative;
 	left: 60px;
-	top: 20px;
+	top: 10px;
 	width: 200px;
 	text-shadow: 2px 3px 1px #FFFFFF;
 }
@@ -132,14 +146,14 @@
 .heat {
 	position: relative;
 	left: 90px;
-	top: 20px;
+	top: 10px;
 	width: 175px;
 	text-shadow: 2px 3px 1px #FFFFFF;
 }
 
 .volume {
 	position: relative;
-	top: 0px;
+	top: -15px;
 	left: 15px;
 	width: 350px;
 }
@@ -147,7 +161,7 @@
 .volTarget {
 	position: relative;
 	left: 60px;
-	top: 0px;
+	top: -15px;
 	width: 200px;
 	text-shadow: 2px 3px 1px #FFFFFF;
 }
@@ -155,7 +169,7 @@
 .data {
 	position: relative;
 	left: 35px;
-	font-family: LCDBold, Helvetica, Arial, sans-serif;
+	font-family: RobotoBold, Helvetica, Arial, sans-serif;
 	word-spacing: 0px;
 }
 
@@ -167,5 +181,5 @@
 
 div.VesselWrapper div:nth-child(6) {
 	position: relative;
-	top: -20px;
+	top: -30px;
 }

@@ -304,7 +304,7 @@ function Vessel(Index) {
 			var volumeCallback = function(vesselIndex, xhr){
 				if (xhr.readyState == 4){
 					var volume = JSON.parse(xhr.responseText);
-					BrewTroller.Vessels[vesselIndex].volumeDisplay.textContent = volume[2]/1000 +'G';
+					BrewTroller.Vessels[vesselIndex].volumeDisplay.textContent = volume[2]/1000 +'g';
 				}
 			}
 			
