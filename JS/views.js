@@ -98,6 +98,20 @@ views = function(){
 	//Method to hide the vessel settings window
 	this.closeVesselSettings = function() {
 		
+		//Get references to the elements for the window and the blanket
+		var blanket = document.getElementById('windowBlanket');
+		var settingsWindow = document.getElementById('vesselSettings');
+		
+		//set the position for the window so we get a nice slide up and out effect
+		settingsWindow.style.top = '-450px';
+		//set the opacity for the blanket so it will fade back out
+		blanket.style.opacity = 0;
+		
+		//set the blanket and window z-indexs and visibility back to the hidden state so they don't interfere with any other app functionality
+		settingsWindow.style.zIndex = '-10';
+		blanket.style.zIndex = '-10';
+		settingsWindow.style.visibility = 'hidden';
+		blanket.style.visibility = 'hidden';	
 	};
 	
 	//Method called when the vessel settings window save button is clicked
@@ -121,6 +135,7 @@ views = function(){
 		return false;
 	};	
 	
+	//Method called when the window.onload event fires, used to finish setting up the viewPort
 	this.initSetup = function(){
 		
 		//Set the BrewTroller Settings window to be centered on the screen, this ensures that webkit browsers display the settings window the same way gecko ones do
@@ -131,5 +146,14 @@ views = function(){
 		settingsWidth = Number(settingsWidth);
 		
 		settingsWindow.style.left = (window.innerWidth /2) - (settingsWidth /2) + 'px';		
-	}
+		
+		//Set the vessel settings window to be centered on the screen, same reason as above
+		var vesselSettingsWindow = document.getElementById('vesselSettings');	
+		var vesselSettingsWidth = String(document.defaultView.getComputedStyle(settingsWindow, null).getPropertyValue("width"));
+		
+		vesselSettingsWidth = vesselSettingsWidth.replace("px", "");
+		vesselSettingsWidth = Number(vesselSettingsWidth);
+		
+		vesselSettingsWindow.style.left = (window.innerWidth /2) - (vesselSettingsWidth /2) + 'px';
+	};
 };
