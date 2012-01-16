@@ -44,11 +44,6 @@ function Vessel(Index) {
 	this.volumeDisplay;
 	this.volumeTargetDisplay;
 	
-	//Vessel Settings Window
-	this.settingsWindow;
-	//Vessel setpoint window
-	this.setPointWindow;
-	
 
 	//Public Class Functions
 	
@@ -161,15 +156,22 @@ function Vessel(Index) {
 		return vesselCapacity;
 	};
 	
-	//opens a window to change setpoint value in
+	//sets the value for the setpoint window and then calls BTUI.viewPort.showTempSetPoint() to show it
 	this.changeSetPoint = function() {
-				
-		if (!this.setPointWindow) {
-			this.setPointWindow = Ext.widget('setPointEdit');
-			this.setPointWindow.vessel = this;
-			this.setPointWindow.down('#setPoint').value = this.getSetPoint();
-		};
-		this.setPointWindow.show();
+		
+		//Get references to the set point window and the form and title element
+		var setPointWindow = document.getElementById('tempSetPointEdit');
+		var setPointTitle = document.getElementById('tempSetPointTitle');		
+		var setPointForm = document.getElementById('tempSetPoint');
+		
+		//Set the form values to match the current values
+		setPointForm.value = temperatureSetPoint;
+		//Set the title to match the vessel name
+		setPointTitle.firstElementChild.textContent = vesselName + " Temp Set Point";
+		//Set the window's data-vessel-index attribute to this vessel's
+		setPointWindow.dataset.vesselIndex = vesselIndex;
+		//Show the window
+		BTUI.viewPort.showTempSetPoint();				
 	};
 	
 	//Set the setpoint value, used only when setting the app's stored value to synchronize with the BT
@@ -187,7 +189,7 @@ function Vessel(Index) {
 		
 		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, callback, vesselIndex);
 		temperatureSetPoint = newSetPoint;
-		this.display.down('#tempDisplay' + vesselIndex).setText(temperatureSetPoint + String.fromCharCode(186));
+		this.tempTargetDisplay.textContent = temperatureSetPoint + String.fromCharCode(186);
 	}
 	
 	//Set the temperature range of the Temperature Gauge chart

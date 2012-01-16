@@ -191,7 +191,7 @@
 	
 	<!--Start BT Settings Window-->
 	<div id="btSettings" class="settingsWindow">
-		<div id="BTSettingsTitle"><h1>BrewTroller Settings</h1></div>
+		<div id="BTSettingsTitle" class="settingsTitle"><h1>BrewTroller Settings</h1></div>
 		<div id="btsettingsForm">
 			<form onsubmit="return false;">
 				<label class="settingsInputLabel" for="btAddress">Address:</label>
@@ -236,7 +236,7 @@
 	
 	<!--Start Vessel Settings Window-->
 	<div id="vesselSettings" class="settingsWindow">
-		<div id="vesselSettingsTitle"><h1>HLT Settings</h1></div>
+		<div id="vesselSettingsTitle" class="settingsTitle"><h1>HLT Settings</h1></div>
 		<div id="vesselSettingsForm">
 			<form onsubmit="return false;">
 				<div class="fieldsetWrapper">
@@ -266,8 +266,22 @@
 	<!--End Valve Profile Edit Window-->
 	
 	<!--Start Temperature Setpoint Edit Window-->
-	<div id="tempSetPointEdit">
-		
+	<div id="tempSetPointEdit" class="settingsWindow">
+		<div id="tempSetPointTitle" class="settingsTitle"><h1></h1></div>
+		<div id="tempSetPointForm">
+			<form onsubmit="return false;">
+				<div class="fieldsetWrapper">
+					<label class="settingsInputLabel" for="tempSetPoint">Set Point:</label>
+					<input class="settingsInput" id="tempSetPoint" type="number" placeholder="0 - 300" min="0" max="300" step="1" /><br />
+				</div>
+			</form>
+		</div>
+		<svg viewBox="0 0 32 25" class="buttonWrapper save">
+			<path class="settingsButton" onclick="BTUI.viewPort.saveTempSetPoint();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
+		</svg>
+		<svg viewBox='0 0 30 30' class="buttonWrapper close">
+			<path class="settingsButton" onclick="BTUI.viewPort.closeTempSetPoint();" fill=#000000 d="M 29.914986,24.90485 20.002615,14.992743 29.913185,5.080636 24.818276,-0.01773975 14.905904,9.8943675 4.9935322,-0.01773975 -0.10137652,5.080636 l 9.91057032,9.912107 -9.91237191,9.912107 5.09851191,5.096574 9.9105702,-9.912107 9.910571,9.912107 z" />
+		</svg>
 	</div>
 	<!--End Temperature Setpoint Edit Window-->
 	

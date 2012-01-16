@@ -8,24 +8,19 @@
 App is in ALPHA Stage!
 
 Info: 
-	This app must be run in a RECENT browser, like Chrome 16+, Safari 5+, Firefox 7, Mobile Safari on iOS 5+, Android 3+ (device dependant), IE is entirely untested, but could easily be supported with ChromeFrame. This is due to the use of recent additions to HTML5 and CSS3, including XHR Level 2, and SVG. Although the app will render in a mobile device browser at this time none of the functionality will work as the 'tap' events do not have listeners attached.
+	This app must be run in a RECENT browser, like Chrome 16+, Safari 5+, Firefox 7, Mobile Safari on iOS 5+, Android 3+ (device dependant), IE is supported through the Chrome Frame plugin, you will be prompted to install it when you visit the page. This is due to the use of recent additions to HTML5 and CSS3, including XHR Level 2, and SVG. Although the app will render in a mobile device browser at this time none of the functionality will work as the 'tap' events do not have listeners attached.
 	
 
 
 Latest Changes (most recent first):
 
-	Completed BrewTroller Settings dialog port from ExtJS app, need to port BrewTroller Class to add back functionality
-	Added skeleton for BrewTroller Settings window, and show and hide functionality
-	Switched to new app build with no ExtJS(yet?). Built by hand using HTML5/CSS3/JS
-	Currently has no JS implementation, so no functionality just an interface.
+	Ported Temp Set Point editing from ExtJS app
+	Ported vessel settings from ExtJS app
 
 	
 To DO For Initial Release (In order of Priority):
 
-	Build new BT settings window
-	Re-implement app functionality
-	Build new valve panel
-	Re-implement valve functionality
+	Complete valve functionality
 	Implement full settings from BrewTroller Menus
 	Fully comment and Document Code...	
 
@@ -49,7 +44,7 @@ WishList for BTNic Architecture:
 
 Credits:
 
-	Credit where credit is due, the very elegant navigation bar (a la Apple.com) is based heavily on the work done here: http://www.marcofolio.net/css/the_apple.com_navigation_menu_created_using_only_css3.html (still need to request permission for use!!)
+	Credit where credit is due, the very elegant navigation bar (a la Apple.com) is based heavily on the work done here: http://www.marcofolio.net/css/the_apple.com_navigation_menu_created_using_only_css3.html used with permission under Creative Commons 3.0
 
 
 Documentation:
