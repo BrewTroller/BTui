@@ -34,6 +34,10 @@ function Valve() {
 	var getProfileStatus = 'w';
 	var getProfileConfig = 'd';
 	
+	//References to active and idle containers
+	var active;
+	var idle;
+	
 	//Public Class Variables
 	
 	//Public Class functions
@@ -60,20 +64,24 @@ function Valve() {
 		return profiles[profileIndex].config;
 	};
 	
+	//Method sets as new config for a valve profile
 	this.setProfileConfig = function(profileIndex, newConfig) {
 		
 		profiles[profileIndex].config = newConfig;
+		alert('Still needs BT sync');
 	};
 	
-	this.editProfile = function(profileIndex) {
-		
-		alert('Come To the Darkside! We have exactly ' + profileIndex + ' Cookies!');
-	};
-	
+	//Method returns true if the valve profile is active, and false otherwise
 	this.getProfileStatus = function(profileIndex) {
 	
 		return getProfile(profile).active;	
 	};
+	
+	//Method returns the DOM element for the requested valve profile
+	this.getProfileElement = function(profileIndex) {
+		
+		return document.querySelectorAll('[data-valve-index="'+profileIndex+'"]')[0];
+	}
 	
 	this.setProfileState = function(profileIndex, state) {
 		
@@ -81,6 +89,7 @@ function Valve() {
 		alert('Still need to setup brewtroller sync for this!');
 	};	
 	
+	//Method updates the state of all profiles from the BT, and calls the updateView() method.
 	this.updateStatus = function() {
 		
 		var callback = function(profiles, xhr) {
@@ -89,11 +98,35 @@ function Valve() {
 			for ( i = 0; i < 20; i++ ) {
 				profiles[i].active = Boolean(mask & profiles[i].bitMask); 
 			}
-			alert('need to add valve view updating here!'); //Update the grid view
+			BrewTroller.valves.updateView();
 		};
 		BrewTroller.communicate(BrewTroller.getAddress()+getProfileStatus, callback, profiles); 
 	};
 	
+	//Method checks to ensure the parent container of the profile and the status of the valve match, if not it moves them accordingly
+	this.updateView = function() {
+		
+		for (i = 0; i < 20; i++){
+			var target = this.getProfileElement(i);
+			if (profiles[i].active && (target.parentNode.id != "active")){
+				idle.removeChild(target);
+				active.appendChild(target);
+			}
+			else if ( !profiles[i].active && (target.parentNode.id != "idle")){
+				active.removeChild(target);
+				idle.appendChild(target);
+			}
+		}
+	};
+	
+	//Method is called when a valve profile is clicked, and should toggle the appropriate valve profile's state
+	//It has not yet been implemented, as I cannot seem to figure out how to properly set this option using the BTNic architecture.
+	this.toggleState = function(profileIndex){
+		/*profiles[profileIndex].active = (!profiles[profileIndex].active);*/
+		this.updateView();
+	}
+	
+	//Method updates the config for all of the profiles from the BT
 	this.updateAllConfig = function() {
 		
 		for ( i = 0; i < 20; i++ ) {
@@ -108,6 +141,8 @@ function Valve() {
 	//Initial setup routine, used for getting references to display items
 	this.initSetup = function() {
 		
+		active = document.getElementById('active');
+		idle = document.getElementById('idle');
 	};
 	
 	//Private Class functions

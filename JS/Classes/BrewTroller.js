@@ -276,5 +276,6 @@ function BrewTroller() {
 		for( i = 0; i < this.Vessels.length; i++){
 			this.Vessels[i].initSetup();
 		}
+		this.valves.initSetup();
  	};
 };

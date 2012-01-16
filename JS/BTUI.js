@@ -11,7 +11,8 @@ app = function(){
 	
 	//Method called by the window.onload handler, used to run any setup routines that need to be called when the document has finished loading
 	this.initSetup = function(){
-	
+		
+		this.viewPort.initSetup();
 	};
 };
 

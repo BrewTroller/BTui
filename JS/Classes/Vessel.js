@@ -19,12 +19,13 @@ function Vessel(Index) {
 	//task for autoUpdate
 	var updateTask = {
 		run: function(){
-			Ext.ComponentQuery.query('#' + vesselIndex)[0].me.updateVessel();
+			BrewTroller.Vessels[vesselIndex].updateVessel();
 		},
 		interval: 5000 //Default update interval set to 5 seconds
 	};
 	
 	var autoUpdate = false;
+	var updateID;
 	
 	//command parameter variables
 	var getTemp = 'q';
@@ -217,40 +218,43 @@ function Vessel(Index) {
 	
 	this.settings = function(){
 		
-		alert(vesselName+ ' Settings clicked');
+		//Get References to the setting option elements
+		var settingsWindow = document.getElementById('vesselSettings');
+		var update = document.getElementById('vesselAutoUpdate');
+		var updateFreq = document.getElementById('vesselUpdateFrequency');
+		var settingsTitle = document.getElementById('vesselSettingsTitle');
+		
+		//Set the window's title to reflect the selected vessel
+		settingsTitle.firstElementChild.textContent = vesselName + ' Settings';
+		
+		//Set the auto update options to match current values
+		update.checked = autoUpdate;
+		updateFreq.value = updateTask.interval;
+		
+		//Set the settings window's data-vessel-index attribute to this vessel's index
+		settingsWindow.dataset.vesselIndex = vesselIndex;
+		
+		//Show the vessel settings window
+		BTUI.viewPort.showVesselSettings();		
 	};
 	
 	this.saveSettings = function() {
 		
-		this.settingsWindow.hide();	//hide the settings window before making any modifications to ensure that it does hide the first time the save button is pressed
-		
-		//Enable or disable vessel volume
-		if (this.settingsWindow.down('#hasVolume').getValue() != this.hasVolumeSensing()) {
-			if (this.settingsWindow.down('#hasVolume').getValue()) {
-				this.enableVolume();
-			}
-			else {
-				this.disableVolume();
-			}
-		}
-		
-		//Set temperature gauge range
-		if (this.settingsWindow.down('#temperatureMinimum').getValue() != this.getTemperatureMinimum() || this.settingsWindow.down('#temperatureMaximum').getValue() != this.getTemperatureMaximum){
-			this.setTemperatureRange(this.settingsWindow.down('#temperatureMinimum').getValue(), this.settingsWindow.down('#temperatureMaximum').getValue());
-		}
+		var update = document.getElementById('vesselAutoUpdate').checked;
+		var updateFreq = document.getElementById('vesselUpdateFrequency').value;				
 		
 		//set update frequency
-		if (this.settingsWindow.down('#updateFrequency').getValue() != this.getUpdateFrequency()){
-			this.setUpdateFrequency(this.settingsWindow.down('#updateFrequency').getValue());
+		if (updateFreq != this.getUpdateFrequency()){
+			this.setUpdateFrequency(updateFreq);
 		}
 		
 		//Start and stop auto updating
-		if (this.settingsWindow.down('#autoUpdate').getValue() && !(this.isAutoUpdate()) ) {
+		if (update && !(this.isAutoUpdate()) ) {
 			this.startAutoUpdate();
 		}
 		else {
 			
-			if (this.isAutoUpdate() && !(this.settingsWindow.down('#autoUpdate').getValue() ) ){
+			if (this.isAutoUpdate() && !(update)){
 				this.stopAutoUpdate();
 			}			
 		}
@@ -319,7 +323,7 @@ function Vessel(Index) {
 		if ( BrewTroller.getIPAddress() != undefined ) {
 		autoUpdate = true;
 		
-		Ext.TaskManager.start(updateTask);
+		updateID = setInterval(updateTask.run, updateTask.interval);
 		} 
 		else{
 			alert('You Must Set an IP address for the BrewTroller First!');
@@ -328,9 +332,10 @@ function Vessel(Index) {
 	
 	this.stopAutoUpdate = function(){
 		
-		Ext.TaskManager.stop(updateTask);
+		clearInterval(updateID);
 		
 		autoUpdate = false;
+		updateID = undefined;
 	};
 	
 	this.initSetup = function() {

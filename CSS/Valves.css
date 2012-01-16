@@ -27,7 +27,7 @@
 	
 }
 
-#testWrap {
+#ValveSliderWrap {
 	margin-left: -850px;
 	position: relative;
 	top: 405px;
@@ -38,7 +38,7 @@
 	background: -moz-linear-gradient(top, rgba(69,72,77,0.90) 0%, rgba(0,0,0,0.90) 100%);	
 }
 
-#testWrap:hover {
+#ValveSliderWrap:hover {
 	margin-left: 0px;
 }
 
@@ -62,6 +62,10 @@
 	display: inline-block;
 	margin-right: 3px;
 	width: 81px;	/* apply the width of the widest element to all of them, so that we don't end up with line breaks in awkward positions*/
+}
+
+#valvesWrapper li:not(:first-child):hover{
+	background-color: rgba(0, 153, 255, 0.7);
 }
 
 #valvesWrapper li:first-child{

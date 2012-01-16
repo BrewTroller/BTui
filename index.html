@@ -148,33 +148,33 @@
 	<!--End Vessel Panels-->
 	
 	<!--Start Valve Profile Panels-->
-	<div id="testWrap">
+	<div id="ValveSliderWrap">
 		<div id="valvesWrapper">
 			<ul id="active">
 				<li>Active</li>
-				<li id="">Fill HLT</li>
-				<li>Fill Mash</li>
-				<li>Add Grain</li>
-				<li>Mash Heat</li>
-				<li>Mash Idle</li>
-				<li>Sparge In</li>
-				<li>Sparge Out</li>
-				<li>Boil Additions</li>
-				<li>Kettle Lid</li>
-				<li>Chiller H20</li>
-				<li>Chiller Beer</li>
-				<li>Boil Recirc</li>
-				<li>Drain</li>
-				<li>HLT Heat</li>
-				<li>HLT Idle</li>
-				<li>Kettle Heat</li>
-				<li>Kettle Idle</li>
-				<li>User 1</li>
-				<li>User 2</li>
-				<li>User 3</li>
 			</ul>
 			<ul id="idle">
 				<li>Idle</li>
+				<li data-valve-index="0" id="fillhlt" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Fill HLT</li>
+				<li data-valve-index="1" id="fillmash" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Fill Mash</li>
+				<li data-valve-index="2" id="addgrain" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Add Grain</li>
+				<li data-valve-index="3" id="mashheat" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Mash Heat</li>
+				<li data-valve-index="4" id="mashidle" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Mash Idle</li>
+				<li data-valve-index="5" id="spargein" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Sparge In</li>
+				<li data-valve-index="6" id="spargeout" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Sparge Out</li>
+				<li data-valve-index="7" id="boiladditions" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Boil Additions</li>
+				<li data-valve-index="8" id="kettlelid" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Kettle Lid</li>
+				<li data-valve-index="9" id="chillerh20" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Chiller H20</li>
+				<li data-valve-index="10" id="chillerbeer" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Chiller Beer</li>
+				<li data-valve-index="11" id="boilrecirc" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Boil Recirc</li>
+				<li data-valve-index="12" id="drain" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Drain</li>
+				<li data-valve-index="13" id="hltheat" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">HLT Heat</li>
+				<li data-valve-index="14" id="hltidle" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">HLT Idle</li>
+				<li data-valve-index="15" id="kettleheat" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Kettle Heat</li>
+				<li data-valve-index="16" id="kettleidle" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Kettle Idle</li>
+				<li data-valve-index="17" id="user1" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">User 1</li>
+				<li data-valve-index="18" id="user2" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">User 2</li>
+				<li data-valve-index="19" id="user3" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">User 3</li>
 			</ul>
 				
 			</div>
@@ -182,43 +182,46 @@
 		</div>
 	<!--End Valve Profile Panels-->	
 	
+	<!--Start Programs View Panel-->
+	<!--End Programs View Panel-->
+	
 	<!--Blanket for use when displaying settings windows-->
 	<div id="windowBlanket"></div><!--Define a "Blanket" div to overlay the page with when the settings popup is visible-->
 	<!--End Blanket-->
 	
 	<!--Start BT Settings Window-->
-	<div id="btSettings">
-		<div id="settingsTitle"><h1>BrewTroller Settings</h1></div>
+	<div id="btSettings" class="settingsWindow">
+		<div id="BTSettingsTitle"><h1>BrewTroller Settings</h1></div>
 		<div id="btsettingsForm">
 			<form onsubmit="return false;">
-				<label class="btSettingsInputLabel" for="btAddress">Address:</label>
-				<input class="btSettingsInput" id="btAddress" type="url" placeholder="http://address"/><br />
+				<label class="settingsInputLabel" for="btAddress">Address:</label>
+				<input class="settingsInput" id="btAddress" type="url" placeholder="http://address"/><br />
 				<div class="fieldsetWrapper">
 					<h1>Vessel Display</h1>
-					<div class="btSettingsInputLabel">HLT:</div>
+					<div class="settingsInputLabel">HLT:</div>
 					<div class="checkbox">
 						<input id="hltDisp" type="checkbox" />
 						<label for="hltDisp">HLT:</label>
 					</div>
-					<div class="btSettingsInputLabel">MLT:</div>
+					<div class="settingsInputLabel">MLT:</div>
 					<div class="checkbox">
 						<input id="mltDisp" type="checkbox" />
 						<label for="mltDisp">MLT:</label>
 					</div>
-					<div class="btSettingsInputLabel">Kettle:</div>
+					<div class="settingsInputLabel">Kettle:</div>
 					<div class="checkbox">
 						<input id="ketDisp" type="checkbox" />
 						<label for="ketDisp">Kettle:</label>
 					</div>
 				</div>
 				<div class="fieldsetWrapper">
-					<div class="btSettingsInputLabel">Auto Update:</div>
+					<div class="settingsInputLabel">Auto Update:</div>
 					<div class="checkbox">
-						<input id="btAutoUpdate" name="btAutoUpdate" type="checkbox" value="1" />
+						<input id="btAutoUpdate" name="btAutoUpdate" type="checkbox" />
 						<label for="btAutoUpdate">Auto Update:</label>
 					</div>
-					<label class="btSettingsInputLabel" for="btUpdateFrequency">Frequency:</label>
-					<input class="btSettingsInput" id="btUpdateFrequency" type="number" placeholder="500 - 100,000" min="500" max="100000" step="10"/><br />
+					<label class="settingsInputLabel" for="btUpdateFrequency">Frequency:</label>
+					<input class="settingsInput" id="btUpdateFrequency" type="number" placeholder="500 - 100,000" min="500" max="100000" step="10"/><br />
 				</div>
 			</form>
 		</div>
@@ -230,6 +233,43 @@
 		</svg>
 	</div>
 	<!--End BT Settings Window-->
+	
+	<!--Start Vessel Settings Window-->
+	<div id="vesselSettings" class="settingsWindow">
+		<div id="vesselSettingsTitle"><h1>HLT Settings</h1></div>
+		<div id="vesselSettingsForm">
+			<form onsubmit="return false;">
+				<div class="fieldsetWrapper">
+					<div class="settingsInputLabel">Auto Update:</div>
+					<div class="checkbox">
+						<input id="vesselAutoUpdate" type="checkbox" />
+						<label for="vesselAutoUpdate">Auto Update:</label>
+					</div>
+					<label class="settingsInputLabel" for="vesselUpdateFrequency">Frequency:</label>
+					<input class="settingsInput" id="vesselUpdateFrequency" type="number" placeholder="500 - 100,000" min="500" max="100000" step="10"/><br />
+				</div>
+			</form>
+		</div>
+		<svg viewBox="0 0 32 25" class="buttonWrapper save">
+			<path class="settingsButton" onclick="BTUI.viewPort.saveVesselSettings();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
+		</svg>
+		<svg viewBox='0 0 30 30' class="buttonWrapper close">
+			<path class="settingsButton" onclick="BTUI.viewPort.closeVesselSettings();" fill=#000000 d="M 29.914986,24.90485 20.002615,14.992743 29.913185,5.080636 24.818276,-0.01773975 14.905904,9.8943675 4.9935322,-0.01773975 -0.10137652,5.080636 l 9.91057032,9.912107 -9.91237191,9.912107 5.09851191,5.096574 9.9105702,-9.912107 9.910571,9.912107 z" />
+		</svg>
+	</div>
+	<!--End Vessel Settings Window-->
+	
+	<!--Start Valve Profile Edit Window-->
+	<div id="valveEdit">
+		
+	</div>
+	<!--End Valve Profile Edit Window-->
+	
+	<!--Start Temperature Setpoint Edit Window-->
+	<div id="tempSetPointEdit">
+		
+	</div>
+	<!--End Temperature Setpoint Edit Window-->
 	
 	
 	 
