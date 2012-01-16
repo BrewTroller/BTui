@@ -8,6 +8,7 @@ function BrewTroller() {
 	var BrewTrollerUpTime;
 	
 	var autoUpdate = false;
+	var updateId;
 	
 	//task for autoUpdate
 	var updateTask = {
@@ -90,32 +91,32 @@ function BrewTroller() {
 	this.getAddress = function() {
 		
 		return 'http://'+BrewTrollerAddress+'/btnic.cgi?';
-	}
+	};
 	
 	this.getIPAddress = function() {
 		
 		return BrewTrollerAddress;
-	}
+	};
 	
 	this.getVersion = function() {
 		
 		return BrewTrollerVersion;
-	}
+	};
 	
 	this.getBuild = function() {
 		
 		return BrewTrollerBuild;
-	}	
+	};
 	
 	this.setVersionNumber = function(version) {
 		
 		BrewTrollerVersion = version;
-	}
+	};
 	
 	this.setBuild = function(build) {
 		
 		BrewTrollerBuild = build;
-	}
+	};
 	
 	this.setVersion = function() {
 		
@@ -126,12 +127,12 @@ function BrewTroller() {
 		}
 		
 		this.communicate(this.getAddress()+'G', versionCallback);
-	}
+	};
 
 	this.setUpTime = function(upTimeInMillis) {
 		
 		BrewTrollerUpTime = upTimeInMillis;
-	}
+	};
 	
 	/*
 	//BrewTroller.Communicate(commandAddress, callback, arg)
@@ -182,7 +183,7 @@ function BrewTroller() {
 		BrewTrollerAddress = ipAddress;
 		
 		this.initSync();
-	}
+	};
 
 	this.reset = function(level) {
 		
@@ -198,61 +199,62 @@ function BrewTroller() {
 			xhr.open('GET', this.getAddress()+'c0', true);
 			xhr.send(null);
 		}*/
-	}
-	
+	};
+
 	this.initEEPROM = function() {
 		
 		var xhr = new XMLHttpRequest;
 		xhr.open('GET', this.getAddress()+'I', true);
 		xhr.send(null);
-	}
+	};
 
 	this.initSync = function() {
 		BrewTroller.setVersion();
 		BrewTroller.updateVessels();
 		BrewTroller.valves.updateAllConfig();
 		BrewTroller.valves.updateStatus();
-	}
+	};
 	
 	this.update = function() {
 		
 		BrewTroller.valves.updateStatus();
-	}
+	};
 	
 	this.updateAll = function() {
 		
 		this.update();
 		this.updateVessels();
-	},
+	};
 	
 	this.startAutoUpdate = function(){
 		
 		if ( BrewTrollerAddress != undefined ) {
 		autoUpdate = true;
 		
-		Ext.TaskManager.start(updateTask);
+		updateId = setInterval(updateTask.run, updateTask.interval);
 		} 
 		else{
 			alert('You Must Set an IP address for the BrewTroller First!');
 		}
-	}
+	};
 	
 	this.stopAutoUpdate = function(){
 		
-		Ext.TaskManager.stop(updateTask);
+		clearInterval(updateId);
 		
 		autoUpdate = false;
-	}
+		updateId = undefined;
+	};
 	
 	this.isAutoUpdate = function() {
 		
 		return autoUpdate;
-	}
+	};
 	
 	this.getUpdateFrequency = function() {
 		
 		return updateTask.interval;
-	}
+	};
 	
 	this.setUpdateFrequency = function(newInterval) {
 		
@@ -265,17 +267,19 @@ function BrewTroller() {
 		
 		//restart the autoupdate task if it was running
 		if ( autoUpdate == true ) {
-			
-			alert('starting auto update');
 			this.startAutoUpdate();
 		}
 	};
 	
 	this.initSetup = function() {
 		
+		//run initSetup() for each vessel
 		for( i = 0; i < this.Vessels.length; i++){
 			this.Vessels[i].initSetup();
 		}
+		//run initSetup() for the valves
 		this.valves.initSetup();
+		//update the value for update frequency form to match the value currently stored
+		document.getElementById('btUpdateFrequency').value = updateTask.interval;
  	};
 };
