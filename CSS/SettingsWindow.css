@@ -1,0 +1,211 @@
+#windowBlanket {
+	background-color: #111;
+	opacity: 0;
+	position: absolute;
+	z-index: -10;
+	visibility: hidden;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	min-height: 100%;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+}
+
+#btSettings {
+	position: absolute;
+	top: -450px;
+	height: 400px;
+	width: 400px;
+	background-color: rgba(121, 121, 121, .85);
+	box-shadow: 2px 3px 7px 3px #000;
+	border-style: solid;
+	border-width: 2px;
+	border-color: rgba(5, 5, 70, 0.80);
+	border-radius: 5px; -webkit-border-radius: 12px; -moz-border-radius: 12px;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	z-index: -9;
+	visibility: hidden;
+}
+
+#vesselSettings {
+	position: absolute;
+	top: -200px;
+	height: 195px;
+	width: 400px;
+	background-color: rgba(121, 121, 121, .85);
+	box-shadow: 2px 3px 7px 3px #000;
+	border: solid 2px rgba(5, 5, 70, 0.80); border-radius: 12px; -webkit-border-radius: 12px; -moz-border-radius: 12px;
+	-webkit-transition: all 1s; -moz-transition: all 1s;
+	z-index: -9;
+	visibility: hidden;
+	
+}
+
+#valveEdit {
+	position: absolute;
+	top: -500px;
+	width: 600px;
+	height: 425px;
+	background-color: rgba(121, 121, 121, 0.85);
+	box-shadow: 2px 3px 7px 3px #000;
+	border: solid 2px rgba(5, 5, 70, 0.80); border-radius: 12px; -webkit-border-radius: 12px; -moz-border-radius: 12px;
+	-webkit-transition: all 1s; -moz-transition: all 1s;
+	z-index: -9;
+	visibility: hidden;
+}
+
+#valveEdit .save {
+	position: relative;
+	top: 0px !important;
+	left: 25px !important;
+}
+
+#valveEdit .close {
+	position: relative;
+	top: -3px !important;
+	left: 490px !important;
+}
+
+#tempSetPointEdit {
+	position: absolute;
+	top: -200px;
+	width: 400px;
+	height: 155px;
+	background-color:  rgba(121, 121, 121, 0.85);
+	box-shadow: 2px 3px 7px 3px #000;
+	border: solid 2px rgba(5, 5, 70, 0.80); border-radius: 12px; -webkit-border-radius: 12px, -moz-border-radius: 12px;
+	-webkit-transition: all 1s; -moz-transition: all 1s;
+	z-index: -9;
+	visibility: hidden;
+}
+
+.settingsTitle {
+	text-align: center;
+	width: 100%;
+	height: 30px;
+	background-image: -webkit-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,1) 50%,rgba(0,0,0,0) 100%);
+	background-image: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 100%);
+	border-radius: 20px;
+}
+
+.settingsWindow h1 {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif; letter-spacing:-0.5px; font-size:25px;
+	-webkit-text-stroke: 1px, #0000FF;
+	color: #FFFFFF;
+}
+
+.settingsInputLabel {
+	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+	float: left; clear: left; margin: 11px 20px 0 0; width: 125px;
+	text-align: right; font-size: 14px; color: #FFFFFF;
+    text-shadow: 1px 1px 2px #000000;
+}
+
+.settingsInput {
+	border: 1px solid white;
+	margin-top: 5px;
+	width: 200px; height: 25px;
+	background: -moz-linear-gradient(top, rgba(226,226,226,1) 0%, rgba(219,219,219,1) 50%, rgba(209,209,209,1) 51%, rgba(254,254,254,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(226,226,226,1)), color-stop(50%,rgba(219,219,219,1)), color-stop(51%,rgba(209,209,209,1)), color-stop(100%,rgba(254,254,254,1)));
+	border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+	outline: none;
+	box-shadow: 1px 1px 1px 1px #000;
+	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif; font-size: 12px; color: #000000;
+	-webkit-transition: all .25s ease-in-out;
+	-moz-transition: all .25s ease-in-out;
+}
+
+.settingsInput:focus {
+	box-shadow: 0px 0px 5px 2px #0088CC;
+}
+
+.checkbox {
+	margin-top: 10px;
+	display: block;
+	width: 94px;
+	height: 27px;
+	overflow: hidden;
+	border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+	border: solid 1px #000000;
+}
+
+.valveSetCheckBox {
+	display: inline-block;
+	height: 34px;
+	width: 241px;
+	margin-top: 5px;
+}
+
+div.valveSetCheckBox > div:last-child {
+	margin-top: 0px !important;
+}
+
+input[type="checkbox"] {
+	display: none;
+}
+
+input[type="checkbox"] + label {
+	text-indent: -9999px;
+	display: block;
+	width: 150px;
+	height: 27px;
+	line-height: 27px;
+	border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;
+	background: transparent url(../images/icons/checkbox.png) no-repeat -56px 0;
+	-webkit-transition: background-position 0.3s ease-in-out;
+	-moz-transition: background-position 0.3s ease-in-out;
+}
+
+input[type="checkbox"]:checked + label {
+	-webkit-transition: background-position 0.3s ease-in-out;
+	-moz-transition: background-position 0.3s ease-in-out;
+	background-position: -3px 0;
+}
+
+.fieldsetWrapper {
+	
+	margin: 10px 10px 10px 10px;
+	padding-bottom: 10px;
+	border-radius: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px;
+	border: 2px inset #404040; 
+	-webkit-box-shadow: inset 0px 0px 3px #000000;
+	background:  -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(121,121,121,0.7)), color-stop(100%,rgba(255,255,255,0)));
+}
+
+.fieldsetWrapper h1 {
+	font-family: "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+	text-align: left; font-size: 18px !important;
+	 color: #FFFFFF;
+	margin-left: 10px; margin-top: 5px;
+    text-shadow: 1px 1px 3px #000000;
+}
+.settingsButton {
+	fill-opacity: 0.5;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+}
+
+.settingsButton:hover {
+	fill-opacity: 1.0;
+	stroke: #FFFFFF;
+	stroke-width: 0.6;
+	stroke-opacity: 0.8;
+}
+
+.close {
+	height: 40px;
+	width: 40px;
+	position: relative;
+	left: 305px;
+	top: 10px;
+}
+
+.save {
+	height: 45px;
+	width: 45px;
+	position: relative;
+	left: 10px;
+	top: 10px;
+}

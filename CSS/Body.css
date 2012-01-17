@@ -1,0 +1,8 @@
+/* Body */
+body {
+	position: absolute; top: 0; left: 0; min-height: 100%; min-width: 100%;
+	background-image: url('../images/texture1.jpg');
+	background-repeat: repeat;
+	-moz-user-select: -moz-none; -webkit-user-select: none; user-select: none; /*Ensure that accidental text selection does not detract from the UI*/
+	cursor: default;/*Ensure that we always see the default pointer cursor and the I selection cursor does not appear*/
+}
