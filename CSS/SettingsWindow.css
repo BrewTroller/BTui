@@ -133,6 +133,13 @@
 
 .valveSetCheckBox {
 	display: inline-block;
+	height: 34px;
+	width: 241px;
+	margin-top: 5px;
+}
+
+div.valveSetCheckBox > div:last-child {
+	margin-top: 0px !important;
 }
 
 input[type="checkbox"] {

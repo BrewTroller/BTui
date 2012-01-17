@@ -13,7 +13,8 @@ Info:
 
 
 Latest Changes (most recent first):
-
+	
+	Fixed valve profile editing view rendering for Gecko engines
 	Add Valve profile config editing (right click a profile to view/edit config)
 	Ported Temp Set Point editing from ExtJS app
 	Ported vessel settings from ExtJS app
