@@ -9,4 +9,8 @@ Reset -- c
 	Implementation of Reset Level 0 (tested using BT4.0 with v2.4 r761) causes board to Hard-lock, requiring power cycle to regain responsiveness. Reset Level 1 (soft reboot) works as expected.
 	
 Set Valve Profile Status -- b
-	Cannot seem to figure out how it works. (maybe not fully implemented???)
+	EXAMPLE --> 
+		User 1 profile:
+			From architecture wiki, User 1 bit mask = 131072
+			to Activate   --> http://address/btnic.cgi?b&131072&1
+			to DeActivate --> http://address/btnic.cgi?b&131072&0
