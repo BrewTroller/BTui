@@ -193,10 +193,93 @@ views = function(){
 	
 	//Method is called when a valve profile is right-clicked, it displays the profile config edit window
 	this.editValveProfile = function(profileIndex) {
+		//Set the state of the toggles to be the same as the current config		
+		var currentConfig = BrewTroller.valves.getProfileConfigArray(profileIndex);	
 		
-		alert('Come To the Darkside! We have exactly ' + profileIndex + ' Cookies!');
-		return false;
+		var editWindow = document.getElementById('valveEdit');
+		
+		for (i = 1; i < 17; i++){
+			var target = editWindow.querySelectorAll('[data-valve-set="'+i+'"]')[0];
+			target.checked = currentConfig[i-1] == 1 ? true : false;
+		}
+		
+		//set the dataset attribute for the valve index and set the window title
+		document.getElementById('valveEditTitle').firstElementChild.textContent = BrewTroller.valves.getProfileName(profileIndex) +' Config';
+		editWindow.dataset.profileIndex = profileIndex;
+		
+		//show the window
+		this.showValveEdit();	
 	};	
+	
+	//Method shows the valve profile edit window
+	this.showValveEdit = function(){
+		
+		//Get references to the elements for the window and the blanket
+		var blanket = document.getElementById('windowBlanket');
+		var settingsWindow = document.getElementById('valveEdit');	
+		
+		 //this is explicity casted to String to ensure that we can extract the required data from it
+		var settingsHeight = String(document.defaultView.getComputedStyle(settingsWindow, null).getPropertyValue("height"));
+		
+		//We need to remove the px tag from the strings, then we can cast them to numbers and do math with them
+		settingsHeight = settingsHeight.replace("px", "");
+		settingsHeight = Number(settingsHeight);
+		
+		//set the visibility types for the window and the blanket to visible and change the z-index to bring to top
+		settingsWindow.style.zIndex = 9001;
+		blanket.style.zIndex = 9000;
+		settingsWindow.style.visibility = "visible";
+		blanket.style.visibility = "visible";
+		
+		//set the opacity for the blanket so we get a nice fade-in effect
+		blanket.style.opacity =.85;
+		
+		//set the height position of the window so we get a nice slide down and in effect
+		settingsWindow.style.top = (window.innerHeight / 2) - (settingsHeight / 2) + 'px';
+	};
+	
+	this.closeValveEdit = function(){
+	
+		//Get references to the elements for the window and the blanket
+		var blanket = document.getElementById('windowBlanket');
+		var editWindow = document.getElementById('valveEdit');
+		
+		//set the position for the window so we get a nice slide up and out effect
+		editWindow.style.removeProperty('top');
+		//set the opacity for the blanket so it will fade back out
+		blanket.style.removeProperty('opacity');
+		
+		//set the blanket and window z-indexs and visibility back to the hidden state so they don't interfere with any other app functionality
+		editWindow.style.removeProperty('z-index');
+		blanket.style.removeProperty('z-index');
+		editWindow.style.removeProperty('visibility');
+		blanket.style.removeProperty('visibility');		
+	};
+	
+	this.saveValve = function(){
+		
+		//Get reference to the window and retrieve the valve index from it
+		var editWindow = document.getElementById('valveEdit');
+		var profileIndex = editWindow.dataset.profileIndex;
+		//instantiate the configArray
+		var configArray = [];
+		
+		//Check each valve option to see if it is enabled, if it is set a flag in the array, else ensure that index is a 0
+		for (i = 0; i < 16; i++){
+			var target = editWindow.querySelectorAll('[data-valve-set="'+(i+1)+'"]')[0].checked;
+			if (target){
+				configArray[i] = 1;
+			}
+			else {
+				configArray[i] = 0;
+			}
+		}
+		//Set the new config
+		BrewTroller.valves.setProfileConfigFromArray(profileIndex, configArray);	
+		
+		//close the window
+		this.closeValveEdit();	
+	};
 	
 	//Method called when the window.onload event fires, used to finish setting up the viewPort
 	this.initSetup = function(){
@@ -212,7 +295,7 @@ views = function(){
 		
 		//Set the vessel settings window to be centered on the screen, same reason as above
 		var vesselSettingsWindow = document.getElementById('vesselSettings');	
-		var vesselSettingsWidth = String(document.defaultView.getComputedStyle(settingsWindow, null).getPropertyValue("width"));
+		var vesselSettingsWidth = String(document.defaultView.getComputedStyle(vesselSettingsWindow, null).getPropertyValue("width"));
 		
 		vesselSettingsWidth = vesselSettingsWidth.replace("px", "");
 		vesselSettingsWidth = Number(vesselSettingsWidth);
@@ -221,11 +304,21 @@ views = function(){
 		
 		//Set the temp setpoint window to be centered on the screen, same reason as above
 		var tempSetWindow = document.getElementById('tempSetPointEdit');	
-		var tempSetWidth = String(document.defaultView.getComputedStyle(settingsWindow, null).getPropertyValue("width"));
+		var tempSetWidth = String(document.defaultView.getComputedStyle(tempSetWindow, null).getPropertyValue("width"));
 		
 		tempSetWidth = tempSetWidth.replace("px", "");
 		tempSetWidth = Number(tempSetWidth);
 		
 		tempSetWindow.style.left = (window.innerWidth /2) - (tempSetWidth /2) + 'px';
+		
+		//Set the valve profile edit window to be centered on the screen, same reason as above
+		var valveWindow = document.getElementById('valveEdit');	
+		var valveWidth = String(document.defaultView.getComputedStyle(valveWindow, null).getPropertyValue("width"));
+		
+		valveWidth = valveWidth.replace("px", "");
+		valveWidth = Number(valveWidth);
+		
+		valveWindow.style.left = (window.innerWidth /2) - (valveWidth /2) + 'px';
+		
 	};
 };

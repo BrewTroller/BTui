@@ -33,6 +33,7 @@ function Valve() {
 	
 	var getProfileStatus = 'w';
 	var getProfileConfig = 'd';
+	var setProfileConfig = "Q";
 	
 	//References to active and idle containers
 	var active;
@@ -64,11 +65,35 @@ function Valve() {
 		return profiles[profileIndex].config;
 	};
 	
-	//Method sets as new config for a valve profile
+	//Method returns the name of the profile matching the index specified
+	this.getProfileName = function(profileIndex){
+		
+		return profiles[profileIndex].name;
+	};
+	
+	//Method sets a new profile config for a profile from an array of flags 32 items long
+	this.setProfileConfigFromArray = function(profileIndex, newConfigArray){
+		
+		var configMask;
+		
+		for (i = 0; i < 32; i++){
+			if (newConfigArray[i]){
+				var flag = 1 << i;
+				configMask = configMask | flag;
+			}
+		}
+		profiles[profileIndex].config = configMask;
+		
+		//setup a callback function
+		var callback = function(){};
+		//Sync the new Config to the BT
+		BrewTroller.communicate(BrewTroller.getAddress()+setProfileConfig+profileIndex+'&'+configMask, callback);	
+	};
+	
+	//Method sets as new config for a valve profile, method will not send new config to BT
 	this.setProfileConfig = function(profileIndex, newConfig) {
 		
 		profiles[profileIndex].config = newConfig;
-		alert('Still needs BT sync');
 	};
 	
 	//Method returns true if the valve profile is active, and false otherwise

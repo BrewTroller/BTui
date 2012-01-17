@@ -14,13 +14,14 @@ Info:
 
 Latest Changes (most recent first):
 
+	Add Valve profile config editing (right click a profile to view/edit config)
 	Ported Temp Set Point editing from ExtJS app
 	Ported vessel settings from ExtJS app
 
 	
 To DO For Initial Release (In order of Priority):
 
-	Complete valve functionality
+	Complete valve functionality (implement profile state changes)
 	Implement full settings from BrewTroller Menus
 	Fully comment and Document Code...	
 

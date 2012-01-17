@@ -237,7 +237,7 @@
 	
 	<!--Start Vessel Settings Window-->
 	<div id="vesselSettings" class="settingsWindow">
-		<div id="vesselSettingsTitle" class="settingsTitle"><h1>HLT Settings</h1></div>
+		<div id="vesselSettingsTitle" class="settingsTitle"><h1></h1></div>
 		<div id="vesselSettingsForm">
 			<form onsubmit="return false;">
 				<div class="fieldsetWrapper">
@@ -261,8 +261,132 @@
 	<!--End Vessel Settings Window-->
 	
 	<!--Start Valve Profile Edit Window-->
-	<div id="valveEdit">
-		
+	<div id="valveEdit" class="settingsWindow">
+		<div id="valveEditTitle" class="settingsTitle"><h1></h1></div>
+		<div id="valveEditForm">
+			<form onsubmit="return false;">
+				<div class="fieldsetWrapper">
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 1:</div>
+						<div class="checkbox">
+							<input id="valveset1" type="checkbox" data-valve-set="1" />
+							<label for="valveset1">Valve 1:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 2:</div>
+						<div class="checkbox">
+							<input id="valveset2" type="checkbox" data-valve-set="2" />
+							<label for="valveset2">Valve 2:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 3:</div>
+						<div class="checkbox">
+							<input id="valveset3" type="checkbox" data-valve-set="3" />
+							<label for="valveset3">Valve 3:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+					<div class="settingsInputLabel">Valve 4:</div>
+						<div class="checkbox">
+							<input id="valveset4" type="checkbox" data-valve-set="4" />
+							<label for="valveset4">Valve 4:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 5:</div>
+						<div class="checkbox">
+							<input id="valveset5" type="checkbox" data-valve-set="5" />
+							<label for="valveset5">Valve 5:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 6:</div>
+						<div class="checkbox">
+							<input id="valveset6" type="checkbox" data-valve-set="6" />
+							<label for="valveset6">Valve 6:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 7:</div>
+						<div class="checkbox">
+							<input id="valveset7" type="checkbox" data-valve-set="7" />
+							<label for="valveset7">Valve 7:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 8:</div>
+						<div class="checkbox">
+							<input id="valveset8" type="checkbox" data-valve-set="8" />
+							<label for="valveset8">Valve 8:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve 9:</div>
+						<div class="checkbox">
+							<input id="valveset9" type="checkbox" data-valve-set="9" />
+							<label for="valveset9">Valve 9:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+					<div class="settingsInputLabel">Valve A:</div>
+						<div class="checkbox">
+							<input id="valvesetA" type="checkbox" data-valve-set="10" />
+							<label for="valvesetA">Valve A:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+					<div class="settingsInputLabel">Valve B:</div>
+						<div class="checkbox">
+							<input id="valvesetB" type="checkbox" data-valve-set="11" />
+							<label for="valvesetB">Valve B:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+					<div class="settingsInputLabel">Valve C:</div>
+						<div class="checkbox">
+							<input id="valvesetC" type="checkbox" data-valve-set="12" />
+							<label for="valvesetC">Valve C:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve D:</div>
+						<div class="checkbox">
+							<input id="valvesetD" type="checkbox" data-valve-set="13" />
+							<label for="valvesetD">Valve D:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve E:</div>
+						<div class="checkbox">
+							<input id="valvesetE" type="checkbox" data-valve-set="14" />
+							<label for="valvesetE">Valve E:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve F:</div>
+						<div class="checkbox">
+							<input id="valvesetF" type="checkbox" data-valve-set="15" />
+							<label for="valvesetF">Valve F:</label>
+						</div>
+					</div>
+					<div class="valveSetCheckBox">
+						<div class="settingsInputLabel">Valve G:</div>
+						<div class="checkbox">
+							<input id="valvesetG" type="checkbox" data-valve-set="16" />
+							<label for="valvesetG">Valve G:</label>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+		<svg viewBox="0 0 32 25" class="buttonWrapper save">
+			<path class="settingsButton" onclick="BTUI.viewPort.saveValve();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
+		</svg>
+		<svg viewBox='0 0 30 30' class="buttonWrapper close">
+			<path class="settingsButton" onclick="BTUI.viewPort.closeValveEdit();" fill=#000000 d="M 29.914986,24.90485 20.002615,14.992743 29.913185,5.080636 24.818276,-0.01773975 14.905904,9.8943675 4.9935322,-0.01773975 -0.10137652,5.080636 l 9.91057032,9.912107 -9.91237191,9.912107 5.09851191,5.096574 9.9105702,-9.912107 9.910571,9.912107 z" />
+		</svg>		
 	</div>
 	<!--End Valve Profile Edit Window-->
 	
