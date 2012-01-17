@@ -14,6 +14,7 @@ Info:
 
 Latest Changes (most recent first):
 	
+	Added Valve profile state changing (enabling and disabling), to use simply left click on a profile
 	Fixed valve profile editing view rendering for Gecko engines
 	Add Valve profile config editing (right click a profile to view/edit config)
 	Ported Temp Set Point editing from ExtJS app
@@ -22,7 +23,6 @@ Latest Changes (most recent first):
 	
 To DO For Initial Release (In order of Priority):
 
-	Complete valve functionality (implement profile state changes)
 	Implement full settings from BrewTroller Menus
 	Fully comment and Document Code...	
 

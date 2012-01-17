@@ -31,9 +31,11 @@ function Valve() {
 		{name: 'User 3', 			bitMask: 524288,	config:0,	active:false}
 	];
 	
+	//BrewTroller command codes
 	var getProfileStatus = 'w';
 	var getProfileConfig = 'd';
 	var setProfileConfig = "Q";
+	var setProfileStatus = 'b';
 	
 	//References to active and idle containers
 	var active;
@@ -145,11 +147,26 @@ function Valve() {
 	};
 	
 	//Method is called when a valve profile is clicked, and should toggle the appropriate valve profile's state
-	//It has not yet been implemented, as I cannot seem to figure out how to properly set this option using the BTNic architecture.
 	this.toggleState = function(profileIndex){
-		/*profiles[profileIndex].active = (!profiles[profileIndex].active);*/
-		this.updateView();
-	}
+		
+		//define the callback function, because the response from the BT is the status code of all profiles we will update them all		
+		var callback = function(profiles, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var mask = Number(resp[2]);
+			for ( i = 0; i < 20; i++ ) {
+				profiles[i].active = Boolean(mask & profiles[i].bitMask); 
+			}
+			BrewTroller.valves.updateView();
+		};
+		
+		//if the profile is active, we will set it inactive
+		if (profiles[profileIndex].active){
+			BrewTroller.communicate(BrewTroller.getAddress() + setProfileStatus + '&' + profiles[profileIndex].bitMask + '&0', callback, profiles);
+		}
+		else{	//else if it is idle we will activate it
+			BrewTroller.communicate(BrewTroller.getAddress() + setProfileStatus + '&' + profiles[profileIndex].bitMask + '&1', callback, profiles);
+		}
+	};
 	
 	//Method updates the config for all of the profiles from the BT
 	this.updateAllConfig = function() {
