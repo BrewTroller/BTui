@@ -14,16 +14,16 @@ Info:
 
 Latest Changes (most recent first):
 	
+	Added Basic Vessel Output Settings from BT -> System Setup -> Outputs Menu 
 	Added Valve profile state changing (enabling and disabling), to use simply left click on a profile
 	Fixed valve profile editing view rendering for Gecko engines
 	Add Valve profile config editing (right click a profile to view/edit config)
-	Ported Temp Set Point editing from ExtJS app
-	Ported vessel settings from ExtJS app
 
 	
 To DO For Initial Release (In order of Priority):
 
 	Implement full settings from BrewTroller Menus
+	Add in Timer functions
 	Fully comment and Document Code...	
 
 

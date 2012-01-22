@@ -49,14 +49,14 @@ function BrewTroller() {
 		if (hltDisp && (hlt.display.style.display == "none")){	
 			hlt.show();
 		} 
-		else if (!hltDisp && (hlt.display.style.display =! "none")){
+		else if (!hltDisp && (hlt.display.style.display != "none")){
 			hlt.hide();
 		}
 		
 		if (mltDisp && (mlt.display.style.display == "none")){
 			mlt.show();
 		} 
-		else if (!mltDisp && (mlt.display.style.display =! "none")){
+		else if (!mltDisp && (mlt.display.style.display != "none")){
 			mlt.hide();
 		}
 	
@@ -211,6 +211,9 @@ function BrewTroller() {
 	this.initSync = function() {
 		BrewTroller.setVersion();
 		BrewTroller.updateVessels();
+		for (i = 0; i < BrewTroller.Vessels.length; i++){
+			BrewTroller.Vessels[i].initSync();
+		}
 		BrewTroller.valves.updateAllConfig();
 		BrewTroller.valves.updateStatus();
 	};
@@ -269,6 +272,11 @@ function BrewTroller() {
 		if ( autoUpdate == true ) {
 			this.startAutoUpdate();
 		}
+	};
+	
+	//Method sends command to BT to scan for temp sensors, and returns the address of the first unassigned sensor as an array of bytes
+	this.scanForTempSensor = function(){
+		
 	};
 	
 	this.initSetup = function() {

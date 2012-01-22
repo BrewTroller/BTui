@@ -14,3 +14,14 @@ Set Valve Profile Status -- b
 			From architecture wiki, User 1 bit mask = 131072
 			to Activate   --> http://address/btnic.cgi?b&131072&1
 			to DeActivate --> http://address/btnic.cgi?b&131072&0
+			
+Set/Get Output Settings -- D / N	(HAS BUG!)
+
+	From wiki, the parameter for PID Cycle time should be set and received in units of Seconds, but it is actually done in tenths of seconds
+		EXAMPLE -->
+			If we have the PID cycle time for the HLT set to 1.0 seconds on the BT (checked via LCD) and call http://address/btnic.cgi?D0
+			we would expect to receive a response like ["timestamp", "D0", "HEATTYPE", "1", "PGAIN", "IGAIN", "DGAIN", "HYSTERESIS"]
+			but in reality we receive ["timestamp", "D0", "HEATTYPE", "10", "PGAIN", "IGAIN", "DGAIN", "HYSTERESIS", "UNKNOWN", "UNKNOWN"]
+			
+	Also from wiki, the N command requires 6 parameters, but if you pass the N command with only 6 parameters the BT will return "#", "N0" indicating invalid parameters
+	in order to use the N command you must pass it 8 parameters, of which the last two have unknown functions.

@@ -31,9 +31,10 @@
 
 #vesselSettings {
 	position: absolute;
-	top: -200px;
-	height: 195px;
+	top: -500px;
+	height: 290px;
 	width: 400px;
+	overflow: hidden;
 	background-color: rgba(121, 121, 121, .85);
 	box-shadow: 2px 3px 7px 3px #000;
 	border: solid 2px rgba(5, 5, 70, 0.80); border-radius: 12px; -webkit-border-radius: 12px; -moz-border-radius: 12px;
@@ -142,6 +143,15 @@ div.valveSetCheckBox > div:last-child {
 	margin-top: 0px !important;
 }
 
+/* Rules for the VesselSettings window*/
+#PIDSettings {
+	display: none;
+}
+
+.vesselSettingsPIDEnabled {
+	height: 390px !important;
+}
+
 input[type="checkbox"] {
 	display: none;
 }
@@ -162,6 +172,11 @@ input[type="checkbox"]:checked + label {
 	-webkit-transition: background-position 0.3s ease-in-out;
 	-moz-transition: background-position 0.3s ease-in-out;
 	background-position: -3px 0;
+}
+
+input[type="checkbox"]:disabled + label {
+	
+	opacity: .3;
 }
 
 .fieldsetWrapper {

@@ -56,13 +56,23 @@ views = function(){
 		settingsWindow.style.removeProperty('visibility');
 		blanket.style.removeProperty('visibility');		
 	};
-	
+
 	this.saveBTSettings = function() {
 		
 		BrewTroller.saveSettings();
 		
 		this.closeBTSettings();
 	};
+	
+	//Method to handle the onclick event from a vesssel Settings button
+	//It first dispatches the correct vessel's settings() method to setup the view
+	//the calls this.showVesselSettings() to show the view
+	this.vesselSettings = function(el) {
+		
+		var vesselIndex = Number(el.parentElement.parentElement.dataset.vesselIndex);
+		BrewTroller.Vessels[vesselIndex].settings();
+		this.showVesselSettings();
+	}
 	
 	this.showVesselSettings = function() {
 		
@@ -126,6 +136,33 @@ views = function(){
 		
 		//hide the settings window
 		this.closeVesselSettings();
+	};
+	
+	//Method called when the state of the PID settings switch in the Vessel Settings window Changes
+	this.vesselHeatModeSwitchChange = function() {
+		
+		//get reference to the panel
+		var settingsWindow = document.getElementById('vesselSettings');
+		//get reference to the heat mode switch
+		var heatSwitch = document.getElementById('vesselPIDMode');
+		//get reference to each of the heat mode option divs
+		var onoff = document.getElementById('OnOffSettings');
+		var PID = document.getElementById('PIDSettings');
+		
+		if (heatSwitch.checked){
+			//make the window expand to accomadate the new options
+			settingsWindow.style.height = "390px";		
+			//show the PID options
+			PID.style.display = "block";
+			//make sure the settings for on/off mode are hidden
+			onoff.style.display = "none";			
+		} else {
+			//hide the PID settings and show the on/off settings
+			PID.style.removeProperty('display');
+			onoff.style.removeProperty('display');
+			//remove the arrtribute set for the extra height in the settings window
+			settingsWindow.style.removeProperty('height');				
+		}
 	};
 	
 	//Method to show the temp setpoint window
