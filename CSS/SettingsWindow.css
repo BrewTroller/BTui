@@ -31,8 +31,8 @@
 
 #vesselSettings {
 	position: absolute;
-	top: -500px;
-	height: 290px;
+	top: -600px;
+	height: 380px;
 	width: 400px;
 	overflow: hidden;
 	background-color: rgba(121, 121, 121, .85);
@@ -148,9 +148,10 @@ div.valveSetCheckBox > div:last-child {
 	display: none;
 }
 
-.vesselSettingsPIDEnabled {
-	height: 390px !important;
+#kettleSettings {
+	display: none;
 }
+/*End VesselSettings Rules*/
 
 input[type="checkbox"] {
 	display: none;

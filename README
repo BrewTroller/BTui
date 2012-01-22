@@ -14,6 +14,7 @@ Info:
 
 Latest Changes (most recent first):
 	
+	Added Boil Power and Evaporation Rate settings
 	Added Basic Vessel Output Settings from BT -> System Setup -> Outputs Menu 
 	Added Valve profile state changing (enabling and disabling), to use simply left click on a profile
 	Fixed valve profile editing view rendering for Gecko engines
@@ -39,9 +40,10 @@ loss (cookie clean-up/browsing data delete)) Another option would be to store th
 WishList for BTNic Architecture:
 
 	Way to retrieve Vessel Compile Options. EX: HLT as KET, RIMS, etc
-	Target Volume Retrieval
+	Target Volume Retrieval and Setting
 	Unit retrieval Metric / Imperial
-	WebSockets capable Server ( would decrease loads on network, as BT could "push" new data to the connected clients )(maybe hard to implement, would only be beneficial for WebKit browsers and FireFox)
+	Boil Power retrieval and setting
+	WebSockets capable Server ( would decrease loads on network, as BT could "push" new data to the connected clients )(maybe hard to implement, would only benefit android, iOS, and webkit browsers)
 
 
 Credits:

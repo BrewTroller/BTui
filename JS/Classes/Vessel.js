@@ -92,7 +92,7 @@ function Vessel(Index) {
 		
 		if (index <= 3){
 			vesselIndex = index;
-		}
+		}		
 		this.setVesselName();
 	};	
 	
@@ -268,7 +268,7 @@ function Vessel(Index) {
 	this.getHysteresis = function() {
 		
 		return hysteresis;
-	}
+	};
 	
 	//sets the value for the setpoint window and then calls BTUI.viewPort.showTempSetPoint() to show it
 	this.changeSetPoint = function() {
@@ -321,7 +321,7 @@ function Vessel(Index) {
 		
 		return this.volumeStore.getAt(0).data.volume;
 	}
-	
+	//This method's logic should entireley get moved into the view Controller class in views.js
 	this.settings = function(){
 		
 		//Get References to the setting option elements
@@ -352,12 +352,10 @@ function Vessel(Index) {
 		iGain.value = this.getPIDIGain();
 		dGain.value = this.getPIDDGain();
 		pidCycle.value = this.getPIDCycle();
-		hysteresisEl.value = this.getHysteresis();
-		
-		//Set the settings window's data-vessel-index attribute to this vessel's index
-		settingsWindow.dataset.vesselIndex = vesselIndex;		
+		hysteresisEl.value = this.getHysteresis();		
 	};
 	
+	//This method's logic should entireley get moved into the view Controller class in views.js
 	this.saveSettings = function() {
 		
 		var update = document.getElementById('vesselAutoUpdate').checked;

@@ -70,8 +70,26 @@ views = function(){
 	this.vesselSettings = function(el) {
 		
 		var vesselIndex = Number(el.parentElement.parentElement.dataset.vesselIndex);
+		var settingsWindow = document.getElementById('vesselSettings');
+		settingsWindow.dataset.vesselIndex = vesselIndex;
+		
+		//Show the Kettle specific option if the vessel we are editing is of index = 2
+		var kettleSettings = document.getElementById('kettleSettings');
+		if (settingsWindow.dataset.vesselIndex == 2){
+			kettleSettings.style.display = "block";
+			//fire the PID checkbox change function to calculate the height
+			document.getElementById('vesselPIDMode').onchange();
+			//set the kettle specific display options values to match current ones
+			document.getElementById('evapRate').value = BrewTroller.getEvapRate();
+			document.getElementById('boilTemp').value = BrewTroller.getBoilTemp();
+		} else {
+			document.getElementById('kettleSettings').style.removeProperty('display');
+			document.getElementById('vesselPIDMode').onchange();
+		}
+		
 		BrewTroller.Vessels[vesselIndex].settings();
-		this.showVesselSettings();
+		//call show vesselSettings on a 500ms delay to ensure the window has been setup properly
+		setTimeout("BTUI.viewPort.showVesselSettings();", 500);
 	}
 	
 	this.showVesselSettings = function() {
@@ -134,6 +152,10 @@ views = function(){
 		//call the appropriate vessel's saveSettings()
 		BrewTroller.Vessels[vesselIndex].saveSettings();
 		
+		//save values for kettle only options
+		BrewTroller.setBoilTemp(document.getElementById('boilTemp').value);
+		BrewTroller.setEvapRate(document.getElementById('evapRate').value);
+		
 		//hide the settings window
 		this.closeVesselSettings();
 	};
@@ -151,7 +173,11 @@ views = function(){
 		
 		if (heatSwitch.checked){
 			//make the window expand to accomadate the new options
-			settingsWindow.style.height = "390px";		
+			if (settingsWindow.dataset.vesselIndex == 2){
+				settingsWindow.style.height = "570px";
+			} else {
+				settingsWindow.style.height = "480px";	
+			}	
 			//show the PID options
 			PID.style.display = "block";
 			//make sure the settings for on/off mode are hidden
@@ -161,7 +187,11 @@ views = function(){
 			PID.style.removeProperty('display');
 			onoff.style.removeProperty('display');
 			//remove the arrtribute set for the extra height in the settings window
-			settingsWindow.style.removeProperty('height');				
+			if (settingsWindow.dataset.vesselIndex == 2){
+				settingsWindow.style.height = "480px";
+			} else {
+				settingsWindow.style.removeProperty('height');
+			}				
 		}
 	};
 	

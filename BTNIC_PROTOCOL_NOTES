@@ -25,3 +25,8 @@ Set/Get Output Settings -- D / N	(HAS BUG!)
 			
 	Also from wiki, the N command requires 6 parameters, but if you pass the N command with only 6 parameters the BT will return "#", "N0" indicating invalid parameters
 	in order to use the N command you must pass it 8 parameters, of which the last two have unknown functions.
+	
+Volume Set -- R
+
+	according to the wiki on the vol set message (R) there should be three parameters passed, first being capacity, second dead space, and third units (GAL/Litre)
+	this is incorrect as passing more than on parameter causes a '#' error.

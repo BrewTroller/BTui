@@ -10,6 +10,10 @@ function BrewTroller() {
 	var autoUpdate = false;
 	var updateId;
 	
+	var boilPower;
+	var boilTemp;
+	var evapRate;
+	
 	//task for autoUpdate
 	var updateTask = {
 		run: function(){
@@ -134,6 +138,34 @@ function BrewTroller() {
 		BrewTrollerUpTime = upTimeInMillis;
 	};
 	
+	//Method to set the system boil temp
+	this.setBoilTemp = function(newValue) {
+		if (boilTemp == undefined) {
+			boilTemp = newValue;
+		} else if (newValue != boilTemp){
+			boilTemp = newValue;
+			this.communicate(this.getAddress() + 'K&' + boilTemp, function(){}, null);
+		}
+	}
+	
+	this.getBoilTemp = function(){
+		return boilTemp;
+	}
+	
+	//Method to set the system evap rate
+	this.setEvapRate = function(newValue) {
+		if (evapRate == undefined) {
+			evapRate = newValue;
+		} else if (newValue != evapRate){
+			evapRate = newValue;
+			this.communicate(this.getAddress() + 'M&' + evapRate, function(){}, null);
+		}
+	};
+	
+	this.getEvapRate = function() {
+		return evapRate;
+	};
+	
 	/*
 	//BrewTroller.Communicate(commandAddress, callback, arg)
 	//Communicate method is the base method for communicating with the BrewTroller
@@ -216,6 +248,21 @@ function BrewTroller() {
 		}
 		BrewTroller.valves.updateAllConfig();
 		BrewTroller.valves.updateStatus();
+		
+		//pull values for evapRate and boil temp from BT
+		var boilTempCallback = function(empty, xhr){
+			resp = JSON.parse(xhr.responseText);
+			BrewTroller.setBoilTemp(Number(resp[2]));
+		};
+		
+		this.communicate(this.getAddress() + 'A', boilTempCallback, null);
+		
+		var evapRateCallback = function(empty, xhr){
+		  resp = JSON.parse(xhr.responseText);
+		  BrewTroller.setEvapRate(Number(resp[2]));
+		};
+		
+		this.communicate(this.getAddress() + 'C', evapRateCallback, null);
 	};
 	
 	this.update = function() {
