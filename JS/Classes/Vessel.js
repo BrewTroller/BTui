@@ -288,11 +288,17 @@ function Vessel(Index) {
 		BTUI.viewPort.showTempSetPoint();				
 	};
 	
-	//Set the setpoint value, used only when setting the app's stored value to synchronize with the BT
+	//Set the setpoint value, used when setting the app's stored value
 	this.setSetPoint = function(setPoint) {
 		
 		temperatureSetPoint = setPoint;
-		this.tempTargetDisplay.textContent = temperatureSetPoint + String.fromCharCode(186);
+		var unit;
+		if (BrewTroller.usesMetric()){
+			unit = "C";
+		} else {
+			unit = "F";
+		}
+		this.tempTargetDisplay.textContent = temperatureSetPoint + String.fromCharCode(186) + unit;
 	}
 	
 	//Set a new Temperature Setpoint for the Vessel, and update the value to the BT
@@ -303,24 +309,9 @@ function Vessel(Index) {
 		
 		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, callback, vesselIndex);
 		temperatureSetPoint = newSetPoint;
-		this.tempTargetDisplay.textContent = temperatureSetPoint + String.fromCharCode(186);
+		this.setSetPoint(newSetPoint);
 	}
 	
-	//Get last temperature reading from store
-	this.getTemperature = function() {
-		
-		return this.temperatureStore.getAt(0).data.temperature;
-	}
-	
-	this.getHeatStatus = function() {
-		
-		return this.temperatureStore.getAt(0).data.heatStatus;
-	}
-	
-	this.getVolume = function() {
-		
-		return this.volumeStore.getAt(0).data.volume;
-	}
 	//This method's logic should entireley get moved into the view Controller class in views.js
 	this.settings = function(){
 		
@@ -395,25 +386,25 @@ function Vessel(Index) {
 	this.updateVessel = function(){
 		
 		
-	if ( BrewTroller.getIPAddress() != undefined) {	
+	if (BrewTroller.getIPAddress() != undefined) {	
 		var baseAddress = BrewTroller.getAddress();
 		
 		var tempCallback = function(vesselIndex, xhr) {
-			if(xhr.readyState == 4){
 				var temperature = JSON.parse(xhr.responseText);
-				if ( (temperature[2]/100) > 300 ){
-					temperature[2] = 0;	//A fix for erroneous readings coming back from BT. When no sensor is connected it likes to return values of 4.2B
+				if ( (temperature[1]/100) > 300 ) temperature[1] = 0;	//A fix for erroneous readings coming back from BT. When no sensor is connected it likes to return values of 4.2B
+				var temp = temperature[1]/100;
+				var unit;
+				if (BrewTroller.usesMetric()){
+					unit = 'C';
+				} else {
+					unit = 'F';
 				}
-				var temp = temperature[2]/100;
-				BrewTroller.Vessels[vesselIndex].tempDisplay.textContent = temp + String.fromCharCode(186);
-			}
+				BrewTroller.Vessels[vesselIndex].tempDisplay.textContent = temp + String.fromCharCode(186) + unit;
 		}
 		
 		var heatCallback = function(vesselIndex, xhr) {
-			if (xhr.readyState == 4){
 				var heat = JSON.parse(xhr.responseText);
-				BrewTroller.Vessels[vesselIndex].heatDisplay.textContent = heat[2]+ String.fromCharCode(37);
-			}
+				BrewTroller.Vessels[vesselIndex].heatDisplay.textContent = heat[1]+ String.fromCharCode(37);
 		}
 		
 		BrewTroller.communicate(baseAddress+getHeat+vesselIndex, heatCallback, vesselIndex);
@@ -422,27 +413,26 @@ function Vessel(Index) {
 		var setPointCallback = function(vesselIndex, xhr){
 			
 			var resp = JSON.parse(xhr.responseText);
-			BrewTroller.Vessels[vesselIndex].setSetPoint(resp[2])
+			BrewTroller.Vessels[vesselIndex].setSetPoint(resp[1])
 		}
 		
 		BrewTroller.communicate(BrewTroller.getAddress()+getSetPoint+vesselIndex, setPointCallback, vesselIndex);
 
 		
 		if (hasVolumeSensing){
-			
 			var volumeCallback = function(vesselIndex, xhr){
-				if (xhr.readyState == 4){
-					var volume = JSON.parse(xhr.responseText);
-					BrewTroller.Vessels[vesselIndex].volumeDisplay.textContent = volume[2]/1000 +'g';
+				var volume = JSON.parse(xhr.responseText);
+				var unit;
+				if (BrewTroller.usesMetric()){
+					unit = 'L';
+				} else {
+					unit = 'G';
 				}
+				BrewTroller.Vessels[vesselIndex].volumeDisplay.textContent = volume[1]/1000 + unit;
 			}
-			
 		 BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselIndex);
 		}
-} else{
-	alert('You Must Set an IP address for the BrewTroller First!');
-};
-				
+	}
 	}
 	
 	this.manualUpdate = function(){
@@ -494,12 +484,12 @@ function Vessel(Index) {
 		var outputCallback = function(vesselIndex, xhr){
 			var resp = JSON.parse(xhr.responseText);
 			var vessel = BrewTroller.Vessels[vesselIndex];
-			vessel.setPIDMode(Boolean(Number(resp[2]))); //We must first typecast this as a number then a BOOL, as it is parsed as a string
-			vessel.setPIDCycle(Number(resp[3])/10);
-			vessel.setPIDPGain(Number(resp[4]));
-			vessel.setPIDIGain(Number(resp[5]));
-			vessel.setPIDDGain(Number(resp[6]));
-			vessel.setHysteresis(Number(resp[7])/10);
+			vessel.setPIDMode(Boolean(Number(resp[1]))); //We must first typecast this as a number then a BOOL, as it is parsed as a string
+			vessel.setPIDCycle(Number(resp[2])/10);
+			vessel.setPIDPGain(Number(resp[3]));
+			vessel.setPIDIGain(Number(resp[4]));
+			vessel.setPIDDGain(Number(resp[5]));
+			vessel.setHysteresis(Number(resp[6])/10);
 		}
 		
 		BrewTroller.communicate(BrewTroller.getAddress() + getOutput + vesselIndex, outputCallback, vesselIndex);

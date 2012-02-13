@@ -5,7 +5,7 @@ function BrewTroller() {
 	var BrewTrollerAddress;
 	var BrewTrollerVersion;
 	var BrewTrollerBuild;
-	var BrewTrollerUpTime;
+	var useMetric;
 	
 	var autoUpdate = false;
 	var updateId;
@@ -22,6 +22,9 @@ function BrewTroller() {
 		interval: 10000 //Default update interval set to 10 seconds
 	};
 	
+	//Array of recipe objects
+	 var programs = new Array(20); // to save unnecessary bloating we will instatiate each recipe object when required
+	
 	//public class variables
 	this.valves = new Valve;
 	
@@ -33,6 +36,11 @@ function BrewTroller() {
 	this.editWindow;
 		
 	//public class methods
+	
+	this.getProgram = function(index) {
+		if (!programs[index]) programs[index] = new Program(index);
+		return programs[index];
+	};
 	
 	this.saveSettings = function() {
 	
@@ -122,21 +130,32 @@ function BrewTroller() {
 		BrewTrollerBuild = build;
 	};
 	
+	this.usesMetric = function() {
+		return useMetric;
+	};
+	
+	//Method to set or unset the use of metric units, value passed is a BOOL
+	this.setMetric = function(value) {
+		useMetric = value;
+	}
+	
 	this.setVersion = function() {
 		
 		var versionCallback = function(arg, xhr){
 			var resp = JSON.parse(xhr.responseText);
-			BrewTroller.setVersionNumber(resp[2]);
-			BrewTroller.setBuild(resp[3]);
+			BrewTroller.setVersionNumber(resp[1]);
+			BrewTroller.setBuild(resp[2]);
+			
+			if (Number(resp[5]) == 0){
+				BrewTroller.setMetric(true);
+			} else {
+				BrewTroller.setMetric(false);
+			}
 		}
 		
 		this.communicate(this.getAddress()+'G', versionCallback);
 	};
 
-	this.setUpTime = function(upTimeInMillis) {
-		
-		BrewTrollerUpTime = upTimeInMillis;
-	};
 	
 	//Method to set the system boil temp
 	this.setBoilTemp = function(newValue) {
@@ -252,14 +271,14 @@ function BrewTroller() {
 		//pull values for evapRate and boil temp from BT
 		var boilTempCallback = function(empty, xhr){
 			resp = JSON.parse(xhr.responseText);
-			BrewTroller.setBoilTemp(Number(resp[2]));
+			BrewTroller.setBoilTemp(Number(resp[1]));
 		};
 		
 		this.communicate(this.getAddress() + 'A', boilTempCallback, null);
 		
 		var evapRateCallback = function(empty, xhr){
 		  resp = JSON.parse(xhr.responseText);
-		  BrewTroller.setEvapRate(Number(resp[2]));
+		  BrewTroller.setEvapRate(Number(resp[1]));
 		};
 		
 		this.communicate(this.getAddress() + 'C', evapRateCallback, null);
