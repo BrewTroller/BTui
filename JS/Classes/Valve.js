@@ -121,7 +121,7 @@ function Valve() {
 		
 		var callback = function(profiles, xhr) {
 			var resp = JSON.parse(xhr.responseText);
-			var mask = Number(resp[2]);
+			var mask = Number(resp[1]);
 			for ( i = 0; i < 20; i++ ) {
 				profiles[i].active = Boolean(mask & profiles[i].bitMask); 
 			}
@@ -152,7 +152,7 @@ function Valve() {
 		//define the callback function, because the response from the BT is the status code of all profiles we will update them all		
 		var callback = function(profiles, xhr) {
 			var resp = JSON.parse(xhr.responseText);
-			var mask = Number(resp[2]);
+			var mask = Number(resp[1]);
 			for ( i = 0; i < 20; i++ ) {
 				profiles[i].active = Boolean(mask & profiles[i].bitMask); 
 			}
@@ -174,7 +174,7 @@ function Valve() {
 		for ( i = 0; i < 20; i++ ) {
 			var callback = function(index, xhr) {
 				var resp = JSON.parse(xhr.responseText);
-				BrewTroller.valves.setProfileConfig(index, Number(resp[2]));
+				BrewTroller.valves.setProfileConfig(index, Number(resp[1]));
 			}
 			BrewTroller.communicate(BrewTroller.getAddress()+getProfileConfig+i, callback, i);
 		}

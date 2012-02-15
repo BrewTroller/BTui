@@ -475,7 +475,7 @@ function Vessel(Index) {
 		
 		//Link the settings and refresh buttons with this instance
 		this.display.getElementsByClassName('update')[0].onclick = function(){BrewTroller.Vessels[vesselIndex].manualUpdate();};
-		this.display.getElementsByClassName('tempset')[0].onclick = function(){BrewTroller.Vessels[vesselIndex].changeSetPoint();};
+		if(vesselIndex != 2) this.display.getElementsByClassName('tempset')[0].onclick = function(){BrewTroller.Vessels[vesselIndex].changeSetPoint();};
 	};
 	
 	//Method called on initial synchronization with BrewTroller, here we pull down options like heat ouput settings, temp sensor addresses
