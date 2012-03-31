@@ -1,0 +1,9 @@
+# www.robotstxt.org/
+# http://code.google.com/web/controlcrawlindex/
+
+User-agent: *
+Disallow: /cgi-bin/
+Disallow: /Resources/
+Disallow: /JS/
+Disallow: /images/
+Disallow: /CSS/

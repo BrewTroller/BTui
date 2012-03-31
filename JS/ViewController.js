@@ -231,12 +231,14 @@ var programTitleOnKeyPress = function(event){
 		event.srcElement.blur();
 		return false;
 	}
+	if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if (event.charCode < 32 || event.charCode > 126 || event.charCode == 92) return false;
   else if (event.target.textContent.length > 18) return false;
   else return true;
 };
 
 var programOnKeyPressDecimals = function(event){
+  if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if((event.charCode < 48 || event.charCode > 57) && event.charCode != 46){
 		if(event.charCode == 13){
 			event.srcElement.blur();
@@ -247,6 +249,7 @@ var programOnKeyPressDecimals = function(event){
 };
 
 var programOnKeyPress = function(event){
+  if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if(event.charCode < 48 || event.charCode > 57){
 		if(event.charCode == 13){
 			event.srcElement.blur();
@@ -257,6 +260,7 @@ var programOnKeyPress = function(event){
 };
 
 var autoUpdateFrequencyOnKeyPress = function(event){
+  if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if(event.charCode < 48 || event.charCode > 57){
 		if(event.charCode == 13){
 			event.srcElement.blur();
