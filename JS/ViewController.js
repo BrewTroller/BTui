@@ -907,7 +907,7 @@ this.initSetup = function() {
     labels: {enabled: false}
     }],
     tooltip: {pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>'},
-    exporting: {enabled: true, url:"Resources/", buttons: {printButton: {enabled: false}, exportButton: {enabled: false}}}
+    exporting: {enabled: true, url:"http://export.highcharts.com", buttons: {printButton: {enabled: false}, exportButton: {enabled: false}}}
   });
 	
 	//Add calls to viewcontroller class methods to display objects		

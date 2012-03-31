@@ -475,7 +475,7 @@ function Vessel(Index) {
 	};
 	
 	var loggedDudDataHandler = function(element, index, array){
-    if (element == NaN || element == undefined){
+    if (isNaN(element) || element == undefined){ //we use the is NaN() function to test for NaN, as regular comparisons do not work, as NaN is equal to nothing, including itself :S
       if (index == (array.length -1) && array.length > 2) array[index] = (array[index-1] + array[index-2])/2;
       else if (index == 0 && array.length > 2) array[index] = (array[index+1] + array[index+2])/2;
       else if (array.length > 2) array[index] = (array[index-1] + array[index+1])/2;

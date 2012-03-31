@@ -2,8 +2,8 @@
 *, html { font-family: Helvetica, Arial, sans-serif; }
 
 /* Import myriad pro font */
-@font-face {font-family: MyriadPro; src: url('../Resources/MYRIADPRO-REGULAR.otf');}
-@font-face {font-family: MyriadProBold; src: url('../Resources/MYRIADPRO-BOLDCONDIT.otf');}
+@font-face {font-family: MyriadPro; src: url('../Resources/MYRIADPRO-REGULAR.OTF');}
+@font-face {font-family: MyriadProBold; src: url('../Resources/MYRIADPRO-BOLDCONDIT.OTF');}
 @font-face {
   font-family: 'Poiret One';
   font-style: normal;
@@ -22,7 +22,7 @@
   font-family: 'PT Mono';
   font-style: normal;
   font-weight: normal;
-  src: local('PT Mono'), local('PTMono-Regular'), url('../Resources/PT_MONO.woff') format('woff');
+  src: local('PT Mono'), local('PTMono-Regular'), url('../Resources/PT-MONO.woff') format('woff');
 }
 
 body, form, ul, li, p, h1, h2, h3, h4, h5

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>CSS/styles.css</string>
+	<string>index.html</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,14 +26,44 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>19</integer>
+				<integer>21</integer>
 				<key>line</key>
-				<integer>684</integer>
+				<integer>22</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>1232</integer>
+			</dict>
+		</dict>
+		<key>CSS/styles.min.css</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>18808</integer>
+				<key>line</key>
+				<integer>0</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>649</integer>
+			<integer>0</integer>
 		</dict>
 		<key>JS/Classes/BrewTroller.js</key>
 		<dict>
@@ -91,6 +121,20 @@
 			<key>firstVisibleLine</key>
 			<integer>441</integer>
 		</dict>
+		<key>JS/Plugins/Jquery1.7.1.js</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>18</integer>
+				<key>line</key>
+				<integer>3</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>JS/ViewController.js</key>
 		<dict>
 			<key>caret</key>
@@ -103,27 +147,29 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>1293</integer>
+			<integer>1607</integer>
 		</dict>
 		<key>index.html</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>11</integer>
+				<integer>111</integer>
 				<key>line</key>
-				<integer>433</integer>
+				<integer>268</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>39</integer>
+			<integer>61</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>index.html</string>
 		<string>CSS/styles.css</string>
+		<string>CSS/styles.min.css</string>
+		<string>JS/Plugins/Jquery1.7.1.js</string>
 		<string>JS/ViewController.js</string>
 		<string>JS/Classes/BrewTroller.js</string>
 		<string>JS/Classes/Program.js</string>
@@ -131,8 +177,8 @@
 		<string>JS/Classes/Vessel.js</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
-	<false/>
+	<true/>
 	<key>windowFrame</key>
-	<string>{{0, 61}, {1280, 941}}</string>
+	<string>{{203, 59}, {1067, 941}}</string>
 </dict>
 </plist>
