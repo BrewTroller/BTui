@@ -121,20 +121,6 @@
 			<key>firstVisibleLine</key>
 			<integer>441</integer>
 		</dict>
-		<key>JS/Plugins/Jquery1.7.1.js</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>18</integer>
-				<key>line</key>
-				<integer>3</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
 		<key>JS/ViewController.js</key>
 		<dict>
 			<key>caret</key>
@@ -161,7 +147,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>61</integer>
+			<integer>0</integer>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
@@ -169,7 +155,6 @@
 		<string>index.html</string>
 		<string>CSS/styles.css</string>
 		<string>CSS/styles.min.css</string>
-		<string>JS/Plugins/Jquery1.7.1.js</string>
 		<string>JS/ViewController.js</string>
 		<string>JS/Classes/BrewTroller.js</string>
 		<string>JS/Classes/Program.js</string>
@@ -179,6 +164,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{203, 59}, {1067, 941}}</string>
+	<string>{{203, 61}, {1067, 941}}</string>
 </dict>
 </plist>
