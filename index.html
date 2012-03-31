@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta name="author" content="Eric Yanush" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="robots" content="all" />
+	<meta name="copyright" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+	
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="apple-touch-icon" href="Resources/BrewTrollerLogoIcon57x57.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="Resources/BrewTrollerLogoIcon72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="Resources/BrewTrollerLogoIcon114x114.png">
+	<link rel="stylesheet" type="text/css" href="CSS/styles.css" media="screen" />
+	
+	<title>BrewTroller Live</title>
+
+	<!--include external jquery and highcharts for logging charts and volume display-->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="JS/Plugins/highcharts.js"></script>
+	<script type="text/javascript" src="JS/Plugins/exporting.js"></script>
+	
+	<!--include internal scripts for App, view controller, and data model classes-->
+	<script type="text/javascript" src="JS/ViewController.js"></script>
+	<script type="text/javascript" src="JS/Classes/Vessel.js"></script>
+	<script type="text/javascript" src="JS/Classes/Valve.js"></script>
+	<script type="text/javascript" src="JS/Classes/Program.js"></script>
+	<script type="text/javascript" src="JS/Classes/BrewTroller.js"></script>
+	<script type="text/javascript" src="JS/BTUI.js"></script>
+
+</head>
+<body>
+  
+  <!-- Detect and install Chrome-Frame for IE users -->
+  <!--[if IE]>
+      <script type="text/javascript" 
+       src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+
+      <style>
+       .chromeFrameInstallDefaultStyle {
+         width: 100%; /* default is 800px */
+         border: 5px solid blue;
+       }
+      </style>
+
+      <div id="prompt">
+      </div>
+
+      <script>
+       // The conditional ensures that this code will only execute in IE,
+       // Therefore we can use the IE-specific attachEvent without worry
+       window.attachEvent("onload", function() {
+         CFInstall.check({
+           mode: "inline", // the default
+           node: "prompt"
+         });
+       });
+      </script>
+    <![endif]-->
+	<div id="programTimerIndicator"></div>
+	<div id="Content">
+		<div id="logo">
+			<img src="images/Logo.png" />
+		</div>
+		<dl>
+			<dt id="monitorLink"><a href="#Monitor">Monitor</a></dt>
+			<dd id="Monitor">
+				<div id="MonitorButtons">
+					<span>Update</span>
+					<span>Go FullScreen</span>
+				</div>
+				<div id="programTimerDisplay" class="">
+				  <div id="mashZone" class="programZone">
+				  </div>
+				  <div id="boilZone" class="programZone">
+				  </div>
+				</div>
+				<div id="Vessels">
+					<div id="HLT">
+						<p>HLT</p>
+						<div class="temperatureWrapper">
+							<p><span>---.-</span><span>&#186F</span></p>
+							<p><span class="editableField" contenteditable="true">---</span><span>&#186F</span></p>
+							<p>OFF</p>
+						</div>
+						<div class="volumeWrapper">
+							<div id="HLTChart" class="volChart"></div>
+							<p><span>--</span><span>G</span></p>
+							<p><span>--.--</span><span>G</span></p>
+						</div>
+					</div>
+					<div id="MLT">
+						<p>MLT</p>
+						<div class="temperatureWrapper">
+							<p><span>---.-</span><span>&#186F</span></p>
+							<p><span class="editableField" contenteditable="true">---</span><span>&#186F</span></p>
+							<p>OFF</p>
+						</div>
+						<div class="volumeWrapper">
+							<div id="MLTChart" class="volChart"></div>
+							<p><span>--</span><span>G</span></p>
+							<p><span>--.--</span><span>G</span></p>
+						</div>
+					</div>
+					<div id="KETTLE">
+						<p>Kettle</p>
+						<div class="temperatureWrapper">
+							<p><span>---.-</span><span>&#186F</span></p>
+							<p><span class="editableField" contenteditable="true">---</span><span>&#186F</span></p>
+							<p>OFF</p>
+						</div>
+						<div class="volumeWrapper">
+							<div id="KETTLEChart" class="volChart"></div>
+							<p><span>--.--</span><span>G</span></p>
+							<p><span>--.--</span><span>G</span></p>
+						</div>
+					</div>
+				</div>
+				<div id="Valves">
+					<ul>
+						<li id="fillHlt">Fill HLT</li>
+						<li id="fillMash">Fill Mash</li>
+						<li id="addGrain">Add Grain</li>
+						<li id="mashHeat">Mash Heat</li>
+						<li id="mashIdle">Mash Idle</li>
+						<li id="spargeIn">Sparge In</li>
+						<li id="spargeOut">Sparge Out</li>
+						<li id="boilAdditions">Boil Add'ns</li>
+						<li id="kettleLid">Kettle Lid</li>
+						<li id="chillerH2o">Chiller H2O</li>
+						<li id="chillerBeer">Chiller Beer</li>
+						<li id="boilRecirc">Boil Recirc</li>
+						<li id="drain">Drain</li>
+						<li id="hltHeat">HLT Heat</li>
+						<li id="hltIdle">HLT Idle</li>
+						<li id="kettleHeat">Kettle Heat</li>
+						<li id="kettleIdle">Kettle Idle</li>
+						<li id="user1">User 1</li>
+						<li id="user2">User 2</li>
+						<li id="user3">User 3</li>
+					</ul>
+				</div>
+			</dd>
+			<dt id="programsLink"><a href="#Programs">Programs</a></dt>
+			<dd id="Programs">
+				<ul id="programSelector">
+          <li id="programActivator">Program<ul>
+            <li data-index="0">1</li>
+            <li data-index="1">2</li>
+            <li data-index="2">3</li>
+            <li data-index="3">4</li>
+            <li data-index="4">5</li>
+            <li data-index="5">6</li>
+            <li data-index="6">7</li>
+            <li data-index="7">8</li>
+            <li data-index="8">9</li>
+            <li data-index="9">10</li>
+            <li data-index="10">11</li>
+            <li data-index="11">12</li>
+            <li data-index="12">13</li>
+            <li data-index="13">14</li>
+            <li data-index="14">15</li>
+            <li data-index="15">16</li>
+            <li data-index="16">17</li>
+            <li data-index="17">18</li>
+            <li data-index="18">19</li>
+            <li data-index="19">20</li>
+          </ul></li>
+        </ul>
+        <div id="programDisplay">
+          <p id="programTitle"><span class="identifier">name:</span><span contenteditable="true" class="editableField parameter">untitled</span></p>
+          <div id="programLeftColumn" class="column">
+            <p><span class="identifier col2Id">Sparge Temp:</span><span contenteditable="true" class="editableField parameter">---</span>&#186</p>
+            <p><span class="identifier col2Id">HLT Target:</span><span contenteditable="true" class="editableField parameter">---</span>&#186</p>
+            <p><span class="identifier col2Id">Batch Vol:</span><span contenteditable="true" class="editableField parameter">---</span></p>
+            <p><span class="identifier col2Id">Grain Weight:</span><span contenteditable="true" class="editableField parameter">---</span></p>
+            <p><span class="identifier col2Id">Boil Time:</span><span contenteditable="true" class="editableField parameter">---</span></p>
+            <p><span class="identifier col2Id">Mash Ratio:</span><span contenteditable="true" class="editableField parameter">-.--</span>:1</p>
+            <p><span class="identifier col2Id">Pitch Temp:</span><span contenteditable="true" class="editableField parameter">---</span>&#186</p>
+            <p id="editBoilAdditions"><span>Boil Additions...</span></p>
+          </div>
+          <div id="programRightColumn" class="column">
+            <p data-mashStep="doughIn"><span class="identifier stepName">Dough In:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="acid"><span class="identifier stepName">Acid:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="protein"><span class="identifier stepName">Protein:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="sacch"><span class="identifier stepName">Sacch:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="sacch2"><span class="identifier stepName">Sacch 2:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="mashOut"><span class="identifier stepName">Mash Out:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <div id="strikeHeat" class="splitButton">
+							<label>Strike Heat:</label>
+							<span class="leftButton selected">HLT</span>
+							<span class="rightButton">MLT</span>
+						</div>
+          </div>
+          <div id ="boilAdditionsOptions">
+            <div class="column columnHidden">
+              <div data-boilAddID="atboil" class="splitButton">
+  							<label>At Boil:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at105" class="splitButton">
+  							<label>105 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at90" class="splitButton">
+  							<label>90 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at75" class="splitButton">
+  							<label>75 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at60" class="splitButton">
+  							<label>60 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at45" class="splitButton">
+  							<label>45 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+            </div>
+            <div class="column columnHidden">
+              <div data-boilAddID="at30" class="splitButton">
+  							<label>30 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at20" class="splitButton">
+  							<label>20 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at15" class="splitButton">
+  							<label>15 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at10" class="splitButton">
+  							<label>10 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at5" class="splitButton">
+  							<label>5 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at0" class="splitButton">
+  							<label>0 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  					</div>
+          </div>
+          <div id="buttonFooter" class="">
+            <span id="reloadFromBT">Reload From BT</span><span id="importFromBeerXML">Import From BeerXML</span><input type="file" id="fileGetter" name="file[]" accept="text/xml, */xml" style="height: 0; width: 0; visibility: hidden;"><span id="exportToBeerXML">Export To BeerXML</span><span id="saveToBT">Save to BT</span>
+          </div>
+          <div id="boilAddButtonFooter" class="buttonFooterHidden">
+            <span id="boilAddBack">Back</span>
+            <form id="recipeExportForm" style="display:hidden;" action="http://live.brewtroller.com/cgi-bin/recipeExport.py" method="post">
+              <input type="text" name="name">
+              <input type="text" name="data">
+            </form>
+          </div>
+        </div>
+			</dd>
+			<dt id="loggingLink"><a href="#Logging">Logging</a></dt>
+			<dd id="Logging">
+			  <div id="logTimeBar">
+  				<div id="logStartTime" class="timeSelector">
+  				  <label for="startTime">Start: </label>
+  				  <span id="startTime"><span data-selected="-1">--:--:--</span>
+  				  <div class="timeList"></div></span>
+  				</div>
+  				<div id="logEndTime" class="timeSelector">
+  				  <label for="endTime">End: </label>
+  				  <span id="endTime"><span data-selected="-1">--:--:--</span>
+  				  <div class="timeList"></div></span>
+  				</div>
+  				<div id="logResolution" class="timeSelector">
+  				  <label for="resolution">Resolution: </label>
+  				  <span id="resolution"><span data-selected="1">All</span>
+  				  <div class="resolutionList">
+  				    <span data-resolution="1">All</span>
+  				    <span data-resolution=".75">3/4</span>
+  				    <span data-resolution="2">1/2</span>
+  				    <span data-resolution="4">1/4</span>
+  				    <span data-resolution="8">1/8</span>
+  				    <span data-resolution="10">1/10</span>
+  				    <span data-resolution="25">1/25</span>
+  				    <span data-resolution="50">1/50</span>
+  				    <span data-resolution="100">1/100</span>
+  				  </div></span>
+  				</div>
+				</div>
+				<div id="logVesselTabs">
+				  <span id="hltLogSelector">HLT
+				    <div class="vesselLogSelectors" data-vessel-id="hlt">
+				      <div class="splitButton" data-option="temp">
+  						  <label>Temperature:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetTemp">
+  						  <label>Target Temp:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="heat">
+  						  <label>Heat:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="volume">
+  						  <label>Volume:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetVol">
+  						  <label>Target Vol:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+				    </div>
+				  </span>
+				  <span id="mltLogSelector">MLT
+				    <div class="vesselLogSelectors" data-vessel-id="mlt">
+				      <div class="splitButton" data-option="temp">
+  						  <label>Temperature:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetTemp">
+  						  <label>Target Temp:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="heat">
+  						  <label>Heat:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="volume">
+  						  <label>Volume:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetVol">
+  						  <label>Target Vol:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					</div>
+				  </span>
+				  <span id="kettleLogSelector">Kettle
+				    <div class="vesselLogSelectors" data-vessel-id="kettle">
+				      <div class="splitButton" data-option="temp">
+  						  <label>Temperature:</label>
+  						  <span class="leftButton">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetTemp">
+  						  <label>Target Temp:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="heat">
+  						  <label>Heat:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="volume">
+  						  <label>Volume:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetVol">
+  						  <label>Target Vol:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					</div>
+				  </span>
+				</div>
+				<div id="logGraph"></div>
+				<div id="logExportBar"><span>Export PDF</span><span>Export JPEG</span></div>
+			</dd>
+			<dt id ="settingsLink"><a href="#Settings">Settings</a></dt>
+			<dd id="Settings">
+				<div id="SettingsMenu">
+				<span class="SettingsMenuButton selected"><p>Global</p><div class="tabPointer"></div></span>
+				<span class="SettingsMenuButton"><p>HLT</p><div class="tabPointer tabPointerHidden"></div></span>
+				<span class="SettingsMenuButton"><p>MLT</p><div class="tabPointer tabPointerHidden"></div></span>
+				<span class="SettingsMenuButton"><p>Kettle</p><div class="tabPointer tabPointerHidden"></div></span>
+				</div>
+				<div id="GlobalSettings" class="SettingsTab">
+					<form onsubmit="return false;">
+						<label for="Address">address:</label>
+						<input type="text" id="Address" placeholder="http://your-btnic-address" />
+					</form>
+					<div id="vesselDisplayOptions">
+						<div id="hltDisp" class="splitButton">
+							<label>HLT:</label>
+							<span class="leftButton selected">show</span>
+							<span class="rightButton">hide</span>
+						</div>
+						<div id="mltDisp" class="splitButton">
+							<label>MLT:</label>
+							<span class="leftButton selected">show</span>
+							<span class="rightButton">hide</span>
+						</div>
+						<div id="kettleDisp" class="splitButton">
+							<label>Kettle:</label>
+							<span class="leftButton selected">show</span>
+							<span class="rightButton">hide</span>
+						</div>
+					</div>
+					<div id="autoUpdate" class="splitButton">
+						<label>Auto Update:</label>
+						<span class="leftButton">on</span>
+						<span class="rightButton selected">off</span>
+					</div>
+					<div id="autoUpdateFrequency" class="Hidden">
+						<label for="numberDisplay">Frequency:</label>
+						<span contenteditable="true" class="editableField parameter">5</span>
+	          <span id="unitId">seconds</span>
+					</div>
+				</div>
+				<div id="HLTSettings" class="SettingsTab SettingsTabHidden">
+					<div class="outputSettings">
+					  <div class="splitButton">
+						  <label>PID Mode:</label>
+						  <span class="leftButton">on</span>
+						  <span class="rightButton selected">off</span>
+					  </div>
+					  <div class="numberInput">
+  						<label>Hysteresis:</label>
+  						<span class="numberDisplay">5 seconds</span>
+  						<span class="topButton">+</span>
+  						<span class="bottomButton">-<span>
+  					</div>
+  					  <div class="pidOptions">  
+  					    <div class="numberInput">
+    						<label>P Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>I Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>D Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>Cycle Time:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    				</div>
+					</div>
+				  <div class="volumeSettings">
+			      
+				  </div>
+				</div>
+				<div id="MLTSettings" class="SettingsTab SettingsTabHidden">
+					<div class="outputSettings">
+					  <div class="splitButton">
+						  <label>PID Mode:</label>
+						  <span class="leftButton">on</span>
+						  <span class="rightButton selected">off</span>
+					  </div>
+					  <div class="numberInput">
+  						<label>Hysteresis:</label>
+  						<span class="numberDisplay">5 seconds</span>
+  						<span class="topButton">+</span>
+  						<span class="bottomButton">-<span>
+  					</div>
+  					<div class="pidOptions">
+  					  <div class="numberInput">
+    						<label>P Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>I Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>D Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>Cycle Time:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    				</div>
+			    </div>
+				</div>
+				<div id="KettleSettings" class="SettingsTab SettingsTabHidden">
+				  <div class="outputSettings">
+				    <div class="splitButton">
+  					  <label>PID Mode:</label>
+  					  <span class="leftButton">on</span>
+  					  <span class="rightButton selected">off</span>
+  				  </div>
+  				  <div class="numberInput">
+  						<label>Hysteresis:</label>
+  						<span class="numberDisplay">1.0&#186</span>
+  						<span class="topButton">+</span>
+  						<span class="bottomButton">-<span>
+  					</div>
+  					<div class="pidOptions">
+  					  <div class="numberInput">
+    						<label>P Gain:</label>
+    						<span class="numberDisplay">3</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>I Gain:</label>
+    						<span class="numberDisplay">4</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>D Gain:</label>
+    						<span class="numberDisplay">2</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>Cycle Time:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+  					</div>
+  				</div>
+				</div>
+			</dd>	
+		</dl>
+	</div>
+	
+</body>
+</html>
