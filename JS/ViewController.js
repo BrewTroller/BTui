@@ -228,7 +228,7 @@ var targetTemperatureOnBlur = function(event){
 
 var programTitleOnKeyPress = function(event){
   if(event.charCode == 13 || event.keyCode == 13){
-		event.srcElement.blur();
+		event.target.blur();
 		return false;
 	}
 	if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
@@ -241,7 +241,7 @@ var programOnKeyPressDecimals = function(event){
   if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if((event.charCode < 48 || event.charCode > 57) && event.charCode != 46){
 		if(event.charCode == 13 || event.keyCode == 13){
-			event.srcElement.blur();
+			event.target.blur();
 			return false;
 		}else return false;
 	} else if (event.target.textContent.length > 3) return false;
@@ -252,7 +252,7 @@ var programOnKeyPress = function(event){
   if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if(event.charCode < 48 || event.charCode > 57){
 		if(event.charCode == 13 || event.keyCode == 13){
-			event.srcElement.blur();
+			event.target.blur();
 			return false;
 		}else return false;
 	} else if (event.target.textContent.length > 2) return false;
@@ -263,7 +263,7 @@ var autoUpdateFrequencyOnKeyPress = function(event){
   if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if(event.charCode < 48 || event.charCode > 57){
 		if(event.charCode == 13 || event.keyCode == 13){
-			event.srcElement.blur();
+			event.target.blur();
 			return false;
 		}else return false;
 	} else if (event.target.textContent.length > 5) return false;
@@ -1304,12 +1304,11 @@ this.initSetup = function() {
 		if (event == undefined){
 			showActiveSettingsTab();
 			return;
-		}
-		var srcEl = event.srcElement? event.srcElement : event.target; 
+		} 
 		var tab;
 		var property;
 		for (property in settingsTabs){
-			if (settingsTabs[property].tab == srcEl || settingsTabs[property].tab.children[0] == srcEl || settingsTabs[property].tab.children[1] == srcEl){
+			if (settingsTabs[property].tab == event.target || settingsTabs[property].tab.children[0] == event.target || settingsTabs[property].tab.children[1] == event.target){
 				tab = settingsTabs[property];
 				break;
 			}
@@ -1331,27 +1330,25 @@ this.initSetup = function() {
 	};
 	
 	this.vesselDisplayHandler = function(event){
-		var srcEl = event.srcElement? event.srcElement : event.target;
 		var property;
 		var vessel;
 		outer: for (vessel in globalSettings.vesselDisplayOptions){
 			for (property in globalSettings.vesselDisplayOptions[vessel]){
-				if (srcEl == globalSettings.vesselDisplayOptions[vessel][property]) break outer;
+				if (event.target == globalSettings.vesselDisplayOptions[vessel][property]) break outer;
 			}
 		}
 		if (property == "showButton"){
-			if(!$(srcEl).hasClass('selected'))showVessel(vessel); 
+			if(!$(event.target).hasClass('selected'))showVessel(vessel); 
 		}
 		if (property == "hideButton"){
-			if(!$(srcEl).hasClass('selected'))hideVessel(vessel);
+			if(!$(event.target).hasClass('selected'))hideVessel(vessel);
 		}
 	}
 	
 	this.autoUpdateHandler = function(event){
-		var srcEl = event.srcElement? event.srcElement : event.target;
-		if (srcEl == globalSettings.autoUpdate.onButton){
-			if (!$(srcEl).hasClass('selected')){
-				$(srcEl).addClass('selected');
+		if (event.target == globalSettings.autoUpdate.onButton){
+			if (!$(event.target).hasClass('selected')){
+				$(event.target).addClass('selected');
 				$(globalSettings.autoUpdate.offButton).removeClass('selected');
 				$(settingsTabs.global.tabDisplay).addClass('autoUpdateEnabled');
 				$(globalSettings.autoUpdate.frequencyDisplay.parentElement).removeClass('Hidden');
@@ -1360,15 +1357,15 @@ this.initSetup = function() {
 				BrewTroller.setUpdateFrequency(freq);
 				BrewTroller.startAutoUpdate();
 			}
-		} else if (srcEl == globalSettings.autoUpdate.offButton){
-			if (!$(srcEl).hasClass('selected')){
-				$(srcEl).addClass('selected');
+		} else if (event.target == globalSettings.autoUpdate.offButton){
+			if (!$(event.target).hasClass('selected')){
+				$(event.target).addClass('selected');
 				$(globalSettings.autoUpdate.onButton).removeClass('selected');
 				$(globalSettings.autoUpdate.frequencyDisplay.parentElement).addClass('Hidden');
 				$(settingsTabs.global.tabDisplay).removeClass('autoUpdateEnabled');
 				BrewTroller.stopAutoUpdate();
 			}
-		} else if (srcEl == globalSettings.autoUpdate.frequencyDisplay) {
+		} else if (event.target == globalSettings.autoUpdate.frequencyDisplay) {
 		  var freq = Number(globalSettings.autoUpdate.frequencyDisplay.textContent);
 		  if (freq < 5){
 		    globalSettings.autoUpdate.frequencyDisplay.textContent = "5";
@@ -1409,10 +1406,9 @@ this.initSetup = function() {
 	};
 	
 	this.editTargetTemperature = function(event) {
-		var srcEl = event.srcElement? event.srcElement : event.target;
 		var vessel;
 		for (property in vessels){
-			if (vessels[property].targetTemperatureDisplay == srcEl){
+			if (vessels[property].targetTemperatureDisplay == event.target){
 				vessel = property;
 				break;
 			}
@@ -1487,8 +1483,7 @@ this.initSetup = function() {
 	};
 	
 	this.toggleValveProfile = function(event){
-		var srcEl = event.srcElement? event.srcElement : event.target;
-		BrewTroller.valves().toggleState(srcEl.id);
+		BrewTroller.valves().toggleState(event.target);
 	};
 	
 	//private class methods
