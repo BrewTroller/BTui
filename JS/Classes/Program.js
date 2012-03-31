@@ -16,6 +16,7 @@ function Program(index){
 	var pitchTemperature;	//target finished wort temperature
 	var mashSchedule = {};	//mash schedule -> object of objects {step time in minutes, step temperature}
 	var strikeHeatVessel;	//indicates the vessel that the strike water should be heated in, valid values are 0=HLT and 1=MLT
+	var boilAddBitMask; //variable to hold the bit mask representing the boil addition schedule
 	var boilAdditions ={};		//object of objects indicating intended boil addition schedule
 	var grainTemperature;	//indicates the temperature of the grain add dough in
 	var preBoilVolume;	//the calculated total boil volume
@@ -36,16 +37,17 @@ function Program(index){
 	var getProgramTimes = '_';
 	var setProgramTimes = '`';
 	var getProgramVolumes = 'x';
+	var setProgramVolumes = 'y';
 	var getCalculatedProgramVolumes = 'm';
 	var getGrainTemperature = 'h';
 	
 	//properly instantiate mashSchedule and boilAddidion objects
 	mashSchedule = {
 		doughIn:{step: "Dough In",		time: 0, temperature: 0},
-		acidRest:{step: "Acid Rest", 	time: 0, temperature: 0},
-		proteinRest:{step: "Protein Rest",	time: 0, temperature: 0},
-		sacchRest:{step: "Sacch Rest",	time: 0, temperature: 0},
-		sacch2Rest:{step: "Sacch2 Rest",	time: 0, temperature: 0},
+		acid:{step: "Acid Rest", 	time: 0, temperature: 0},
+		protein:{step: "Protein Rest",	time: 0, temperature: 0},
+		sacch:{step: "Saccharification",	time: 0, temperature: 0},
+		sacch2:{step: "Saccharification 2",	time: 0, temperature: 0},
 		mashOut:{step: "Mash Out",		time: 0, temperature: 0},
 	};
 	
@@ -81,20 +83,20 @@ function Program(index){
 	this.setTemperatures = function(temperatureArray) {
 		
 		mashSchedule.doughIn.temperature = Number(temperatureArray[1]);
-		mashSchedule.acidRest.temperature = Number(temperatureArray[2]);
-		mashSchedule.proteinRest.temperature = Number(temperatureArray[3]);
-		mashSchedule.sacchRest.temperature = Number(temperatureArray[4]);
-		mashSchedule.sacch2Rest.temperature = Number(temperatureArray[5]);
+		mashSchedule.acid.temperature = Number(temperatureArray[2]);
+		mashSchedule.protein.temperature = Number(temperatureArray[3]);
+		mashSchedule.sacch.temperature = Number(temperatureArray[4]);
+		mashSchedule.sacch2.temperature = Number(temperatureArray[5]);
 		mashSchedule.mashOut.temperature = Number(temperatureArray[6]);
 	};
 	
 	this.setTimes = function(timesArray) {
 		
 		mashSchedule.doughIn.time = Number(timesArray[1]);
-		mashSchedule.acidRest.time = Number(timesArray[2]);
-		mashSchedule.proteinRest.time = Number(timesArray[3]);
-		mashSchedule.sacchRest.time = Number(timesArray[4]);
-		mashSchedule.sacch2Rest.time = Number(timesArray[5]);
+		mashSchedule.acid.time = Number(timesArray[2]);
+		mashSchedule.protein.time = Number(timesArray[3]);
+		mashSchedule.sacch.time = Number(timesArray[4]);
+		mashSchedule.sacch2.time = Number(timesArray[5]);
 		mashSchedule.mashOut.time = Number(timesArray[6]);
 	};
 	
@@ -143,7 +145,8 @@ function Program(index){
 	this.getProgramFromBrewTroller = function() {
 		
 		var programNameCallback = function(programIndex, xhr) {
-			var resp = JSON.parse(xhr.responseText);
+		  if (xhr.responseText.lastIndexOf('\\') != -1) var resp = JSON.parse(xhr.responseText.replace('\\', ' '));
+			else var resp = JSON.parse(xhr.responseText);
 			var program = BrewTroller.getProgram(programIndex);
 			program.setTitle(resp[1]);
 		};
@@ -192,9 +195,222 @@ function Program(index){
 		BrewTroller.communicate(BrewTroller.getAddress()+getGrainTemperature+programIndex, grainTemperatureCallback, programIndex);
 	};
 	
+	//Method to reload data from the brewtroller, method also notifies the viewController when the data has been updated
+	this.reloadProgramFromBrewTroller = function(){
+	  var programNameCallback = function(programIndex, xhr) {
+		  if (xhr.responseText.lastIndexOf('\\') != -1) var resp = JSON.parse(xhr.responseText.replace('\\', ' '));
+			else var resp = JSON.parse(xhr.responseText);
+			var program = BrewTroller.getProgram(programIndex);
+			program.setTitle(resp[1]);
+			BTUI.viewPort.reloadProgramFromBrewTrollerEventHandler("title");
+		};
+		BrewTroller.communicate(BrewTroller.getAddress()+getProgramName+programIndex, programNameCallback, programIndex);
+		
+		var programTemperaturesCallback = function(programIndex, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var program = BrewTroller.getProgram(programIndex);
+			program.setTemperatures(resp);
+			BTUI.viewPort.reloadProgramFromBrewTrollerEventHandler("programTemperatures");
+		};
+		BrewTroller.communicate(BrewTroller.getAddress()+getProgramTemperatures+programIndex, programTemperaturesCallback, programIndex);
+		
+		var programTimesCallback = function(programIndex, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var program = BrewTroller.getProgram(programIndex);
+			program.setTimes(resp);
+			BTUI.viewPort.reloadProgramFromBrewTrollerEventHandler("programTimes");
+		};
+		BrewTroller.communicate(BrewTroller.getAddress()+getProgramTimes+programIndex, programTimesCallback, programIndex);
+		
+		var programGlobalsCallback = function(programIndex, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var program = BrewTroller.getProgram(programIndex);
+			program.setGlobals(resp);
+			BTUI.viewPort.reloadProgramFromBrewTrollerEventHandler("globals");
+		};
+		BrewTroller.communicate(BrewTroller.getAddress()+getProgramSettings+programIndex, programGlobalsCallback, programIndex);
+		
+		var programVolumesCallback = function(programIndex, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var program = BrewTroller.getProgram(programIndex);
+			program.setVolumes(resp);
+			BTUI.viewPort.reloadProgramFromBrewTrollerEventHandler("volumes");
+		};
+		BrewTroller.communicate(BrewTroller.getAddress()+getProgramVolumes+programIndex, programVolumesCallback, programIndex);
+		
+		var calculatedVolumesCallback = function(programIndex, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var program = BrewTroller.getProgram(programIndex);
+			program.setCalculatedVolumes(resp);
+			BTUI.viewPort.reloadProgramFromBrewTrollerEventHandler("calculatedVolumes");
+		};
+		BrewTroller.communicate(BrewTroller.getAddress()+getCalculatedProgramVolumes+programIndex, calculatedVolumesCallback, programIndex);
+		
+		var grainTemperatureCallback = function(programIndex, xhr) {
+			var resp = JSON.parse(xhr.responseText);
+			var program = BrewTroller.getProgram(programIndex);
+			program.setGrainTemperature(Number(resp[1]));
+			BTUI.viewPort.reloadProgramFromBrewTrollerEventHandler("grainTemperature");
+		};
+		BrewTroller.communicate(BrewTroller.getAddress()+getGrainTemperature+programIndex, grainTemperatureCallback, programIndex);
+	};
+	
 	//Method to load recipe data from beerXML format file
 	this.getRecipeFromBeerXML = function(xmlDoc) {
+	  //check to make sure this is a valid document
+		if (xmlDoc.querySelector('RECIPE')){
+		  recipeBeerXMLDoc = xmlDoc;
+		  		  
+		  //Parameter Resets
+		  Title = undefined;
+		  grainWeight = 0;
+		  for (var property in mashSchedule){
+		    mashSchedule[property].time = 0;
+		    mashSchedule[property].temperature = 0;
+		  }
+		  for (var property in boilAdditions){
+		    boilAdditions[property].state = false;
+		  }
 		
+		  var targetUnits = BrewTroller.usesMetric() ? "metric" : "imperial";
+		  var recipe = recipeBeerXMLDoc.querySelector('RECIPE');
+		  var nameNodes = recipe.querySelectorAll('NAME');
+		  for (var i = 0; i < nameNodes.length; i++){
+		    if (nameNodes[i].parentNode == recipe) Title = nameNodes[i].textContent;
+		  }
+		  if (Title == undefined) Title = "untitled";
+		  if (Title.length > 18) Title = Title.substr(0, 19);
+		  batchVolume = Number(correctUnits(Number(recipe.querySelector('BATCH_SIZE').textContent), "volume", "metric", targetUnits).toFixed(1));
+		  boilLength = Number(recipe.querySelector('BOIL_TIME').textContent);
+		  spargeTemperature = recipe.querySelector('SPARGE_TEMP') ? Number(correctUnits(Number(recipe.querySelector('SPARGE_TEMP').textContent), "temperature", "metric", targetUnits).toFixed(0)) : 0;
+		  hltTemperature = spargeTemperature;
+		  //get mash ratio, and convert to proper units
+		  var ratio;
+		  if (recipe.querySelector('WATER_GRAIN_RATIO')){
+		    ratio = recipe.querySelector('WATER_GRAIN_RATIO').textContent;
+		    if (ratio.lastIndexOf('qt/lb') != -1){
+		      ratio = Number(ratio.replace(' qt/lb', ''));
+		      mashRatio = Number(correctUnits(ratio, "ratio", "imperial", targetUnits).toFixed(2));
+		    } else if (ratio.lastIndexOf('l/kg')){
+		      ratio = Number(ratio.replace(' l/kg', ''));
+		      mashRatio = Number(correctUnits(ratio, "ratio", "imperial", targetUnits).toFixed(2));
+		    }
+	    } else ratio = 0;
+		  //Determine Grain bill weight
+		  var fermentables = recipe.querySelectorAll('FERMENTABLE');
+		  //loop through array of Fermentables, if it is of type Grain we add its weight to the total grainWeight
+		  for (var i = 0; i < fermentables.length; i++){
+		    if (fermentables[i].querySelector('TYPE').textContent == ("Grain" || "grain")) grainWeight = grainWeight + Number(fermentables[i].querySelector("AMOUNT").textContent);
+		  }
+		  //ensure we convert the units if necessary
+		  grainWeight = Number(correctUnits(grainWeight, "weight", "metric", targetUnits).toFixed(2));
+		  //Set a default for pitch temperature
+		  pitchTemperature = recipe.querySelector('PRIMARY_TEMP') ? Number(correctUnits(Number(recipe.querySelector('PRIMARY_TEMP').textContent), "temperature", "metric", targetUnits).toFixed(0)) : Number(correctUnits(72, "temperature", "imperial", targetUnits).toFixed(0));
+		  //get and store the mash steps
+		  var mashSteps = recipe.querySelectorAll('MASH_STEP');
+		  for (var i = 0; i < mashSteps.length; i++){
+		    var step = undefined;
+		    for (var property in mashSchedule){
+		      if (mashSteps[i].querySelector("NAME").textContent == mashSchedule[property].step){
+		        step = property;
+		        break;
+		      } 
+		    }  if (step == undefined){
+		        var name = mashSteps[i].querySelector("NAME").textContent.toUpperCase(); //cast the name to all caps to rule out case matching issues
+		        if (name.toUpperCase().lastIndexOf("CONVERSION") != -1) step = "sacch";
+		        else if (name.lastIndexOf("OUT") != -1) step = "mashOut";
+		        else if (name.lastIndexOf("PROTEIN") != -1) step = "protein";
+		        else if (name.lastIndexOf("ACID") != -1) step = "acid";
+		        else if (name.lastIndexOf("DOUGH") != -1) step = "doughIn";
+		        else if (name.lastIndexOf("MASH IN") != -1) step = "sacch";
+		        else if (mashSteps.length == 1 || (mashSteps.length == 2 && i == 0)) step = "sacch"; //if there is only one oddly or genericlly named step we will default to sacch rest
+		        else if (mashSteps.length == 2 && i == 1) step = "mashOut"; // if there are two oddly named steps we will default the second to mash out
+		      }
+		    if (step == "sacch" && mashSchedule[step].time != 0) step == "sacch2";
+		    mashSchedule[step].time = Number(mashSteps[i].querySelector('STEP_TIME').textContent);
+		    if (mashSchedule[step].time == 0) mashSchedule[step].time = Number(mashSteps[i].querySelector('RAMP_TIME').textContent); 
+		    mashSchedule[step].temperature = Number(correctUnits(Number(mashSteps[i].querySelector('STEP_TEMP').textContent), "temperature", "metric", targetUnits).toFixed(0));
+		  }	
+		  //get and store boil additions
+		  var misc = recipe.querySelectorAll('MISC');
+		  var hops = recipe.querySelectorAll('HOP');
+		  for (var i = 0; i < misc.length; i++){
+		    var use = misc[i].querySelector('USE').textContent.toUpperCase();
+		    if (use == "BOIL"){
+		      var time = Number(misc[i].querySelector("TIME").textContent);
+		      var found = false;
+		      for (var property in boilAdditions){
+		        if (time == Number(property.replace("at", ""))){
+		          boilAdditions[property].state = true;
+		          found = true;
+		          break;
+		        }
+		      } 
+		      //if we havent found the right addition time, round to nearest 5 and try again
+		      if (!found){
+		        time = Math.round(time/5)*5;
+		        for (var property in boilAdditions){
+  		        if (time == Number(property.replace("at", ""))){
+  		          boilAdditions[property].state = true;
+  		          found = true;
+  		          break;
+  		        }
+  		      }
+		      }
+		      //if still not found round to nearest 10 and try again
+		      if (!found){
+		        time = Math.round(time/10)*10;
+		        for (var property in boilAdditions){
+  		        if (time == Number(property.replace("at", ""))){
+  		          boilAdditions[property].state = true;
+  		          found = true;
+  		          break;
+  		        }
+  		      }
+		      }
+		    }
+		  }
+		  for (var i = 0; i < hops.length; i++){
+		    var use = hops[i].querySelector('USE').textContent.toUpperCase();
+		    if (use == "FIRST WORT"){
+		      boilAdditions.atboil.state = true;
+		    } else if (use == "AROMA"){
+		      boilAdditions.at0.state = true;
+		    } else if (use == "BOIL"){
+		      var time = Number(hops[i].querySelector("TIME").textContent);
+		      var found = false;
+		      for (var property in boilAdditions){
+		        if (time == Number(property.replace("at", ""))){
+		          boilAdditions[property].state = true;
+		          found = true;
+		          break;
+		        }
+		      } 
+		      //if we havent found the right addition time, round to nearest 5 and try again
+		      if (!found){
+		        time = Math.round(time/5)*5;
+		        for (var property in boilAdditions){
+  		        if (time == Number(property.replace("at", ""))){
+  		          boilAdditions[property].state = true;
+  		          found = true;
+  		          break;
+  		        }
+  		      }
+		      }
+		      //if still not found round to nearest 10 and try again
+		      if (!found){
+		        time = Math.round(time/10)*10;
+		        for (var property in boilAdditions){
+  		        if (time == Number(property.replace("at", ""))){
+  		          boilAdditions[property].state = true;
+  		          found = true;
+  		          break;
+  		        }
+  		      }
+		      }
+		    }
+		  }  
+		}
 	};
 	
 	//Method to save program to brewtroller
@@ -203,6 +419,8 @@ function Program(index){
 	};
 	
 	this.convertToBeerXML = function() {
+		
+		var currentUnits = BrewTroller.usesMetric() ? "metric" : "imperial";
 		
 		//initialize an empty beer xml document
 		var parser = new DOMParser();
@@ -249,6 +467,11 @@ function Program(index){
 		var efficiency = recipeBeerXMLDoc.createElement("EFFICIENCY");
 		efficiency.textContent = "75";
 		newRecipe.appendChild(efficiency);
+		
+		var primaryTemp = recipeBeerXMLDoc.createElement("PRIMARY_TEMP");
+		primaryTemp.textContent = correctUnits(pitchTemperature, "temperature", currentUnits, "metric");
+		newRecipe.appendChild(primaryTemp);
+		
 		//Append other Required Record Sets
 		var hops = recipeBeerXMLDoc.createElement("HOPS");
 		newRecipe.appendChild(hops);
@@ -385,108 +608,72 @@ function Program(index){
 	//methods to save data from user input to Program instance, to save the changes, saveProgramToBrewTroller() should be called
 	this.setNewTitle = function(newTitle) {
 		Title = newTitle;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramName+programIndex+'&'+Title, function(){}, programIndex);
 	};
 	
-	this.setNewDoughInTemperature = function(newTemp) {
-		mashSchedule.doughIn.temperature = newTemp;
-	};
-	
-	this.setNewAcidRestTemperature = function(newTemp) {
-		mashSchedule.acidRest.temperature = newTemp;
-	};
-	
-	this.setNewProteinRestTemperature = function(newTemp) {
-		mashSchedule.proteinRest.temperature = newTemp;
-	};
-	
-	this.setNewSacchRestTemperature = function(newTemp) {
-		mashSchedule.sacchRest.temperature = newTemp;
-	};
-	
-	this.setNewSacch2RestTemperature = function(newTemp) {
-		mashSchedule.sacch2Rest.temperature = newTemp;
-	};
-	
-	this.setNewMashOutTemperature = function(newTemp) {
-		mashSchedule.mashOut.temperature = newTemp;
-	};
-	
-	this.setNewDoughInLength = function(newLength) {
-		mashSchedule.doughIn.time = newLength;
-	};
-	
-	this.setNewAcidRestLength = function(newLength) {
-		mashSchedule.acidRest.time = newLength;
-	};
-	
-	this.setNewProteinRestLength = function(newLength) {
-		mashSchedule.proteinRest.time = newLength;
-	};
-	
-	this.setNewSacchRestLength = function(newLength) {
-		mashSchedule.sacchRest.time = newLength;
-	};
-	
-	this.setNewSacch2RestLength = function(newLength) {
-		mashSchedule.sacch2Rest.time = newLength;
-	};
-	
-	this.setNewMashOutLength = function(newLength) {
-		mashSchedule.mashOut.time = newLength;
+	this.setNewMashSchedule = function(newSched){
+	  for (var property in newSched){
+	    mashSchedule[property].time = newSched[property].time;
+	    mashSchedule[property].temperature = newSched[property].temperature;
+	  }
+	  BrewTroller.communicate(BrewTroller.getAddress()+setProgramTimes+programIndex+'&'+mashSchedule.doughIn.time+'&'+mashSchedule.acid.time+'&'+mashSchedule.protein.time+'&'+mashSchedule.sacch.time+'&'+mashSchedule.sacch2.time+'&'+mashSchedule.mashOut.time, function(){}, programIndex);
+	  BrewTroller.communicate(BrewTroller.getAddress()+setProgramTemperatures+programIndex+'&'+mashSchedule.doughIn.temperature+'&'+mashSchedule.acid.temperature+'&'+mashSchedule.protein.temperature+'&'+mashSchedule.sacch.temperature+'&'+mashSchedule.sacch2.temperature+'&'+mashSchedule.mashOut.temperature, function(){}, programIndex);
 	};
 	
 	this.setNewBatchVolume = function(newVol) {
 		batchVolume = newVol;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramVolumes+programIndex+'&'+batchVolume*1000+'&'+grainWeight*1000+'&'+mashRatio*100, function(){}, programIndex);
 	};
 	
 	this.setNewBoilLength = function(newLength) {
 		boilLength = newLength;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramSettings+programIndex+'&'+spargeTemperature+'&'+hltTemperature+'&'+boilLength+'&'+pitchTemperature+'&'+boilAddBitMask+'&'+strikeHeatVessel, function(){}, programIndex);
 	};
 	
 	this.setNewMashRatio = function(newRatio) {
 		mashRatio = newRatio;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramVolumes+programIndex+'&'+batchVolume*1000+'&'+grainWeight*1000+'&'+mashRatio*100, function(){}, programIndex);
 	};
 	
 	this.setNewHLTTarget = function(newTarget) {
 		hltTemperature = newTarget;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramSettings+programIndex+'&'+spargeTemperature+'&'+hltTemperature+'&'+boilLength+'&'+pitchTemperature+'&'+boilAddBitMask+'&'+strikeHeatVessel, function(){}, programIndex);
 	};
 	
 	this.setMLTAsStrikeHeat = function() {
 		strikeHeatVessel = 1;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramSettings+programIndex+'&'+spargeTemperature+'&'+hltTemperature+'&'+boilLength+'&'+pitchTemperature+'&'+boilAddBitMask+'&'+strikeHeatVessel, function(){}, programIndex);
 	};
 	
 	this.setHLTAsStrikeHeat = function() {
 		strikeHeatVessel = 0;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramSettings+programIndex+'&'+spargeTemperature+'&'+hltTemperature+'&'+boilLength+'&'+pitchTemperature+'&'+boilAddBitMask+'&'+strikeHeatVessel, function(){}, programIndex);
 	};
 	
 	this.setNewGrainWeight = function(newWeight) {
 		grainWeight = newWeight;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramVolumes+programIndex+'&'+batchVolume*1000+'&'+grainWeight*1000+'&'+mashRatio*100, function(){}, programIndex);
 	};
 	
 	this.setNewSpargeTemperature = function(newTemp) {
 		spargeTemperature = newTemp;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramSettings+programIndex+'&'+spargeTemperature+'&'+hltTemperature+'&'+boilLength+'&'+pitchTemperature+'&'+boilAddBitMask+'&'+strikeHeatVessel, function(){}, programIndex);
 	};
 	
 	this.setNewPitchTemperature = function(newTemp) {
 		pitchTemperature = newTemp;
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramSettings+programIndex+'&'+spargeTemperature+'&'+hltTemperature+'&'+boilLength+'&'+pitchTemperature+'&'+boilAddBitMask+'&'+strikeHeatVessel, function(){}, programIndex);
 	};
 	
 	//function requires a single argument of an array of boolean values indicating the state of each boil addition
 	//starting with atBoil, then at105... to at0.
 	this.setNewBoilAdditionsSchedule = function(additionsArray){
-		
-		boilAdditions.atboil.state = Boolean(additionsArray[0]);
-		boilAdditions.at105.state = Boolean(additionsArray[1]);
-		boilAdditions.at90.state = Boolean(additionsArray[2]);
-		boilAdditions.at75.state = Boolean(additionsArray[3]);
-		boilAdditions.at60.state = Boolean(additionsArray[4]);
-		boilAdditions.at45.state = Boolean(additionsArray[5]);
-		boilAdditions.at30.state = Boolean(additionsArray[6]);
-		boilAdditions.at20.state = Boolean(additionsArray[7]);
-		boilAdditions.at15.state = Boolean(additionsArray[8]);
-		boilAdditions.at10.state = Boolean(additionsArray[9]);
-		boilAdditions.at5.state = Boolean(additionsArray[10]);
-		boilAdditions.at0.state = Boolean(additionsArray[11]);
+		boilAddBitMask = 0;
+		for (var property in additionsArray){
+		  boilAdditions[property].state = additionsArray[property].state;
+		  if (additionsArray[property].state) boilAddBitMask = boilAddBitMask | boilAdditions[property].bitmask;
+		}
+		BrewTroller.communicate(BrewTroller.getAddress()+setProgramSettings+programIndex+'&'+spargeTemperature+'&'+hltTemperature+'&'+boilLength+'&'+pitchTemperature+'&'+boilAddBitMask+'&'+strikeHeatVessel, function(){}, programIndex);
 	};
 	
 	this.setNewGrainTemperature = function(newTemp) {
@@ -495,7 +682,7 @@ function Program(index){
 	
 	//inspector methods
 	this.getTitle = function() {
-		return Title;
+		return Title ? Title : 'untitled';
 	};
 	
 	this.getProgramIndex = function() {
@@ -503,31 +690,31 @@ function Program(index){
 	};
 	
 	this.getBatchVolume = function() {
-		return batchVolume;
+		return batchVolume ? batchVolume : 0;
 	};
 	
 	this.getGrainWeight = function() {
-		return grainWeight;
+		return grainWeight ? grainWeight : 0;
 	};
 	
 	this.getBoilLength = function() {
-		return boilLength;
+		return boilLength ? boilLength : 0;
 	};
 	
 	this.getMashRatio = function() {
-		return mashRatio;
+		return mashRatio ? mashRatio : 0;
 	};
 	
 	this.getHLTTargetTemperature = function() {
-		return hltTemperature;
+		return hltTemperature ? hltTemperature : 0;
 	};
 	
 	this.getSpargeTemperature = function() {
-		return spargeTemperature;
+		return spargeTemperature ? spargeTemperature : 0;
 	};
 	
 	this.getPitchTemperature = function() {
-		return pitchTemperature;
+		return pitchTemperature ? pitchTemperature : 0;
 	};
 	
 	this.getMashSchedule = function() {
@@ -535,7 +722,7 @@ function Program(index){
 	};
 	
 	this.getStrikeHeatVessel = function() {
-		return strikeHeatVessel;
+		return strikeHeatVessel ? 'mlt' : 'hlt';
 	};
 	
 	this.getBoilAdditions = function() {
@@ -543,7 +730,7 @@ function Program(index){
 	};
 	
 	this.getGrainTemperature = function() {
-		return grainTemperature;
+		return grainTemperature ? grainTemperature : 0;
 	};
 	
 	this.getRecipeInBeerXML = function() {
@@ -551,5 +738,35 @@ function Program(index){
 		return recipeBeerXMLDoc;
 	};
 	
+	//Private class helper methods
+	
+	//method takes a number, a string representing the unit type (weight, volume, temperature), a current unit system, and a target unit system
+	//and returns the number with the correct units
+	var correctUnits = function(input, type, currentSystem, targetSystem){
+	 if (currentSystem == targetSystem) return input;
+	  if (currentSystem == "metric"){
+	    switch (type){
+	      case "temperature":
+	        return input * (9/5) + 32;
+	      case "volume":
+	        return input * 0.264;
+	      case "weight":
+	        return input * 2.204;
+	      case "ratio":
+	        return input / 0.9464;
+	    };
+	  } else {
+	    switch (type){
+	      case "temperature":
+	        return (input - 32)/(9.5);
+	      case "volume":
+	        return input / 0.264;
+	      case "weight":
+	        return input / 2.204;
+	      case "ratio":
+  	      return input * 0.9464;
+	    };
+	  }
+	};
 	
 }

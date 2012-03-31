@@ -5,7 +5,7 @@
 app = function(){
 	
 	//Public App class variables
-	this.viewPort = new views;
+	this.viewPort = new ViewController();
 	
 	//Public methods
 	
@@ -16,12 +16,11 @@ app = function(){
 	};
 };
 
-var BTUI = new app;
-var BrewTroller = new BrewTroller;
+var BTUI = new app();
+var BrewTroller = new BrewTroller();
 
 window.onload = function() {
 	
 	BTUI.initSetup();
-	BrewTroller.initSetup();
+//	BrewTroller.initSetup();
 };
-

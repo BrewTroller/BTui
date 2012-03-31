@@ -1,14 +1,19 @@
 function BrewTroller() {
 		
 	//private class variables
+	var haveConnection = false;
 	
 	var BrewTrollerAddress;
 	var BrewTrollerVersion;
 	var BrewTrollerBuild;
 	var useMetric;
+	var temperatureUnit;
+	var weightUnit;
+	var volumeUnit;
 	
 	var autoUpdate = false;
 	var updateId;
+	var updateTimes = [];
 	
 	var boilPower;
 	var boilTemp;
@@ -22,87 +27,52 @@ function BrewTroller() {
 		interval: 10000 //Default update interval set to 10 seconds
 	};
 	
-	//Array of recipe objects
-	 var programs = new Array(20); // to save unnecessary bloating we will instatiate each recipe object when required
+  var programs = {};
+  for (var i = 0; i < 20; i++){
+    var newP = "p"+i;
+    programs[newP] = new Program(i);
+  };
 	
-	//public class variables
-	this.valves = new Valve;
+	var vessels = 
+	{
+		hlt: new Vessel(0),
+		mlt: new Vessel(1),
+		kettle: new Vessel(2), 
+	};
 	
-	this.Vessels = [];
-	this.Vessels[0] = new Vessel(0);
-	this.Vessels[1] = new Vessel(1);
-	this.Vessels[2] = new Vessel(2);
-	
-	this.editWindow;
+	var valves = new Valve();
 		
 	//public class methods
 	
-	this.getProgram = function(index) {
-		if (!programs[index]) programs[index] = new Program(index);
-		return programs[index];
+	this.getVesselWithString = function(vesselString){
+		return vessels[vesselString];
 	};
 	
-	this.saveSettings = function() {
+	this.getVesselWithIndex = function(vesselIndex){
+		switch(vesselIndex){
+			case 0:
+				return vessels.hlt;
+				break;
+			case 1:
+				return vessels.mlt;
+				break;
+			case 2:
+				return vessels.kettle;
+				break;
+		};
+	};
 	
-		var hlt = this.Vessels[0];
-		var mlt = this.Vessels[1];
-		var ket = this.Vessels[2];
-		
-		var address = document.getElementById('btAddress').value;
-		
-		var hltDisp = document.getElementById('hltDisp').checked;
-		var mltDisp = document.getElementById('mltDisp').checked;
-		var ketDisp = document.getElementById('ketDisp').checked;
-		
-		var autoUpdate = document.getElementById('btAutoUpdate').checked;
-		var updateFreq = document.getElementById('btUpdateFrequency').value;		
-		
-		//Check to see if vessel display options are different than current conditions, if they are set window displays accordingyly
-		if (hltDisp && (hlt.display.style.display == "none")){	
-			hlt.show();
-		} 
-		else if (!hltDisp && (hlt.display.style.display != "none")){
-			hlt.hide();
-		}
-		
-		if (mltDisp && (mlt.display.style.display == "none")){
-			mlt.show();
-		} 
-		else if (!mltDisp && (mlt.display.style.display != "none")){
-			mlt.hide();
-		}
+	this.valves = function(){
+		return valves;
+	}
 	
-		if (ketDisp && (ket.display.style.display == "none")){
-			ket.show();
-		} 
-		else if(!ketDisp && (ket.display.style.display != "none")) {
-			ket.hide();
-		}
-		
-		
-		BrewTroller.setIPAddress(address);
-		
-		//set update frequency
-		if ( updateFreq != BrewTroller.getUpdateFrequency() ){
-			BrewTroller.setUpdateFrequency(updateFreq);
-		}
-		
-		//Start and stop auto updating
-		if ( autoUpdate && !(BrewTroller.isAutoUpdate())) {
-			BrewTroller.startAutoUpdate();
-		}
-		else {
-			
-			if ( BrewTroller.isAutoUpdate() && !(autoUpdate)){
-				BrewTroller.stopAutoUpdate();
-			}			
-		}
-			
+	this.getProgram = function(index) {
+	  return programs["p"+index];
 	};
 	
 	this.getAddress = function() {
 		
-		return 'http://'+BrewTrollerAddress+'/btnic.cgi?';
+		return BrewTrollerAddress+'/btnic.cgi?';
 	};
 	
 	this.getIPAddress = function() {
@@ -134,9 +104,35 @@ function BrewTroller() {
 		return useMetric;
 	};
 	
+	this.temperatureUnit = function(){
+		return temperatureUnit;
+	};
+	
+	this.volumeUnit = function(){
+		return volumeUnit;
+	};
+	
+	this.weightUnit = function(){
+		return weightUnit;
+	};
+	
+	this.getUpdateTimes = function(){
+	  return updateTimes;
+	}
+	
 	//Method to set or unset the use of metric units, value passed is a BOOL
 	this.setMetric = function(value) {
 		useMetric = value;
+		if (useMetric){
+			temperatureUnit = 'C';
+			volumeUnit = 'L';
+			weightUnit = 'KG'; 
+		} else {
+			temperatureUnit = 'F';
+			volumeUnit = 'G';
+			weightUnit = 'LBS';
+		}
+		BTUI.viewPort.updateUnits(); //call the viewport handler to update the units displayed onscreen
 	}
 	
 	this.setVersion = function() {
@@ -159,16 +155,17 @@ function BrewTroller() {
 	
 	//Method to set the system boil temp
 	this.setBoilTemp = function(newValue) {
-		if (boilTemp == undefined) {
 			boilTemp = newValue;
-		} else if (newValue != boilTemp){
-			boilTemp = newValue;
-			this.communicate(this.getAddress() + 'K&' + boilTemp, function(){}, null);
-		}
-	}
+			BTUI.viewPort.updateVesselTargetTemperatureDisplay('kettle');
+	};
 	
-	this.getBoilTemp = function(){
-		return boilTemp;
+	this.setNewBoilTemperature = function(newBoilTemp){
+		boilTemp = newBoilTemp;
+		this.communicate(this.getAddress() + 'K&' + boilTemp, function(){}, null);
+	};
+	
+	this.getBoilTemperature = function(){
+		return boilTemp ? boilTemp : 0;
 	}
 	
 	//Method to set the system evap rate
@@ -196,7 +193,7 @@ function BrewTroller() {
 	this.communicate = function(commandAddress, callback, arg) {
 		
 		if ( !BrewTrollerAddress ){	//Ensure there has already been an address set for the BrewTroller
-			alert('You Must configure the IP address of the BrewTroller First!');	//if not alert the User they must set one
+			//alert('You Must configure the IP address of the BrewTroller First!');	//if not alert the User they must set one
 		}
 		
 		else{	// If there is an address set, carry on...
@@ -215,23 +212,17 @@ function BrewTroller() {
 			xhr.open('GET', commandAddress, true);	//Open the XHR request, using the GET type and the specified commandAddress parameter, and set it as an Asynchronous request
 			xhr.onreadystatechange = function(){
 				if (xhr.readyState == 4){
-					callback(arg, xhr);	//Set up the callback specified
+					callback(arg, xhr);	//run the callback specified
 				}
 			}
 			xhr.send(null);	//Send the request
 		}
 	};
 	
-	this.updateVessels = function() {
-		
-		for ( i = 0; i < this.Vessels.length; i++ ){
-			this.Vessels[i].manualUpdate();
-		}
-	};
+	this.setAddress = function(address) {
 	
-	this.setIPAddress = function(ipAddress) {
-	
-		BrewTrollerAddress = ipAddress;
+		if(address.substr(0, 7) != "http://") address = "http://"+address;
+		BrewTrollerAddress = address;
 		
 		this.initSync();
 	};
@@ -260,13 +251,12 @@ function BrewTroller() {
 	};
 
 	this.initSync = function() {
-		BrewTroller.setVersion();
-		BrewTroller.updateVessels();
-		for (i = 0; i < BrewTroller.Vessels.length; i++){
-			BrewTroller.Vessels[i].initSync();
+		this.setVersion();
+		for (var property in vessels){
+			vessels[property].initSync();
 		}
-		BrewTroller.valves.updateAllConfig();
-		BrewTroller.valves.updateStatus();
+		valves.updateAllConfig();
+		this.update();
 		
 		//pull values for evapRate and boil temp from BT
 		var boilTempCallback = function(empty, xhr){
@@ -282,17 +272,27 @@ function BrewTroller() {
 		};
 		
 		this.communicate(this.getAddress() + 'C', evapRateCallback, null);
+		
+		for (var property in programs){
+		  programs[property].getProgramFromBrewTroller();
+		}
 	};
 	
 	this.update = function() {
 		
-		BrewTroller.valves.updateStatus();
+		valves.updateStatus();
+		this.updateVessels();
 	};
 	
-	this.updateAll = function() {
-		
-		this.update();
-		this.updateVessels();
+	this.updateVessels = function() {
+		var updating = (vessels['hlt'].isUpdating() || vessels['mlt'].isUpdating() || vessels['kettle'].isUpdating());
+		if (!updating){
+		  var time = new Date();
+  		updateTimes.push(time.getTime());
+  		for (var property in vessels){
+  			vessels[property].update(time.getTime());
+  		}
+	  }
 	};
 	
 	this.startAutoUpdate = function(){
@@ -302,9 +302,6 @@ function BrewTroller() {
 		
 		updateId = setInterval(updateTask.run, updateTask.interval);
 		} 
-		else{
-			alert('You Must Set an IP address for the BrewTroller First!');
-		}
 	};
 	
 	this.stopAutoUpdate = function(){
@@ -315,7 +312,7 @@ function BrewTroller() {
 		updateId = undefined;
 	};
 	
-	this.isAutoUpdate = function() {
+	this.isAutoUpdating = function() {
 		
 		return autoUpdate;
 	};
@@ -327,15 +324,17 @@ function BrewTroller() {
 	
 	this.setUpdateFrequency = function(newInterval) {
 		
+		var isUpdating;
 		//stop the autoupdate task if it is running
-		if ( autoUpdate == true ) {
+		if (autoUpdate) {
+			isUpdating = true;
 			this.stopAutoUpdate();
 		}
 		//set new interval		
-		updateTask.interval = newInterval;
+		updateTask.interval = newInterval*1000;
 		
 		//restart the autoupdate task if it was running
-		if ( autoUpdate == true ) {
+		if (isUpdating) {
 			this.startAutoUpdate();
 		}
 	};
@@ -348,12 +347,10 @@ function BrewTroller() {
 	this.initSetup = function() {
 		
 		//run initSetup() for each vessel
-		for( i = 0; i < this.Vessels.length; i++){
-			this.Vessels[i].initSetup();
+		for(var property in vessels){
+			vessels[property].initSetup();
 		}
 		//run initSetup() for the valves
 		this.valves.initSetup();
-		//update the value for update frequency form to match the value currently stored
-		document.getElementById('btUpdateFrequency').value = updateTask.interval;
  	};
 };
