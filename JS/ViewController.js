@@ -227,7 +227,7 @@ var targetTemperatureOnBlur = function(event){
 };
 
 var programTitleOnKeyPress = function(event){
-  if(event.charCode == 13){
+  if(event.charCode == 13 || event.keyCode == 13){
 		event.srcElement.blur();
 		return false;
 	}
@@ -240,7 +240,7 @@ var programTitleOnKeyPress = function(event){
 var programOnKeyPressDecimals = function(event){
   if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if((event.charCode < 48 || event.charCode > 57) && event.charCode != 46){
-		if(event.charCode == 13){
+		if(event.charCode == 13 || event.keyCode == 13){
 			event.srcElement.blur();
 			return false;
 		}else return false;
@@ -251,7 +251,7 @@ var programOnKeyPressDecimals = function(event){
 var programOnKeyPress = function(event){
   if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if(event.charCode < 48 || event.charCode > 57){
-		if(event.charCode == 13){
+		if(event.charCode == 13 || event.keyCode == 13){
 			event.srcElement.blur();
 			return false;
 		}else return false;
@@ -262,7 +262,7 @@ var programOnKeyPress = function(event){
 var autoUpdateFrequencyOnKeyPress = function(event){
   if (event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46) return true;
   if(event.charCode < 48 || event.charCode > 57){
-		if(event.charCode == 13){
+		if(event.charCode == 13 || event.keyCode == 13){
 			event.srcElement.blur();
 			return false;
 		}else return false;
