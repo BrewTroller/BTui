@@ -1,442 +1,570 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<!-- Force IE to use Chrome Frame-->
-		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
-		<title>BrewTroller</title>
-		<meta name="description" content="Web Interface for BrewTroller" />
-		<meta name="author" content="Eric Yanush" />
-		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
-		<link rel="shortcut icon" href="/favicon.ico" />
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-		<!--StyleSheets-->
-		<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.4.1/build/cssreset/cssreset-min.css">
-		<link rel="stylesheet" type="text/css" href="CSS/BTUI.css" />
-		
-		<!--JavaScript File Includes-->
-		<script type="text/javascript" src="JS/Classes/Valve.js"></script>
-		<script type="text/javascript" src="JS/Classes/Vessel.js"></script>
-		<script type="text/javascript" src="JS/Classes/BrewTroller.js"></script>
-		<script type="text/javascript" src="JS/views.js"></script>
-		<script type="text/javascript" src="JS/BTUI.js"></script>
-		
-	</head>
-	<body>
-		<!--Start Navigation Bar-->	
-		<div id="navWrapper">
-		    <div id="navContent">
-				<nav>
-		            <ul id="navBar">
-		                <li><a id="Home">Home</a></li>
-		                <li><a id="Recipes">Recipes</a></li>
-		                <li><a id="Logging">Logging</a></li>
-		                <li><a id="Settings" onclick="BTUI.viewPort.showBTSettings();">Settings</a></li>
-		                <li><a id="UpdateBT" onclick="BrewTroller.update();">Update BT</a></li>
-		                <li><a id="UpdateALL" onclick="BrewTroller.updateAll();">Update All</a></li>
-		            </ul>
-		        </nav>
-		    </div>
-		</div>
-		<!--End Navigation Bar-->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta name="author" content="Eric Yanush" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="robots" content="all" />
+	<meta name="copyright" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 	
-		
-	<!--Start Vessel Panels-->
-		<!--Start HLT Panel-->
-		<div id="HLTWrapper" class="VesselWrapper">
-			<div id="HLT">
-				<div class="vesselTitle"><h1>HLT</h1></div>
-				<div class="vesselItem temp">
-					<h2>Temp:<span class="data">0&ordm;</span></h2>
-				</div>
-				<div class="vesselItem tempTarget">
-					<h3>Target:<span class="data">0&ordm;</span></h3>
-				</div>
-				<div class="vesselItem heat">
-					<h3>Heat:<span class="data">0&#37;</span></h3>
-				</div>
-				<div class="buttonWrapper tempset">
-					<svg viewBox="0 0 15 30">
-						<path class="vesselButton" fill=#000000 d="M 11.124398,17.521485 V 3.4445715 c 0,-1.8203756 -1.5551812,-3.29438796 -3.4660682,-3.29438796 -1.9150231,0 -3.4639998,1.47401236 -3.4639998,3.29438796 V 17.410296 c -2.1776667,1.135521 -3.65632936,3.3367 -3.65632936,5.865546 0,3.691918 3.14551856,6.684223 7.02416446,6.684223 3.8807139,0 7.0241639,-2.992305 7.0241639,-6.684223 0.001,-2.453079 -1.391804,-4.593251 -3.461931,-5.754357 z M 7.5631991,28.862919 c -3.2354792,0 -5.8691531,-2.507199 -5.8691531,-5.589045 0,-2.03882 1.1705217,-3.916267 3.0545241,-4.899271 l 0.6007712,-0.31094 V 3.4435875 c 0,-1.2112877 1.0371319,-2.1952746 2.3120906,-2.1952746 1.2728907,0 2.307955,0.9839869 2.307955,2.1952746 V 18.146318 l 0.5666481,0.318813 c 1.815756,1.019409 2.901486,2.815185 2.901486,4.808743 -0.002,3.081846 -2.636775,5.589045 -5.8743219,5.589045 z M 9.9497398,19.412708 8.8133411,18.77607 V 9.1733428 H 6.5043526 V 18.713094 L 5.303844,19.337926 c -1.5138197,0.79211 -2.4558207,2.296625 -2.4558207,3.935948 0,2.473742 2.116659,4.487963 4.7151758,4.487963 2.6005859,0 4.7151749,-2.014221 4.7151749,-4.487963 0.002,-1.576348 -0.890299,-3.05528 -2.3286342,-3.861166 z" />
-					</svg>
-				</div>
-				<div class="seperator"></div>
-				<div class="vesselItem volume">
-					<h2>Volume:<span class="data" style="left:15px !important">0g</span></h2>
-				</div>
-				<div class="vesselItem volTarget">
-					<h3>Target:<span class="data">0g</span></h3>
-				</div>
-				<svg viewBox='0 0 28 30' class="buttonWrapper settings">
-					<path class="vesselButton" fill=#000000 d="M17.41,20.395l-0.778-2.723c0.228-0.2,0.442-0.414,0.644-0.643l2.721,0.778c0.287-0.418,0.534-0.862,0.755-1.323l-2.025-1.96c0.097-0.288,0.181-0.581,0.241-0.883l2.729-0.684c0.02-0.252,0.039-0.505,0.039-0.763s-0.02-0.51-0.039-0.762l-2.729-0.684c-0.061-0.302-0.145-0.595-0.241-0.883l2.026-1.96c-0.222-0.46-0.469-0.905-0.756-1.323l-2.721,0.777c-0.201-0.228-0.416-0.442-0.644-0.643l0.778-2.722c-0.418-0.286-0.863-0.534-1.324-0.755l-1.96,2.026c-0.287-0.097-0.581-0.18-0.883-0.241l-0.683-2.73c-0.253-0.019-0.505-0.039-0.763-0.039s-0.51,0.02-0.762,0.039l-0.684,2.73c-0.302,0.061-0.595,0.144-0.883,0.241l-1.96-2.026C7.048,3.463,6.604,3.71,6.186,3.997l0.778,2.722C6.736,6.919,6.521,7.134,6.321,7.361L3.599,6.583C3.312,7.001,3.065,7.446,2.844,7.907l2.026,1.96c-0.096,0.288-0.18,0.581-0.241,0.883l-2.73,0.684c-0.019,0.252-0.039,0.505-0.039,0.762s0.02,0.51,0.039,0.763l2.73,0.684c0.061,0.302,0.145,0.595,0.241,0.883l-2.026,1.96c0.221,0.46,0.468,0.905,0.755,1.323l2.722-0.778c0.2,0.229,0.415,0.442,0.643,0.643l-0.778,2.723c0.418,0.286,0.863,0.533,1.323,0.755l1.96-2.026c0.288,0.097,0.581,0.181,0.883,0.241l0.684,2.729c0.252,0.02,0.505,0.039,0.763,0.039s0.51-0.02,0.763-0.039l0.683-2.729c0.302-0.061,0.596-0.145,0.883-0.241l1.96,2.026C16.547,20.928,16.992,20.681,17.41,20.395zM11.798,15.594c-1.877,0-3.399-1.522-3.399-3.399s1.522-3.398,3.399-3.398s3.398,1.521,3.398,3.398S13.675,15.594,11.798,15.594zM27.29,22.699c0.019-0.547-0.06-1.104-0.23-1.654l1.244-1.773c-0.188-0.35-0.4-0.682-0.641-0.984l-2.122,0.445c-0.428-0.364-0.915-0.648-1.436-0.851l-0.611-2.079c-0.386-0.068-0.777-0.105-1.173-0.106l-0.974,1.936c-0.279,0.054-0.558,0.128-0.832,0.233c-0.257,0.098-0.497,0.22-0.727,0.353L17.782,17.4c-0.297,0.262-0.568,0.545-0.813,0.852l0.907,1.968c-0.259,0.495-0.437,1.028-0.519,1.585l-1.891,1.06c0.019,0.388,0.076,0.776,0.164,1.165l2.104,0.519c0.231,0.524,0.541,0.993,0.916,1.393l-0.352,2.138c0.32,0.23,0.66,0.428,1.013,0.6l1.715-1.32c0.536,0.141,1.097,0.195,1.662,0.15l1.452,1.607c0.2-0.057,0.399-0.118,0.596-0.193c0.175-0.066,0.34-0.144,0.505-0.223l0.037-2.165c0.455-0.339,0.843-0.747,1.152-1.206l2.161-0.134c0.152-0.359,0.279-0.732,0.368-1.115L27.29,22.699zM23.127,24.706c-1.201,0.458-2.545-0.144-3.004-1.345s0.143-2.546,1.344-3.005c1.201-0.458,2.547,0.144,3.006,1.345C24.931,22.902,24.328,24.247,23.127,24.706z" />
-				</svg>
-				<svg viewBox="0 0 29 35" class="buttonWrapper update vesselButton">
-					<path fill=#000000 d="m 15.228488,7.492932 c 1.207183,0.001 1.127466,0.419459 1.500548,0.364521 L 15.556439,10.09863 23.850079,7.941096 22.007588,3.283042 20.782517,0.06534301 19.35867,2.62048 c -1.512662,-0.563 -3.554154,-0.467041 -5.259337,-0.467041 -7.8491467,0 -14.10842876,7.196178 -14.10842876,15.187178 0,3.317 1.10797606,6.364 2.95165606,8.805 l 4.934919,-2.819137 c -1.491053,-1.973 -2.490585,-3.510342 -2.495497,-6.190342 0.0108,-6.461 3.501181,-9.633206 9.8465057,-9.643206 z m 10.233098,1.045685 -4.93492,2.922877 c 1.491053,1.972 1.771408,4.433 1.775337,5.881123 0.194669,5.021644 -3.295702,9.529465 -8.921848,9.334986 -1.124674,-0.002 -0.45366,0.01748 -1.479127,-0.29352 l 1.42974,-2.253918 -8.1909017,2.260274 1.122331,4.245096 1.328793,4.145356 1.677456,-2.641137 c 1.4507817,0.514 3.3119347,0.287301 4.9336267,0.288301 7.850129,-0.002 14.211169,-7.095438 14.213133,-15.086438 -0.002,-3.317 -1.110922,-6.363 -2.95362,-8.803 z" />
-				</svg>
-			</div>
-		</div>
-		<!--End HLT Panel-->
-		
-		<!--Start MLT Panel-->
-		<div id="MLTWrapper" class="VesselWrapper">
-			<div id="MLT">
-				<div class="vesselTitle"><h1>MLT</h1></div>
-				<div class="vesselItem temp">
-				<h2>Temp<span>:</span><span class="data">0&ordm;</span></h2>	
-				</div>
-				<div class="vesselItem tempTarget">
-					<h3>Target:<span class="data">0&ordm;</span></h3>
-				</div>
-				<div class="vesselItem heat">
-					<h3>Heat:<span class="data">0&#37;</span></h3>
-				</div>
-				<div class="buttonWrapper tempset">
-					<svg viewBox="0 0 15 30">
-						<path class="vesselButton" fill=#000000 d="M 11.124398,17.521485 V 3.4445715 c 0,-1.8203756 -1.5551812,-3.29438796 -3.4660682,-3.29438796 -1.9150231,0 -3.4639998,1.47401236 -3.4639998,3.29438796 V 17.410296 c -2.1776667,1.135521 -3.65632936,3.3367 -3.65632936,5.865546 0,3.691918 3.14551856,6.684223 7.02416446,6.684223 3.8807139,0 7.0241639,-2.992305 7.0241639,-6.684223 0.001,-2.453079 -1.391804,-4.593251 -3.461931,-5.754357 z M 7.5631991,28.862919 c -3.2354792,0 -5.8691531,-2.507199 -5.8691531,-5.589045 0,-2.03882 1.1705217,-3.916267 3.0545241,-4.899271 l 0.6007712,-0.31094 V 3.4435875 c 0,-1.2112877 1.0371319,-2.1952746 2.3120906,-2.1952746 1.2728907,0 2.307955,0.9839869 2.307955,2.1952746 V 18.146318 l 0.5666481,0.318813 c 1.815756,1.019409 2.901486,2.815185 2.901486,4.808743 -0.002,3.081846 -2.636775,5.589045 -5.8743219,5.589045 z M 9.9497398,19.412708 8.8133411,18.77607 V 9.1733428 H 6.5043526 V 18.713094 L 5.303844,19.337926 c -1.5138197,0.79211 -2.4558207,2.296625 -2.4558207,3.935948 0,2.473742 2.116659,4.487963 4.7151758,4.487963 2.6005859,0 4.7151749,-2.014221 4.7151749,-4.487963 0.002,-1.576348 -0.890299,-3.05528 -2.3286342,-3.861166 z" />
-					</svg>
-				</div>
-				<div class="seperator"></div>
-				<div class="vesselItem volume">
-					<h2>Volume:<span class="data" style="left:15px !important">0g</span></h2>
-				</div>
-				<div class="vesselItem volTarget">
-					<h3>Target:<span class="data">0g</span></h3>
-				</div>
-				<svg viewBox='0 0 28 30' class="buttonWrapper settings">
-					<path class="vesselButton" fill=#000000 d="M17.41,20.395l-0.778-2.723c0.228-0.2,0.442-0.414,0.644-0.643l2.721,0.778c0.287-0.418,0.534-0.862,0.755-1.323l-2.025-1.96c0.097-0.288,0.181-0.581,0.241-0.883l2.729-0.684c0.02-0.252,0.039-0.505,0.039-0.763s-0.02-0.51-0.039-0.762l-2.729-0.684c-0.061-0.302-0.145-0.595-0.241-0.883l2.026-1.96c-0.222-0.46-0.469-0.905-0.756-1.323l-2.721,0.777c-0.201-0.228-0.416-0.442-0.644-0.643l0.778-2.722c-0.418-0.286-0.863-0.534-1.324-0.755l-1.96,2.026c-0.287-0.097-0.581-0.18-0.883-0.241l-0.683-2.73c-0.253-0.019-0.505-0.039-0.763-0.039s-0.51,0.02-0.762,0.039l-0.684,2.73c-0.302,0.061-0.595,0.144-0.883,0.241l-1.96-2.026C7.048,3.463,6.604,3.71,6.186,3.997l0.778,2.722C6.736,6.919,6.521,7.134,6.321,7.361L3.599,6.583C3.312,7.001,3.065,7.446,2.844,7.907l2.026,1.96c-0.096,0.288-0.18,0.581-0.241,0.883l-2.73,0.684c-0.019,0.252-0.039,0.505-0.039,0.762s0.02,0.51,0.039,0.763l2.73,0.684c0.061,0.302,0.145,0.595,0.241,0.883l-2.026,1.96c0.221,0.46,0.468,0.905,0.755,1.323l2.722-0.778c0.2,0.229,0.415,0.442,0.643,0.643l-0.778,2.723c0.418,0.286,0.863,0.533,1.323,0.755l1.96-2.026c0.288,0.097,0.581,0.181,0.883,0.241l0.684,2.729c0.252,0.02,0.505,0.039,0.763,0.039s0.51-0.02,0.763-0.039l0.683-2.729c0.302-0.061,0.596-0.145,0.883-0.241l1.96,2.026C16.547,20.928,16.992,20.681,17.41,20.395zM11.798,15.594c-1.877,0-3.399-1.522-3.399-3.399s1.522-3.398,3.399-3.398s3.398,1.521,3.398,3.398S13.675,15.594,11.798,15.594zM27.29,22.699c0.019-0.547-0.06-1.104-0.23-1.654l1.244-1.773c-0.188-0.35-0.4-0.682-0.641-0.984l-2.122,0.445c-0.428-0.364-0.915-0.648-1.436-0.851l-0.611-2.079c-0.386-0.068-0.777-0.105-1.173-0.106l-0.974,1.936c-0.279,0.054-0.558,0.128-0.832,0.233c-0.257,0.098-0.497,0.22-0.727,0.353L17.782,17.4c-0.297,0.262-0.568,0.545-0.813,0.852l0.907,1.968c-0.259,0.495-0.437,1.028-0.519,1.585l-1.891,1.06c0.019,0.388,0.076,0.776,0.164,1.165l2.104,0.519c0.231,0.524,0.541,0.993,0.916,1.393l-0.352,2.138c0.32,0.23,0.66,0.428,1.013,0.6l1.715-1.32c0.536,0.141,1.097,0.195,1.662,0.15l1.452,1.607c0.2-0.057,0.399-0.118,0.596-0.193c0.175-0.066,0.34-0.144,0.505-0.223l0.037-2.165c0.455-0.339,0.843-0.747,1.152-1.206l2.161-0.134c0.152-0.359,0.279-0.732,0.368-1.115L27.29,22.699zM23.127,24.706c-1.201,0.458-2.545-0.144-3.004-1.345s0.143-2.546,1.344-3.005c1.201-0.458,2.547,0.144,3.006,1.345C24.931,22.902,24.328,24.247,23.127,24.706z" />
-				</svg>
-				<svg viewBox="0 0 29 35" class="buttonWrapper update vesselButton">
-					<path fill=#000000 d="m 15.228488,7.492932 c 1.207183,0.001 1.127466,0.419459 1.500548,0.364521 L 15.556439,10.09863 23.850079,7.941096 22.007588,3.283042 20.782517,0.06534301 19.35867,2.62048 c -1.512662,-0.563 -3.554154,-0.467041 -5.259337,-0.467041 -7.8491467,0 -14.10842876,7.196178 -14.10842876,15.187178 0,3.317 1.10797606,6.364 2.95165606,8.805 l 4.934919,-2.819137 c -1.491053,-1.973 -2.490585,-3.510342 -2.495497,-6.190342 0.0108,-6.461 3.501181,-9.633206 9.8465057,-9.643206 z m 10.233098,1.045685 -4.93492,2.922877 c 1.491053,1.972 1.771408,4.433 1.775337,5.881123 0.194669,5.021644 -3.295702,9.529465 -8.921848,9.334986 -1.124674,-0.002 -0.45366,0.01748 -1.479127,-0.29352 l 1.42974,-2.253918 -8.1909017,2.260274 1.122331,4.245096 1.328793,4.145356 1.677456,-2.641137 c 1.4507817,0.514 3.3119347,0.287301 4.9336267,0.288301 7.850129,-0.002 14.211169,-7.095438 14.213133,-15.086438 -0.002,-3.317 -1.110922,-6.363 -2.95362,-8.803 z" />
-				</svg>
-			</div>
-		</div>
-		<!--End MLT Panel-->
-		
-		<!--Start Kettle Panel-->
-		<div id="KETWrapper" class="VesselWrapper">
-			<div id="KET">
-				<div class="vesselTitle"><h1>KETTLE</h1></div>
-				<div class="vesselItem temp">
-					<h2>Temp<span>:</span><span class="data">0&ordm;</span></h2>
-				</div>
-				<div class="vesselItem tempTarget">
-					<h3>Target:<span class="data">0&ordm;</span></h3>
-				</div>
-				<div class="vesselItem heat">
-					<h3>Heat:<span class="data">0&#37;</span></h3>
-				</div>
-				<div class="buttonWrapper tempset">
-					<svg viewBox="0 0 15 30">
-						<path class="vesselButton" fill=#000000 d="M 11.124398,17.521485 V 3.4445715 c 0,-1.8203756 -1.5551812,-3.29438796 -3.4660682,-3.29438796 -1.9150231,0 -3.4639998,1.47401236 -3.4639998,3.29438796 V 17.410296 c -2.1776667,1.135521 -3.65632936,3.3367 -3.65632936,5.865546 0,3.691918 3.14551856,6.684223 7.02416446,6.684223 3.8807139,0 7.0241639,-2.992305 7.0241639,-6.684223 0.001,-2.453079 -1.391804,-4.593251 -3.461931,-5.754357 z M 7.5631991,28.862919 c -3.2354792,0 -5.8691531,-2.507199 -5.8691531,-5.589045 0,-2.03882 1.1705217,-3.916267 3.0545241,-4.899271 l 0.6007712,-0.31094 V 3.4435875 c 0,-1.2112877 1.0371319,-2.1952746 2.3120906,-2.1952746 1.2728907,0 2.307955,0.9839869 2.307955,2.1952746 V 18.146318 l 0.5666481,0.318813 c 1.815756,1.019409 2.901486,2.815185 2.901486,4.808743 -0.002,3.081846 -2.636775,5.589045 -5.8743219,5.589045 z M 9.9497398,19.412708 8.8133411,18.77607 V 9.1733428 H 6.5043526 V 18.713094 L 5.303844,19.337926 c -1.5138197,0.79211 -2.4558207,2.296625 -2.4558207,3.935948 0,2.473742 2.116659,4.487963 4.7151758,4.487963 2.6005859,0 4.7151749,-2.014221 4.7151749,-4.487963 0.002,-1.576348 -0.890299,-3.05528 -2.3286342,-3.861166 z" />
-					</svg>
-				</div>
-				<div class="seperator"></div>
-				<div class="vesselItem volume">
-					<h2>Volume:<span class="data" style="left:15px !important">0g</span></h2>
-				</div>
-				<div class="vesselItem volTarget">
-					<h3>Target:<span class="data">0g</span></h3>
-				</div>
-					<svg viewBox='0 0 28 30' class="buttonWrapper settings">
-						<path class="vesselButton" fill=#000000 d="M17.41,20.395l-0.778-2.723c0.228-0.2,0.442-0.414,0.644-0.643l2.721,0.778c0.287-0.418,0.534-0.862,0.755-1.323l-2.025-1.96c0.097-0.288,0.181-0.581,0.241-0.883l2.729-0.684c0.02-0.252,0.039-0.505,0.039-0.763s-0.02-0.51-0.039-0.762l-2.729-0.684c-0.061-0.302-0.145-0.595-0.241-0.883l2.026-1.96c-0.222-0.46-0.469-0.905-0.756-1.323l-2.721,0.777c-0.201-0.228-0.416-0.442-0.644-0.643l0.778-2.722c-0.418-0.286-0.863-0.534-1.324-0.755l-1.96,2.026c-0.287-0.097-0.581-0.18-0.883-0.241l-0.683-2.73c-0.253-0.019-0.505-0.039-0.763-0.039s-0.51,0.02-0.762,0.039l-0.684,2.73c-0.302,0.061-0.595,0.144-0.883,0.241l-1.96-2.026C7.048,3.463,6.604,3.71,6.186,3.997l0.778,2.722C6.736,6.919,6.521,7.134,6.321,7.361L3.599,6.583C3.312,7.001,3.065,7.446,2.844,7.907l2.026,1.96c-0.096,0.288-0.18,0.581-0.241,0.883l-2.73,0.684c-0.019,0.252-0.039,0.505-0.039,0.762s0.02,0.51,0.039,0.763l2.73,0.684c0.061,0.302,0.145,0.595,0.241,0.883l-2.026,1.96c0.221,0.46,0.468,0.905,0.755,1.323l2.722-0.778c0.2,0.229,0.415,0.442,0.643,0.643l-0.778,2.723c0.418,0.286,0.863,0.533,1.323,0.755l1.96-2.026c0.288,0.097,0.581,0.181,0.883,0.241l0.684,2.729c0.252,0.02,0.505,0.039,0.763,0.039s0.51-0.02,0.763-0.039l0.683-2.729c0.302-0.061,0.596-0.145,0.883-0.241l1.96,2.026C16.547,20.928,16.992,20.681,17.41,20.395zM11.798,15.594c-1.877,0-3.399-1.522-3.399-3.399s1.522-3.398,3.399-3.398s3.398,1.521,3.398,3.398S13.675,15.594,11.798,15.594zM27.29,22.699c0.019-0.547-0.06-1.104-0.23-1.654l1.244-1.773c-0.188-0.35-0.4-0.682-0.641-0.984l-2.122,0.445c-0.428-0.364-0.915-0.648-1.436-0.851l-0.611-2.079c-0.386-0.068-0.777-0.105-1.173-0.106l-0.974,1.936c-0.279,0.054-0.558,0.128-0.832,0.233c-0.257,0.098-0.497,0.22-0.727,0.353L17.782,17.4c-0.297,0.262-0.568,0.545-0.813,0.852l0.907,1.968c-0.259,0.495-0.437,1.028-0.519,1.585l-1.891,1.06c0.019,0.388,0.076,0.776,0.164,1.165l2.104,0.519c0.231,0.524,0.541,0.993,0.916,1.393l-0.352,2.138c0.32,0.23,0.66,0.428,1.013,0.6l1.715-1.32c0.536,0.141,1.097,0.195,1.662,0.15l1.452,1.607c0.2-0.057,0.399-0.118,0.596-0.193c0.175-0.066,0.34-0.144,0.505-0.223l0.037-2.165c0.455-0.339,0.843-0.747,1.152-1.206l2.161-0.134c0.152-0.359,0.279-0.732,0.368-1.115L27.29,22.699zM23.127,24.706c-1.201,0.458-2.545-0.144-3.004-1.345s0.143-2.546,1.344-3.005c1.201-0.458,2.547,0.144,3.006,1.345C24.931,22.902,24.328,24.247,23.127,24.706z" />
-					</svg>
-					<svg viewBox="0 0 29 35" class="buttonWrapper update vesselButton">
-					<path fill=#000000 d="m 15.228488,7.492932 c 1.207183,0.001 1.127466,0.419459 1.500548,0.364521 L 15.556439,10.09863 23.850079,7.941096 22.007588,3.283042 20.782517,0.06534301 19.35867,2.62048 c -1.512662,-0.563 -3.554154,-0.467041 -5.259337,-0.467041 -7.8491467,0 -14.10842876,7.196178 -14.10842876,15.187178 0,3.317 1.10797606,6.364 2.95165606,8.805 l 4.934919,-2.819137 c -1.491053,-1.973 -2.490585,-3.510342 -2.495497,-6.190342 0.0108,-6.461 3.501181,-9.633206 9.8465057,-9.643206 z m 10.233098,1.045685 -4.93492,2.922877 c 1.491053,1.972 1.771408,4.433 1.775337,5.881123 0.194669,5.021644 -3.295702,9.529465 -8.921848,9.334986 -1.124674,-0.002 -0.45366,0.01748 -1.479127,-0.29352 l 1.42974,-2.253918 -8.1909017,2.260274 1.122331,4.245096 1.328793,4.145356 1.677456,-2.641137 c 1.4507817,0.514 3.3119347,0.287301 4.9336267,0.288301 7.850129,-0.002 14.211169,-7.095438 14.213133,-15.086438 -0.002,-3.317 -1.110922,-6.363 -2.95362,-8.803 z" />
-				</svg>
-			</div>
-		</div>
-		<!--End Kettle Panel-->
-	<!--End Vessel Panels-->
+	<link rel="shortcut icon" href="favicon.ico" />
+	<link rel="apple-touch-icon" href="Resources/BrewTrollerLogoIcon57x57.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="Resources/BrewTrollerLogoIcon72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="Resources/BrewTrollerLogoIcon114x114.png">
+	<link rel="stylesheet" type="text/css" href="CSS/styles.min.css" media="screen" />
 	
-	<!--Start Valve Profile Panels-->
-	<div id="ValveSliderWrap">
-		<div id="valvesWrapper">
-			<ul id="active">
-				<li>Active</li>
-			</ul>
-			<ul id="idle">
-				<li>Idle</li>
-				<li data-valve-index="0" id="fillhlt" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Fill HLT</li>
-				<li data-valve-index="1" id="fillmash" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Fill Mash</li>
-				<li data-valve-index="2" id="addgrain" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Add Grain</li>
-				<li data-valve-index="3" id="mashheat" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Mash Heat</li>
-				<li data-valve-index="4" id="mashidle" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Mash Idle</li>
-				<li data-valve-index="5" id="spargein" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Sparge In</li>
-				<li data-valve-index="6" id="spargeout" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Sparge Out</li>
-				<li data-valve-index="7" id="boiladditions" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Boil Additions</li>
-				<li data-valve-index="8" id="kettlelid" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Kettle Lid</li>
-				<li data-valve-index="9" id="chillerh20" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Chiller H20</li>
-				<li data-valve-index="10" id="chillerbeer" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Chiller Beer</li>
-				<li data-valve-index="11" id="boilrecirc" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Boil Recirc</li>
-				<li data-valve-index="12" id="drain" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Drain</li>
-				<li data-valve-index="13" id="hltheat" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">HLT Heat</li>
-				<li data-valve-index="14" id="hltidle" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">HLT Idle</li>
-				<li data-valve-index="15" id="kettleheat" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Kettle Heat</li>
-				<li data-valve-index="16" id="kettleidle" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">Kettle Idle</li>
-				<li data-valve-index="17" id="user1" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">User 1</li>
-				<li data-valve-index="18" id="user2" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">User 2</li>
-				<li data-valve-index="19" id="user3" onclick="BrewTroller.valves.toggleState(this.dataset.valveIndex);" oncontextmenu="BTUI.viewPort.editValveProfile(this.dataset.valveIndex); return false;">User 3</li>
-			</ul>
-				
-			</div>
-			<div id="valvesActivator">Valves</div>
-		</div>
-	<!--End Valve Profile Panels-->	
-	
-	<!--Start Programs View Panel-->
-	<!--End Programs View Panel-->
-	
-	<!--Blanket for use when displaying settings windows-->
-	<div id="windowBlanket"></div><!--Define a "Blanket" div to overlay the page with when the settings popup is visible-->
-	<!--End Blanket-->
-	
-	<!--Start BT Settings Window-->
-	<div id="btSettings" class="settingsWindow">
-		<div id="BTSettingsTitle" class="settingsTitle"><h1>BrewTroller Settings</h1></div>
-		<div id="btsettingsForm">
-			<form onsubmit="return false;">
-				<label class="settingsInputLabel" for="btAddress">Address:</label>
-				<input class="settingsInput" id="btAddress" type="url" placeholder="http://address"/><br />
-				<div class="fieldsetWrapper">
-					<h1>Vessel Display</h1>
-					<div class="settingsInputLabel">HLT:</div>
-					<div class="checkbox">
-						<input id="hltDisp" type="checkbox" />
-						<label for="hltDisp">HLT:</label>
-					</div>
-					<div class="settingsInputLabel">MLT:</div>
-					<div class="checkbox">
-						<input id="mltDisp" type="checkbox" />
-						<label for="mltDisp">MLT:</label>
-					</div>
-					<div class="settingsInputLabel">Kettle:</div>
-					<div class="checkbox">
-						<input id="ketDisp" type="checkbox" />
-						<label for="ketDisp">Kettle:</label>
-					</div>
-				</div>
-				<div class="fieldsetWrapper">
-					<div class="settingsInputLabel">Auto Update:</div>
-					<div class="checkbox">
-						<input id="btAutoUpdate" name="btAutoUpdate" type="checkbox" />
-						<label for="btAutoUpdate">Auto Update:</label>
-					</div>
-					<label class="settingsInputLabel" for="btUpdateFrequency">Frequency:</label>
-					<input class="settingsInput" id="btUpdateFrequency" type="number" placeholder="500 - 100,000" min="500" max="100000" step="10"/><br />
-				</div>
-			</form>
-		</div>
-		<svg viewBox="0 0 32 25" class="buttonWrapper save">
-			<path class="settingsButton" onclick="BTUI.viewPort.saveBTSettings();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
-		</svg>
-		<svg viewBox='0 0 30 30' class="buttonWrapper close">
-			<path class="settingsButton" onclick="BTUI.viewPort.closeBTSettings();" fill=#000000 d="M 29.914986,24.90485 20.002615,14.992743 29.913185,5.080636 24.818276,-0.01773975 14.905904,9.8943675 4.9935322,-0.01773975 -0.10137652,5.080636 l 9.91057032,9.912107 -9.91237191,9.912107 5.09851191,5.096574 9.9105702,-9.912107 9.910571,9.912107 z" />
-		</svg>
-	</div>
-	<!--End BT Settings Window-->
-	
-	<!--Start Vessel Settings Window-->
-	<div id="vesselSettings" class="settingsWindow">
-		<div id="vesselSettingsTitle" class="settingsTitle"><h1></h1></div>
-		<div id="vesselSettingsForm">
-			<form onsubmit="return false;">
-				<div class="fieldsetWrapper">
-					<div class="settingsInputLabel">Auto Update:</div>
-					<div class="checkbox">
-						<input id="vesselAutoUpdate" type="checkbox" />
-						<label for="vesselAutoUpdate">Auto Update:</label>
-					</div>
-					<label class="settingsInputLabel" for="vesselUpdateFrequency">Frequency:</label>
-					<input class="settingsInput" id="vesselUpdateFrequency" type="number" placeholder="500 - 100,000" min="500" max="100000" step="10"/><br />
-				</div>
-			</form>
-		</div>
-		<svg viewBox="0 0 32 25" class="buttonWrapper save">
-			<path class="settingsButton" onclick="BTUI.viewPort.saveVesselSettings();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
-		</svg>
-		<svg viewBox='0 0 30 30' class="buttonWrapper close">
-			<path class="settingsButton" onclick="BTUI.viewPort.closeVesselSettings();" fill=#000000 d="M 29.914986,24.90485 20.002615,14.992743 29.913185,5.080636 24.818276,-0.01773975 14.905904,9.8943675 4.9935322,-0.01773975 -0.10137652,5.080636 l 9.91057032,9.912107 -9.91237191,9.912107 5.09851191,5.096574 9.9105702,-9.912107 9.910571,9.912107 z" />
-		</svg>
-	</div>
-	<!--End Vessel Settings Window-->
-	
-	<!--Start Valve Profile Edit Window-->
-	<div id="valveEdit" class="settingsWindow">
-		<div id="valveEditTitle" class="settingsTitle"><h1></h1></div>
-		<div id="valveEditForm">
-			<form onsubmit="return false;">
-				<div class="fieldsetWrapper">
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 1:</div>
-						<div class="checkbox">
-							<input id="valveset1" type="checkbox" data-valve-set="1" />
-							<label for="valveset1">Valve 1:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 2:</div>
-						<div class="checkbox">
-							<input id="valveset2" type="checkbox" data-valve-set="2" />
-							<label for="valveset2">Valve 2:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 3:</div>
-						<div class="checkbox">
-							<input id="valveset3" type="checkbox" data-valve-set="3" />
-							<label for="valveset3">Valve 3:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-					<div class="settingsInputLabel">Valve 4:</div>
-						<div class="checkbox">
-							<input id="valveset4" type="checkbox" data-valve-set="4" />
-							<label for="valveset4">Valve 4:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 5:</div>
-						<div class="checkbox">
-							<input id="valveset5" type="checkbox" data-valve-set="5" />
-							<label for="valveset5">Valve 5:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 6:</div>
-						<div class="checkbox">
-							<input id="valveset6" type="checkbox" data-valve-set="6" />
-							<label for="valveset6">Valve 6:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 7:</div>
-						<div class="checkbox">
-							<input id="valveset7" type="checkbox" data-valve-set="7" />
-							<label for="valveset7">Valve 7:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 8:</div>
-						<div class="checkbox">
-							<input id="valveset8" type="checkbox" data-valve-set="8" />
-							<label for="valveset8">Valve 8:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve 9:</div>
-						<div class="checkbox">
-							<input id="valveset9" type="checkbox" data-valve-set="9" />
-							<label for="valveset9">Valve 9:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-					<div class="settingsInputLabel">Valve A:</div>
-						<div class="checkbox">
-							<input id="valvesetA" type="checkbox" data-valve-set="10" />
-							<label for="valvesetA">Valve A:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-					<div class="settingsInputLabel">Valve B:</div>
-						<div class="checkbox">
-							<input id="valvesetB" type="checkbox" data-valve-set="11" />
-							<label for="valvesetB">Valve B:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-					<div class="settingsInputLabel">Valve C:</div>
-						<div class="checkbox">
-							<input id="valvesetC" type="checkbox" data-valve-set="12" />
-							<label for="valvesetC">Valve C:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve D:</div>
-						<div class="checkbox">
-							<input id="valvesetD" type="checkbox" data-valve-set="13" />
-							<label for="valvesetD">Valve D:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve E:</div>
-						<div class="checkbox">
-							<input id="valvesetE" type="checkbox" data-valve-set="14" />
-							<label for="valvesetE">Valve E:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve F:</div>
-						<div class="checkbox">
-							<input id="valvesetF" type="checkbox" data-valve-set="15" />
-							<label for="valvesetF">Valve F:</label>
-						</div>
-					</div>
-					<div class="valveSetCheckBox">
-						<div class="settingsInputLabel">Valve G:</div>
-						<div class="checkbox">
-							<input id="valvesetG" type="checkbox" data-valve-set="16" />
-							<label for="valvesetG">Valve G:</label>
-						</div>
-					</div>
-				</div>
-			</form>
-		</div>
-		<svg viewBox="0 0 32 25" class="buttonWrapper save">
-			<path class="settingsButton" onclick="BTUI.viewPort.saveValve();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
-		</svg>
-		<svg viewBox='0 0 30 30' class="buttonWrapper close">
-			<path class="settingsButton" onclick="BTUI.viewPort.closeValveEdit();" fill=#000000 d="M 29.914986,24.90485 20.002615,14.992743 29.913185,5.080636 24.818276,-0.01773975 14.905904,9.8943675 4.9935322,-0.01773975 -0.10137652,5.080636 l 9.91057032,9.912107 -9.91237191,9.912107 5.09851191,5.096574 9.9105702,-9.912107 9.910571,9.912107 z" />
-		</svg>		
-	</div>
-	<!--End Valve Profile Edit Window-->
-	
-	<!--Start Temperature Setpoint Edit Window-->
-	<div id="tempSetPointEdit" class="settingsWindow">
-		<div id="tempSetPointTitle" class="settingsTitle"><h1></h1></div>
-		<div id="tempSetPointForm">
-			<form onsubmit="return false;">
-				<div class="fieldsetWrapper">
-					<label class="settingsInputLabel" for="tempSetPoint">Set Point:</label>
-					<input class="settingsInput" id="tempSetPoint" type="number" placeholder="0 - 300" min="0" max="300" step="1" /><br />
-				</div>
-			</form>
-		</div>
-		<svg viewBox="0 0 32 25" class="buttonWrapper save">
-			<path class="settingsButton" onclick="BTUI.viewPort.saveTempSetPoint();" fill=#000000 d="M 0.05426536,13.287109 3.9807909,9.3120481 11.752175,17.212582 27.975981,0.04938788 31.685566,4.6035934 11.824823,24.726816 z" />
-		</svg>
-		<svg viewBox='0 0 30 30' class="buttonWrapper close">
-			<path class="settingsButton" onclick="BTUI.viewPort.closeTempSetPoint();" fill=#000000 d="M 29.914986,24.90485 20.002615,14.992743 29.913185,5.080636 24.818276,-0.01773975 14.905904,9.8943675 4.9935322,-0.01773975 -0.10137652,5.080636 l 9.91057032,9.912107 -9.91237191,9.912107 5.09851191,5.096574 9.9105702,-9.912107 9.910571,9.912107 z" />
-		</svg>
-	</div>
-	<!--End Temperature Setpoint Edit Window-->
-	
-	
-	 
-<!--[if IE]>
-    <script type="text/javascript" 
-     src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+	<title>BrewTroller Live</title>
 
-    <style>
-     .chromeFrameInstallDefaultStyle {
-       position: absolute; !important
-       width: 100%; /* default is 800px */
-       border: 5px solid blue;
-     }
-    </style>
+	<!--Debug Src Scripts-->
+	<script type="text/javascript" src="JS/Plugins/Jquery1.7.1.js"></script>
+	<script type="text/javascript" src="JS/Plugins/highcharts.js"></script>
+	<script type="text/javascript" src="JS/Plugins/exporting.js"></script>
+	
+  <script type="text/javascript" src="JS/ViewController.js"></script>
+	<script type="text/javascript" src="JS/Classes/Vessel.js"></script>
+	<script type="text/javascript" src="JS/Classes/Valve.js"></script>
+	<script type="text/javascript" src="JS/Classes/Program.js"></script>
+	<script type="text/javascript" src="JS/Classes/BrewTroller.js"></script>
+	<script type="text/javascript" src="JS/BTUI.js"></script>
+	
+	<!--Minified release script-->
+	<!--<script type="text/javascript" src="JS/BTUI.min.js"></script>-->
 
-    <div id="prompt">
-    </div>
- 
-    <script>
-     // The conditional ensures that this code will only execute in IE,
-     // Therefore we can use the IE-specific attachEvent without worry
-     window.attachEvent("onload", function() {
-       CFInstall.check({
-         mode: "inline", // the default
-         node: "prompt"
+</head>
+<body>
+  
+  <!-- Detect and install Chrome-Frame for IE users -->
+  <!--[if IE]>
+      <script type="text/javascript" 
+       src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+
+      <style>
+       .chromeFrameInstallDefaultStyle {
+         width: 100%; /* default is 800px */
+         border: 5px solid blue;
+       }
+      </style>
+
+      <div id="prompt">
+      </div>
+
+      <script>
+       // The conditional ensures that this code will only execute in IE,
+       // Therefore we can use the IE-specific attachEvent without worry
+       window.attachEvent("onload", function() {
+         CFInstall.check({
+           mode: "inline", // the default
+           node: "prompt"
+         });
        });
-     });
-    </script>
-  <![endif]-->
-	</body>
+      </script>
+    <![endif]-->
+	<div id="programTimerIndicator"></div>
+	<div id="Content">
+		<div id="logo">
+			<img src="images/Logo.png" />
+		</div>
+		<dl>
+			<dt id="monitorLink"><a href="#Monitor">Monitor</a></dt>
+			<dd id="Monitor">
+				<div id="MonitorButtons">
+					<span>Update</span>
+					<span>Go FullScreen</span>
+				</div>
+				<div id="programTimerDisplay" class="">
+				  <div id="mashZone" class="programZone">
+				  </div>
+				  <div id="boilZone" class="programZone">
+				  </div>
+				</div>
+				<div id="Vessels">
+					<div id="HLT">
+						<p>HLT</p>
+						<div class="temperatureWrapper">
+							<p><span>---.-</span><span>&#186F</span></p>
+							<p><span class="editableField" contenteditable="true">---</span><span>&#186F</span></p>
+							<p>OFF</p>
+						</div>
+						<div class="volumeWrapper">
+							<div id="HLTChart" class="volChart"></div>
+							<p><span>--</span><span>G</span></p>
+							<p><span>--.--</span><span>G</span></p>
+						</div>
+					</div>
+					<div id="MLT">
+						<p>MLT</p>
+						<div class="temperatureWrapper">
+							<p><span>---.-</span><span>&#186F</span></p>
+							<p><span class="editableField" contenteditable="true">---</span><span>&#186F</span></p>
+							<p>OFF</p>
+						</div>
+						<div class="volumeWrapper">
+							<div id="MLTChart" class="volChart"></div>
+							<p><span>--</span><span>G</span></p>
+							<p><span>--.--</span><span>G</span></p>
+						</div>
+					</div>
+					<div id="KETTLE">
+						<p>Kettle</p>
+						<div class="temperatureWrapper">
+							<p><span>---.-</span><span>&#186F</span></p>
+							<p><span class="editableField" contenteditable="true">---</span><span>&#186F</span></p>
+							<p>OFF</p>
+						</div>
+						<div class="volumeWrapper">
+							<div id="KETTLEChart" class="volChart"></div>
+							<p><span>--.--</span><span>G</span></p>
+							<p><span>--.--</span><span>G</span></p>
+						</div>
+					</div>
+				</div>
+				<div id="Valves">
+					<ul>
+						<li id="fillHlt">Fill HLT</li>
+						<li id="fillMash">Fill Mash</li>
+						<li id="addGrain">Add Grain</li>
+						<li id="mashHeat">Mash Heat</li>
+						<li id="mashIdle">Mash Idle</li>
+						<li id="spargeIn">Sparge In</li>
+						<li id="spargeOut">Sparge Out</li>
+						<li id="boilAdditions">Boil Add'ns</li>
+						<li id="kettleLid">Kettle Lid</li>
+						<li id="chillerH2o">Chiller H2O</li>
+						<li id="chillerBeer">Chiller Beer</li>
+						<li id="boilRecirc">Boil Recirc</li>
+						<li id="drain">Drain</li>
+						<li id="hltHeat">HLT Heat</li>
+						<li id="hltIdle">HLT Idle</li>
+						<li id="kettleHeat">Kettle Heat</li>
+						<li id="kettleIdle">Kettle Idle</li>
+						<li id="user1">User 1</li>
+						<li id="user2">User 2</li>
+						<li id="user3">User 3</li>
+					</ul>
+				</div>
+			</dd>
+			<dt id="programsLink"><a href="#Programs">Programs</a></dt>
+			<dd id="Programs">
+				<ul id="programSelector">
+          <li id="programActivator">Program<ul>
+            <li data-index="0">1</li>
+            <li data-index="1">2</li>
+            <li data-index="2">3</li>
+            <li data-index="3">4</li>
+            <li data-index="4">5</li>
+            <li data-index="5">6</li>
+            <li data-index="6">7</li>
+            <li data-index="7">8</li>
+            <li data-index="8">9</li>
+            <li data-index="9">10</li>
+            <li data-index="10">11</li>
+            <li data-index="11">12</li>
+            <li data-index="12">13</li>
+            <li data-index="13">14</li>
+            <li data-index="14">15</li>
+            <li data-index="15">16</li>
+            <li data-index="16">17</li>
+            <li data-index="17">18</li>
+            <li data-index="18">19</li>
+            <li data-index="19">20</li>
+          </ul></li>
+        </ul>
+        <div id="programDisplay">
+          <p id="programTitle"><span class="identifier">name:</span><span contenteditable="true" class="editableField parameter">untitled</span></p>
+          <div id="programLeftColumn" class="column">
+            <p><span class="identifier col2Id">Sparge Temp:</span><span contenteditable="true" class="editableField parameter">---</span>&#186</p>
+            <p><span class="identifier col2Id">HLT Target:</span><span contenteditable="true" class="editableField parameter">---</span>&#186</p>
+            <p><span class="identifier col2Id">Batch Vol:</span><span contenteditable="true" class="editableField parameter">---</span></p>
+            <p><span class="identifier col2Id">Grain Weight:</span><span contenteditable="true" class="editableField parameter">---</span></p>
+            <p><span class="identifier col2Id">Boil Time:</span><span contenteditable="true" class="editableField parameter">---</span></p>
+            <p><span class="identifier col2Id">Mash Ratio:</span><span contenteditable="true" class="editableField parameter">-.--</span>:1</p>
+            <p><span class="identifier col2Id">Pitch Temp:</span><span contenteditable="true" class="editableField parameter">---</span>&#186</p>
+            <p id="editBoilAdditions"><span>Boil Additions...</span></p>
+          </div>
+          <div id="programRightColumn" class="column">
+            <p data-mashStep="doughIn"><span class="identifier stepName">Dough In:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="acid"><span class="identifier stepName">Acid:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="protein"><span class="identifier stepName">Protein:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="sacch"><span class="identifier stepName">Sacch:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="sacch2"><span class="identifier stepName">Sacch 2:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <p data-mashStep="mashOut"><span class="identifier stepName">Mash Out:</span><span contenteditable="true" class="editableField parameter">---</span>&#186<span contenteditable="true" class="editableField parameter">---</span></p>
+            <div id="strikeHeat" class="splitButton">
+							<label>Strike Heat:</label>
+							<span class="leftButton selected">HLT</span>
+							<span class="rightButton">MLT</span>
+						</div>
+          </div>
+          <div id ="boilAdditionsOptions">
+            <div class="column columnHidden">
+              <div data-boilAddID="atboil" class="splitButton">
+  							<label>At Boil:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at105" class="splitButton">
+  							<label>105 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at90" class="splitButton">
+  							<label>90 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at75" class="splitButton">
+  							<label>75 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at60" class="splitButton">
+  							<label>60 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at45" class="splitButton">
+  							<label>45 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+            </div>
+            <div class="column columnHidden">
+              <div data-boilAddID="at30" class="splitButton">
+  							<label>30 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at20" class="splitButton">
+  							<label>20 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at15" class="splitButton">
+  							<label>15 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at10" class="splitButton">
+  							<label>10 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at5" class="splitButton">
+  							<label>5 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  						<div data-boilAddID="at0" class="splitButton">
+  							<label>0 Mins:</label>
+  							<span class="leftButton selected">on</span>
+  							<span class="rightButton">off</span>
+  						</div>
+  					</div>
+          </div>
+          <div id="buttonFooter" class="">
+            <span id="reloadFromBT">Reload From BT</span><span id="importFromBeerXML">Import From BeerXML</span><input type="file" id="fileGetter" name="file[]" accept="text/xml, */xml" style="height: 0; width: 0; visibility: hidden;"><span id="exportToBeerXML">Export To BeerXML</span><span id="saveToBT">Save to BT</span>
+          </div>
+          <div id="boilAddButtonFooter" class="buttonFooterHidden">
+            <span id="boilAddBack">Back</span>
+            <form id="recipeExportForm" style="display:hidden;" action="cgi-bin/recipeExport.py" method="POST">
+              <input type="text" name="name">
+              <input type="text" name="data">
+            </form>
+          </div>
+        </div>
+			</dd>
+			<dt id="loggingLink"><a href="#Logging">Logging</a></dt>
+			<dd id="Logging">
+			  <div id="logTimeBar">
+  				<div id="logStartTime" class="timeSelector">
+  				  <label for="startTime">Start: </label>
+  				  <span id="startTime"><span data-selected="-1">--:--:--</span>
+  				  <div class="timeList"></div></span>
+  				</div>
+  				<div id="logEndTime" class="timeSelector">
+  				  <label for="endTime">End: </label>
+  				  <span id="endTime"><span data-selected="-1">--:--:--</span>
+  				  <div class="timeList"></div></span>
+  				</div>
+  				<div id="logResolution" class="timeSelector">
+  				  <label for="resolution">Resolution: </label>
+  				  <span id="resolution"><span data-selected="1">All</span>
+  				  <div class="resolutionList">
+  				    <span data-resolution="1">All</span>
+  				    <span data-resolution=".75">3/4</span>
+  				    <span data-resolution="2">1/2</span>
+  				    <span data-resolution="4">1/4</span>
+  				    <span data-resolution="8">1/8</span>
+  				    <span data-resolution="10">1/10</span>
+  				    <span data-resolution="25">1/25</span>
+  				    <span data-resolution="50">1/50</span>
+  				    <span data-resolution="100">1/100</span>
+  				  </div></span>
+  				</div>
+				</div>
+				<div id="logVesselTabs">
+				  <span id="hltLogSelector">HLT
+				    <div class="vesselLogSelectors" data-vessel-id="hlt">
+				      <div class="splitButton" data-option="temp">
+  						  <label>Temperature:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetTemp">
+  						  <label>Target Temp:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="heat">
+  						  <label>Heat:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="volume">
+  						  <label>Volume:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetVol">
+  						  <label>Target Vol:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+				    </div>
+				  </span>
+				  <span id="mltLogSelector">MLT
+				    <div class="vesselLogSelectors" data-vessel-id="mlt">
+				      <div class="splitButton" data-option="temp">
+  						  <label>Temperature:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetTemp">
+  						  <label>Target Temp:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="heat">
+  						  <label>Heat:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="volume">
+  						  <label>Volume:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetVol">
+  						  <label>Target Vol:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					</div>
+				  </span>
+				  <span id="kettleLogSelector">Kettle
+				    <div class="vesselLogSelectors" data-vessel-id="kettle">
+				      <div class="splitButton" data-option="temp">
+  						  <label>Temperature:</label>
+  						  <span class="leftButton">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetTemp">
+  						  <label>Target Temp:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="heat">
+  						  <label>Heat:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="volume">
+  						  <label>Volume:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					  <div class="splitButton" data-option="targetVol">
+  						  <label>Target Vol:</label>
+  						  <span class="leftButton" data-state="on">on</span>
+  						  <span class="rightButton selected" data-state="off">off</span>
+  					  </div>
+  					</div>
+				  </span>
+				</div>
+				<div id="logGraph"></div>
+				<div id="logExportBar"><span>Export PDF</span><span>Export JPEG</span></div>
+			</dd>
+			<dt id ="settingsLink"><a href="#Settings">Settings</a></dt>
+			<dd id="Settings">
+				<div id="SettingsMenu">
+				<span class="SettingsMenuButton selected"><p>Global</p><div class="tabPointer"></div></span>
+				<span class="SettingsMenuButton"><p>HLT</p><div class="tabPointer tabPointerHidden"></div></span>
+				<span class="SettingsMenuButton"><p>MLT</p><div class="tabPointer tabPointerHidden"></div></span>
+				<span class="SettingsMenuButton"><p>Kettle</p><div class="tabPointer tabPointerHidden"></div></span>
+				</div>
+				<div id="GlobalSettings" class="SettingsTab">
+					<form onsubmit="return false;">
+						<label for="Address">address:</label>
+						<input type="text" id="Address" placeholder="http://your-btnic-address" />
+					</form>
+					<div id="vesselDisplayOptions">
+						<div id="hltDisp" class="splitButton">
+							<label>HLT:</label>
+							<span class="leftButton selected">show</span>
+							<span class="rightButton">hide</span>
+						</div>
+						<div id="mltDisp" class="splitButton">
+							<label>MLT:</label>
+							<span class="leftButton selected">show</span>
+							<span class="rightButton">hide</span>
+						</div>
+						<div id="kettleDisp" class="splitButton">
+							<label>Kettle:</label>
+							<span class="leftButton selected">show</span>
+							<span class="rightButton">hide</span>
+						</div>
+					</div>
+					<div id="autoUpdate" class="splitButton">
+						<label>Auto Update:</label>
+						<span class="leftButton">on</span>
+						<span class="rightButton selected">off</span>
+					</div>
+					<div id="autoUpdateFrequency" class="Hidden">
+						<label for="numberDisplay">Frequency:</label>
+						<span contenteditable="true" class="editableField parameter">5</span>
+	          <span id="unitId">seconds</span>
+					</div>
+				</div>
+				<div id="HLTSettings" class="SettingsTab SettingsTabHidden">
+					<div class="outputSettings">
+					  <div class="splitButton">
+						  <label>PID Mode:</label>
+						  <span class="leftButton">on</span>
+						  <span class="rightButton selected">off</span>
+					  </div>
+					  <div class="numberInput">
+  						<label>Hysteresis:</label>
+  						<span class="numberDisplay">5 seconds</span>
+  						<span class="topButton">+</span>
+  						<span class="bottomButton">-<span>
+  					</div>
+  					  <div class="pidOptions">  
+  					    <div class="numberInput">
+    						<label>P Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>I Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>D Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>Cycle Time:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    				</div>
+					</div>
+				  <div class="volumeSettings">
+			      
+				  </div>
+				</div>
+				<div id="MLTSettings" class="SettingsTab SettingsTabHidden">
+					<div class="outputSettings">
+					  <div class="splitButton">
+						  <label>PID Mode:</label>
+						  <span class="leftButton">on</span>
+						  <span class="rightButton selected">off</span>
+					  </div>
+					  <div class="numberInput">
+  						<label>Hysteresis:</label>
+  						<span class="numberDisplay">5 seconds</span>
+  						<span class="topButton">+</span>
+  						<span class="bottomButton">-<span>
+  					</div>
+  					<div class="pidOptions">
+  					  <div class="numberInput">
+    						<label>P Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>I Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>D Gain:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>Cycle Time:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    				</div>
+			    </div>
+				</div>
+				<div id="KettleSettings" class="SettingsTab SettingsTabHidden">
+				  <div class="outputSettings">
+				    <div class="splitButton">
+  					  <label>PID Mode:</label>
+  					  <span class="leftButton">on</span>
+  					  <span class="rightButton selected">off</span>
+  				  </div>
+  				  <div class="numberInput">
+  						<label>Hysteresis:</label>
+  						<span class="numberDisplay">1.0&#186</span>
+  						<span class="topButton">+</span>
+  						<span class="bottomButton">-<span>
+  					</div>
+  					<div class="pidOptions">
+  					  <div class="numberInput">
+    						<label>P Gain:</label>
+    						<span class="numberDisplay">3</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>I Gain:</label>
+    						<span class="numberDisplay">4</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>D Gain:</label>
+    						<span class="numberDisplay">2</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+    					<div class="numberInput">
+    						<label>Cycle Time:</label>
+    						<span class="numberDisplay">5 seconds</span>
+    						<span class="topButton">+</span>
+    						<span class="bottomButton">-<span>
+    					</div>
+  					</div>
+  				</div>
+				</div>
+			</dd>	
+		</dl>
+	</div>
+	
+</body>
 </html>

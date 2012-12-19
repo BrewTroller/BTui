@@ -1,365 +1,490 @@
 //BTUI for BrewTroller Vessel Class
 
+function vesselDataPoint(){
+ this.timeStamp = undefined;
+ this.temperature = undefined;
+ this.targetTemperature = undefined;
+ this.heatStatus = undefined;
+ this.volume = undefined;
+ this.targetVolume = undefined; 
+}
+
 function Vessel(Index) {
 	
 	//Private Class Variables
 	
+	//Vessel IDs
 	var vesselIndex = Index;
 	var vesselName;
 	
-	var visible = true;
-	
+	//indicates if the vessel has volume sensing implemented
 	var hasVolumeSensing = true;	//default to true
 	
+	//Data arrray
+	var data = new Array();
+	
+	//vessel volume parameters
+	var currentVolume = [];
+	var targetVolume = [];
 	var vesselCapacity;
 	var vesselDeadSpace;
-	var volumeTarget = 0;
-	var temperatureSetPoint = 0;
+	var volumeconfigs = new Array(10);
 	
-	//task for autoUpdate
-	var updateTask = {
-		run: function(){
-			BrewTroller.Vessels[vesselIndex].updateVessel();
-		},
-		interval: 5000 //Default update interval set to 5 seconds
-	};
+	//vessel output parameters
+	var PIDMode;
+	var PIDCycle;
+	var PIDGainP;
+	var PIDGainI;
+	var PIDGainD;
+	var hysteresis;
 	
-	var autoUpdate = false;
-	var updateID;
+	//vessel temperature parameters
+	var currentTemperature = [];
+	var temperatureSetPoint = [];
+	var heatStatus = [];
+	var tempSensorAddress = new Array(8);
 	
-	//command parameter variables
+	//Variable to track the number of active data requests, to prevent overflowing the number of open requests on the module
+	var activeUpdateRequests = 0;
+	//BrewTroller command parameter variables
 	var getTemp = 'q';
 	var getVol = 'p';
 	var getHeat = 's';
 	var getSetPoint = 't';
-	
 	var setSetPoint = 'X';
-	
-	// reference to this Vessel Instance's display wrapper div
-	this.display;
-	//referneces to this Vessel instance's parameter displays
-	this.tempDisplay;
-	this.tempTargetDisplay;
-	this.heatDisplay;
-	this.volumeDisplay;
-	this.volumeTargetDisplay;
-	
+	var getOutput = 'D';
+	var setOutput = 'N';	
+	var getVolumeSettings = 'H';
+	var getTargetVolume = "|";
+	var setTargetVolume = "{";
 
 	//Public Class Functions
-	
-	//Method used to set the name of the vessel
-	this.setVesselName = function(name) {
-		
-		if (!name) {
-			switch (vesselIndex){
-
-				case 0:
-					vesselName = "HLT";
-					break;
-				case 1:
-					vesselName = "MLT";
-					break;
-				case 2:
-					vesselName = "KET";
-					break;
-			};
-		}
-		else{
-			vesselName = name;
-		}
-		
-	};
 	
 	//Method used to set the index of a vessel
 	this.setVesselIndex = function(index) {
 		
 		if (index <= 3){
 			vesselIndex = index;
-		}
+		}		
 		this.setVesselName();
 	};	
 	
-	//Method that hides this vessel's display wrapper from the viewport
-	this.hide = function() {
-		this.display.style.display = "none";
-		visible = false;
-	};
-	//Method that shows this vessel's display wrapper in the viewport
-	this.show = function() {
-		this.display.style.removeProperty('display');
-		visible = true;
-	};
-	
 	//Method returns the set target volume
 	this.getVolumeTarget = function() {
-		
 		return volumeTarget;
-	}
+	};
 	
 	//Method returns the index of the vessel instance
 	this.getVesselIndex = function() {
-		
 		return vesselIndex;
-	}
+	};
 	
 	//method returns the name of the vessel
 	this.getVesselName = function(){
-	
 		return vesselName;
-	}
+	};
 	
-	//Method returns true if the vessel's display panel is visible and false otherwise
-	this.isVisible = function() {
-		
-		return visible;
-	}
+	this.getTemperature = function(){
+		return data[data.length-1].temperature ? data[data.length-1].temperature : 0;
+	};
 	
-	//method returns true if the vessel is currently auto-updating and false otherwise
-	this.isAutoUpdate = function() {
-		
-		return autoUpdate;
-	}
+	this.getVolume = function(){
+		return data[data.length-1].volume ? data[data.length-1].volume : 0;
+	};
 	
-	//method returns the set frequency of the auto update task
-	this.getUpdateFrequency = function() {
-		
-		return updateTask.interval;
-	}
-	
-	//method used to set the interval at which the vessel should auto-update in milliseconds
-	this.setUpdateFrequency = function(newInterval) {
-		
-		//stop the autoupdate task if it is running
-		if ( autoUpdate == true ) {
-			this.stopAutoUpdate();
-		}
-		//set new interval		
-		updateTask.interval = newInterval;
-		
-		//restart the autoupdate task if it was running
-		if ( autoUpdate == true ) {
-			
-			alert('starting auto update');
-			this.startAutoUpdate();
-		}
-	}
+	this.getHeatStatus = function(){
+		return data[data.length-1].heatStatus ? data[data.length-1].heatStatus : 0;
+	};
 	
 	//get the current vessel temperature setpoint
 	this.getSetPoint = function() {
-		
-		return temperatureSetPoint;
+		if (vesselName == 'kettle') return BrewTroller.getBoilTemperature();
+		return data[data.length-1].targetTemperature ? data[data.length-1].targetTemperature : 0;
+	};
+	
+	this.getTargetTemperature = function(){
+		return this.getSetPoint();
+	};
+	
+	this.getTargetVolume = function(){
+		return data[data.length-1].targetVolume ? data[data.length-1].targetVolume : 0;
 	}
 	
 	//Get the Set Volume capactity of the Vessel
 	this.getCapacity = function() {
-		
 		return vesselCapacity;
 	};
 	
-	//sets the value for the setpoint window and then calls BTUI.viewPort.showTempSetPoint() to show it
-	this.changeSetPoint = function() {
-		
-		//Get references to the set point window and the form and title element
-		var setPointWindow = document.getElementById('tempSetPointEdit');
-		var setPointTitle = document.getElementById('tempSetPointTitle');		
-		var setPointForm = document.getElementById('tempSetPoint');
-		
-		//Set the form values to match the current values
-		setPointForm.value = temperatureSetPoint;
-		//Set the title to match the vessel name
-		setPointTitle.firstElementChild.textContent = vesselName + " Temp Set Point";
-		//Set the window's data-vessel-index attribute to this vessel's
-		setPointWindow.dataset.vesselIndex = vesselIndex;
-		//Show the window
-		BTUI.viewPort.showTempSetPoint();				
+	this.getLoggedTemperature = function(start, end, res){
+	  var matchedData = [];
+	  for (var i = 0; i < data.length; i++){
+	    if (data[i].timeStamp >= start && data[i].timeStamp <= end) matchedData.push(data[i].temperature);
+	    if (data[i].timeStamp > end) break;
+	  }
+	   var filteredData = [];
+  	  if (res == 0.75){
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if (((i+1)*3)%4 != 0)filteredData.push(matchedData[i]);
+    	  }
+  	  } else {
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if ((i+1)%res == 0)filteredData.push(matchedData[i]);
+    	  }
+      }
+      filteredData.forEach(loggedDudDataHandler);
+      return filteredData;
 	};
 	
-	//Set the setpoint value, used only when setting the app's stored value to synchronize with the BT
-	this.setSetPoint = function(setPoint) {
-		
-		temperatureSetPoint = setPoint;
-		this.tempTargetDisplay.textContent = temperatureSetPoint + String.fromCharCode(186);
+	this.getLoggedTargetTemperature = function(start, end, res){
+	  var matchedData = [];
+	  for (var i = 0; i < data.length; i++){
+	    if (data[i].timeStamp >= start && data[i].timeStamp <= end) matchedData.push(data[i].targetTemperature);
+	    if (data[i].timeStamp > end) break;
+	  }
+	   var filteredData = [];
+  	  if (res == 0.75){
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if (((i+1)*3)%4 != 0)filteredData.push(matchedData[i]);
+    	  }
+  	  } else {
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if ((i+1)%res == 0)filteredData.push(matchedData[i]);
+    	  }
+      }
+      filteredData.forEach(loggedDudDataHandler);
+      return filteredData;
+	};
+	
+	this.getLoggedHeatStatus = function(start, end, res){
+	  var matchedData = [];
+	  for (var i = 0; i < data.length; i++){
+	    if (data[i].timeStamp >= start && data[i].timeStamp <= end) matchedData.push(data[i].heatStatus);
+	    if (data[i].timeStamp > end) break;
+	  }
+	   var filteredData = [];
+  	  if (res == 0.75){
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if (((i+1)*3)%4 != 0)filteredData.push(matchedData[i]);
+    	  }
+  	  } else {
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if ((i+1)%res == 0)filteredData.push(matchedData[i]);
+    	  }
+      }
+      filteredData.forEach(loggedDudDataHandler);
+      return filteredData;
+	};
+	
+	this.getLoggedVolume = function(start, end, res){
+	  var matchedData = [];
+	  for (var i = 0; i < data.length; i++){
+	    if (data[i].timeStamp >= start && data[i].timeStamp <= end) matchedData.push(data[i].volume);
+	    if (data[i].timeStamp > end) break;
+	  }
+	   var filteredData = [];
+  	  if (res == 0.75){
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if (((i+1)*3)%4 != 0)filteredData.push(matchedData[i]);
+    	  }
+  	  } else {
+  	    for (var i = 0; i < matchedData.length; i++){
+    	    if ((i+1)%res == 0)filteredData.push(matchedData[i]);
+    	  }
+      }
+      filteredData.forEach(loggedDudDataHandler);
+      return filteredData;
+	};
+	
+	this.getLoggedTargetVolume = function(start, end, res){
+	  var matchedData = [];
+	  for (var i = 0; i < data.length; i++){
+	    if (data[i].timeStamp >= start && data[i].timeStamp <= end) matchedData.push(data[i].targetVolume);
+	    if (data[i].timeStamp > end) break;
+	  }
+	  var filteredData = [];
+	  if (res == 0.75){
+	    for (var i = 0; i < matchedData.length; i++){
+  	    if ((i*3)%4 != 0)filteredData.push(matchedData[i]);
+  	  }
+	  } else {
+	    for (var i = 0; i < matchedData.length; i++){
+  	    if (i%res == 0)filteredData.push(matchedData[i]);
+  	  }
+    }
+    filteredData.forEach(loggedDudDataHandler);
+    return filteredData;
+	};
+	
+	//Method to enable or disable PID Mode, option argument is a BOOL
+	this.setPIDMode = function(option) {
+			PIDMode = option;
+	};
+	
+	this.setNewPIDMode = function(option){
+	  PIDMode = option;
+		BrewTroller.communicate(BrewTroller.getAddress() + setOutput + vesselIndex + '&' + Number(PIDMode) + '&' + (PIDCycle*10) + '&' + PIDGainP + '&' + PIDGainI + '&' + PIDGainD + '&' + (hysteresis*10) + '&0&0', function(){});
 	}
+	
+	this.getPIDMode = function() {
+	  return PIDMode;
+	};
+	
+	//Method to Set the PID Cycle Time
+	this.setPIDCycle = function(cycleTime) {
+	  PIDCycle = cycleTime;
+	};
+	
+	this.setNewPIDCycle = function(cycleTime) {
+	  PIDCycle = cycleTime;
+		BrewTroller.communicate(BrewTroller.getAddress() + setOutput + vesselIndex + '&' + Number(PIDMode) + '&' + (PIDCycle*10) + '&' + PIDGainP + '&' + PIDGainI + '&' + PIDGainD + '&' + (hysteresis*10) + '&0&0', function(){});
+	}
+
+	this.getPIDCycle = function() {
+			return PIDCycle;
+	};
+	
+	//Method to set the PID P Gain
+	this.setPIDPGain = function(newValue) {
+		PIDGainP = newValue;
+	};
+	
+	this.setNewPIDPGain = function(newValue) {
+	  PIDGainP = newValue;
+		BrewTroller.communicate(BrewTroller.getAddress() + setOutput + vesselIndex + '&' + Number(PIDMode) + '&' + (PIDCycle*10) + '&' + PIDGainP + '&' + PIDGainI + '&' + PIDGainD + '&' + (hysteresis*10) + '&0&0', function(){});
+	};
+	
+	this.getPIDPGain = function() {	
+		return PIDGainP;
+	};
+	
+	//Method to set the PID I Gain
+	this.setPIDIGain = function(newValue) {
+		PIDGainI = newValue;
+	};
+	
+	this.setNewPIDIGain = function(newValue) {
+	  PIDGainI = newValue;
+		BrewTroller.communicate(BrewTroller.getAddress() + setOutput + vesselIndex + '&' + Number(PIDMode) + '&' + (PIDCycle*10) + '&' + PIDGainP + '&' + PIDGainI + '&' + PIDGainD + '&' + (hysteresis*10) + '&0&0', function(){});
+	};
+	
+	this.getPIDIGain = function() {
+		return PIDGainI;
+	};
+	
+	//Method to set the PID D Gain
+	this.setPIDDGain = function(newValue) {	
+		PIDGainD = newValue;
+	};
+	
+	this.setNewPIDDGain = function(newValue) {
+	  PIDGainD = newValue;
+		BrewTroller.communicate(BrewTroller.getAddress() + setOutput + vesselIndex + '&' + Number(PIDMode) + '&' + (PIDCycle*10) + '&' + PIDGainP + '&' + PIDGainI + '&' + PIDGainD + '&' + (hysteresis*10) + '&0&0', function(){});
+	};
+	
+	this.getPIDDGain = function() {	
+		return PIDGainD;
+	};
+	
+	//Method to set the ON/OFF hysteresis value	
+	this.setHysteresis = function(newValue) {	
+		hysteresis = newValue;
+	};
+	
+	this.setNewHysteresis = function(newValue){
+	  hysteresis = newValue;
+		BrewTroller.communicate(BrewTroller.getAddress() + setOutput + vesselIndex + '&' + Number(PIDMode) + '&' + (PIDCycle*10) + '&' + PIDGainP + '&' + PIDGainI + '&' + PIDGainD + '&' + (hysteresis*10) + '&0&0', function(){});
+	};
+	
+	this.getHysteresis = function() {	
+		return hysteresis;
+	};
+	
+	this.setNewOutputValue = function(param, value){
+	  switch(param){
+	    case 'pGain':
+	      this.setNewPIDPGain(value);
+	      break;
+	    case 'iGain':
+	      this.setNewPIDIGain(value);
+	      break;
+	    case 'dGain':
+	      this.setNewPIDDGain(value);
+	      break;
+	    case 'cycleTime':
+	      this.setNewPIDCycle(value);
+	      break;
+	    case 'hysteresis':
+	      this.setNewHysteresis(value);
+	      break;
+	  }
+	};
+	
+	//Set the setpoint value, used when setting the app's stored value
+	this.setSetPoint = function(setPoint) {
+		//temperatureSetPoint = setPoint;
+		data[data.length-1].targetTemperature = setPoint;
+		--activeUpdateRequests;
+		BTUI.viewPort.updateVesselTargetTemperatureDisplay(vesselName);
+	};
 	
 	//Set a new Temperature Setpoint for the Vessel, and update the value to the BT
 	this.setNewSetPoint = function(newSetPoint) {
 		
-		var callback = function(args, xhr){
+		if (vesselName == 'kettle'){
+			BrewTroller.setNewBoilTemperature(newSetPoint);
+			return;
 		}
-		
-		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, callback, vesselIndex);
-		temperatureSetPoint = newSetPoint;
-		this.tempTargetDisplay.textContent = temperatureSetPoint + String.fromCharCode(186);
-	}
-	
-	//Set the temperature range of the Temperature Gauge chart
-	this.setTemperatureRange = function(newMin, newMax) {
-		
-		var tempGauge = this.display.down('#tempGauge' + vesselIndex);
-		
-		tempGauge.axes.items[0].minimum = newMin;
-		tempGauge.axes.items[0].maximum = newMax;
-		tempGauge.redraw();
-	}
-	
-	//Get last temperature reading from store
-	this.getTemperature = function() {
-		
-		return this.temperatureStore.getAt(0).data.temperature;
-	}
-	
-	this.getHeatStatus = function() {
-		
-		return this.temperatureStore.getAt(0).data.heatStatus;
-	}
-	
-	this.getVolume = function() {
-		
-		return this.volumeStore.getAt(0).data.volume;
-	}
-	
-	this.settings = function(){
-		
-		//Get References to the setting option elements
-		var settingsWindow = document.getElementById('vesselSettings');
-		var update = document.getElementById('vesselAutoUpdate');
-		var updateFreq = document.getElementById('vesselUpdateFrequency');
-		var settingsTitle = document.getElementById('vesselSettingsTitle');
-		
-		//Set the window's title to reflect the selected vessel
-		settingsTitle.firstElementChild.textContent = vesselName + ' Settings';
-		
-		//Set the auto update options to match current values
-		update.checked = autoUpdate;
-		updateFreq.value = updateTask.interval;
-		
-		//Set the settings window's data-vessel-index attribute to this vessel's index
-		settingsWindow.dataset.vesselIndex = vesselIndex;
-		
-		//Show the vessel settings window
-		BTUI.viewPort.showVesselSettings();		
+		teperatureSetPoint = newSetPoint;
+		BrewTroller.communicate(BrewTroller.getAddress()+setSetPoint+vesselIndex+'&'+newSetPoint, function(){}, vesselName);
 	};
 	
-	this.saveSettings = function() {
-		
-		var update = document.getElementById('vesselAutoUpdate').checked;
-		var updateFreq = document.getElementById('vesselUpdateFrequency').value;				
-		
-		//set update frequency
-		if (updateFreq != this.getUpdateFrequency()){
-			this.setUpdateFrequency(updateFreq);
-		}
-		
-		//Start and stop auto updating
-		if (update && !(this.isAutoUpdate()) ) {
-			this.startAutoUpdate();
-		}
-		else {
+	this.setTemperature = function(newTemperature) {
+		//currentTemperature = newTemperature;
+		data[data.length-1].temperature = newTemperature;
+		--activeUpdateRequests;
+		BTUI.viewPort.updateVesselTemperatureDisplay(vesselName);
+	};
+	
+	this.setVolume = function(newVolume) {
+		//currentVolume = newVolume;
+		data[data.length-1].volume = newVolume;
+		--activeUpdateRequests;
+		BTUI.viewPort.updateVesselVolumeDisplay(vesselName);
+	};
+	
+	this.setTargetVolume = function(newTargetVolume){
+		//targetVolume = newTargetVolume;
+		data[data.length-1].targetVolume = newTargetVolume;
+		--activeUpdateRequests;
+		BTUI.viewPort.updateVesselTargetVolumeDisplay(vesselName);
+	};
+	
+	this.setNewTargetVolume = function(newTargetVolume){
+		targetVolume = newTargetVolume;
+		BrewTroller.communicate(BrewTroller.getAddress() + setTargetVolume + vesselIndex +'&'+ (newTargetVolume*1000), function(){}, vesselName);
+	};
+	
+	this.setHeatStatus = function(newStatus) {
+		//heatStatus = newStatus;
+		data[data.length-1].heatStatus = newStatus;
+		--activeUpdateRequests;
+		BTUI.viewPort.updateVesselHeatStatusDisplay(vesselName);
+	};
+	
+	this.setCapacity = function(newCapacity){
+		vesselCapacity = newCapacity;
+		BTUI.viewPort.updateVesselCapacity(vesselName);
+	};
+	
+	this.setDeadSpace = function(newDeadSpace){
+		vesselDeadSpace = newDeadSpace;
+	}
+	
+	this.update = function(timeStamp){
 			
-			if (this.isAutoUpdate() && !(update)){
-				this.stopAutoUpdate();
-			}			
-		}
+		if (BrewTroller.getIPAddress() != undefined && activeUpdateRequests == 0) {	
+		  
+			var baseAddress = BrewTroller.getAddress();
+		  activeUpdateRequests = activeUpdateRequests + 5;
+		  var dataPoint = new vesselDataPoint();
+		  if (!timeStamp){
+		    var time = new Date()
+		    dataPoint.timeStamp = time.getTime();
+	    } else dataPoint.timeStamp = timeStamp;
+		  data.push(dataPoint);
 		
-	};
-	
-	this.updateVessel = function(){
+			var tempCallback = function(vesselName, xhr) {
+					var temperature = JSON.parse(xhr.responseText);
+					if ( (temperature[1]/100) > 300 ) temperature[1] = 0;	//A fix for erroneous readings coming back from BT. When no sensor is connected it likes to return values of 4.2B
+					var temp = temperature[1]/100;
+					BrewTroller.getVesselWithString(vesselName).setTemperature(temp); 
+			};
 		
-		
-	if ( BrewTroller.getIPAddress() != undefined) {	
-		var baseAddress = BrewTroller.getAddress();
-		
-		var tempCallback = function(vesselIndex, xhr) {
-			if(xhr.readyState == 4){
-				var temperature = JSON.parse(xhr.responseText);
-				if ( (temperature[2]/100) > 300 ){
-					temperature[2] = 0;	//A fix for erroneous readings coming back from BT. When no sensor is connected it likes to return values of 4.2B
-				}
-				var temp = temperature[2]/100;
-				BrewTroller.Vessels[vesselIndex].tempDisplay.textContent = temp + String.fromCharCode(186);
-			}
-		}
-		
-		var heatCallback = function(vesselIndex, xhr) {
-			if (xhr.readyState == 4){
+			var heatCallback = function(vesselName, xhr) {
 				var heat = JSON.parse(xhr.responseText);
-				BrewTroller.Vessels[vesselIndex].heatDisplay.textContent = heat[2]+ String.fromCharCode(37);
-			}
-		}
+				BrewTroller.getVesselWithString(vesselName).setHeatStatus(Number(heat[1]));
+			};
 		
-		BrewTroller.communicate(baseAddress+getHeat+vesselIndex, heatCallback, vesselIndex);
-		BrewTroller.communicate(baseAddress+getTemp+vesselIndex, tempCallback, vesselIndex);
+			BrewTroller.communicate(baseAddress+getHeat+vesselIndex, heatCallback, vesselName);
+			BrewTroller.communicate(baseAddress+getTemp+vesselIndex, tempCallback, vesselName);
 
-		var setPointCallback = function(vesselIndex, xhr){
+			var setPointCallback = function(vesselName, xhr){	
+				var resp = JSON.parse(xhr.responseText);
+				BrewTroller.getVesselWithString(vesselName).setSetPoint(Number(resp[1]));
+			};
+			BrewTroller.communicate(baseAddress+getSetPoint+vesselIndex, setPointCallback, vesselName);
 			
-			var resp = JSON.parse(xhr.responseText);
-			BrewTroller.Vessels[vesselIndex].setSetPoint(resp[2])
+			var volumeCallback = function(vesselName, xhr){
+				var resp = JSON.parse(xhr.responseText);
+				BrewTroller.getVesselWithString(vesselName).setVolume(resp[1]/1000);
+			};
+		 	BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselName);
+			
+			var targetVolCallback = function(vesselName, xhr){
+				var resp = JSON.parse(xhr.responseText);
+				BrewTroller.getVesselWithString(vesselName).setTargetVolume(resp[1]/1000);
+			};
+			BrewTroller.communicate(baseAddress+getTargetVolume+vesselIndex, targetVolCallback, vesselName);
 		}
-		
-		BrewTroller.communicate(BrewTroller.getAddress()+getSetPoint+vesselIndex, setPointCallback, vesselIndex);
-
-		
-		if (hasVolumeSensing){
-			
-			var volumeCallback = function(vesselIndex, xhr){
-				if (xhr.readyState == 4){
-					var volume = JSON.parse(xhr.responseText);
-					BrewTroller.Vessels[vesselIndex].volumeDisplay.textContent = volume[2]/1000 +'g';
-				}
-			}
-			
-		 BrewTroller.communicate(baseAddress+getVol+vesselIndex, volumeCallback, vesselIndex);
-		}
-} else{
-	alert('You Must Set an IP address for the BrewTroller First!');
-};
-				
-	}
+	};
 	
-	this.manualUpdate = function(){
-		this.updateVessel();
-	}
-	
-	this.startAutoUpdate = function(){
-		
-		if ( BrewTroller.getIPAddress() != undefined ) {
-		autoUpdate = true;
-		
-		updateID = setInterval(updateTask.run, updateTask.interval);
-		} 
-		else{
-			alert('You Must Set an IP address for the BrewTroller First!');
-		};
-	}
-	
-	this.stopAutoUpdate = function(){
-		
-		clearInterval(updateID);
-		
-		autoUpdate = false;
-		updateID = undefined;
+	this.isUpdating = function(){
+	  return (activeUpdateRequests != 0);
 	};
 	
 	this.initSetup = function() {
-		
-		//get reference to the display panel wrapper
-		this.display = document.getElementById(vesselName + 'Wrapper');
-		//get references to display parameters
-		this.tempDisplay = this.display.getElementsByClassName('temp')[0].getElementsByClassName('data')[0];
-		this.tempTargetDisplay = this.display.getElementsByClassName('tempTarget')[0].getElementsByClassName('data')[0];
-		this.heatDisplay = this.display.getElementsByClassName('heat')[0].getElementsByClassName('data')[0];
-		this.volumeDisplay = this.display.getElementsByClassName('volume')[0].getElementsByClassName('data')[0];
-		this.volumeTargetDisplay = this.display.getElementsByClassName('volTarget')[0].getElementsByClassName('data')[0];
-		
-		//Ensure the visibility option matches the current state
-		document.getElementById(vesselName.toLowerCase()+'Disp').checked = visible;
-		
-		//Link the settings and refresh buttons with this instance
-		this.display.getElementsByClassName('update')[0].onclick = function(){BrewTroller.Vessels[vesselIndex].manualUpdate();};
-		this.display.getElementsByClassName('settings')[0].onclick =function(){BrewTroller.Vessels[vesselIndex].settings();};
-		this.display.getElementsByClassName('tempset')[0].onclick = function(){BrewTroller.Vessels[vesselIndex].changeSetPoint();};
 	};
 	
-	this.setVesselName();
+	//Method called on initial synchronization with BrewTroller, here we pull down options like heat ouput settings, temp sensor addresses
+	this.initSync = function() {
+		var outputCallback = function(vesselName, xhr){
+			var resp = JSON.parse(xhr.responseText);
+			var vessel = BrewTroller.getVesselWithString(vesselName);
+			vessel.setPIDMode(Boolean(Number(resp[1]))); //We must first typecast this as a number then a BOOL, as it is parsed as a string
+			vessel.setPIDCycle(Number(resp[2])/10);
+			vessel.setPIDPGain(Number(resp[3]));
+			vessel.setPIDIGain(Number(resp[4]));
+			vessel.setPIDDGain(Number(resp[5]));
+			vessel.setHysteresis(Number(resp[6])/10);
+		}
+		BrewTroller.communicate(BrewTroller.getAddress() + getOutput + vesselIndex, outputCallback, vesselName);
+		
+		var volumeSettingsCallback = function(vesselName, xhr){
+			var resp = JSON.parse(xhr.responseText);
+			var vessel = BrewTroller.getVesselWithString(vesselName);
+			vessel.setCapacity(resp[1]/1000);
+			vessel.setDeadSpace(resp[2]/1000);
+		};
+		BrewTroller.communicate(BrewTroller.getAddress() + getVolumeSettings + vesselIndex, volumeSettingsCallback, vesselName);
+	};
 	
-}
+	//Private Class Methods
+	//Method used to set the name of the vessel
+	var setVesselName = function(name) {
+		switch (vesselIndex){
+			case 0:
+				vesselName = "hlt";
+				break;
+			case 1:
+				vesselName = "mlt";
+				break;
+			case 2:
+				vesselName = "kettle";
+				break;
+		} 	
+	};
+	
+	var loggedDudDataHandler = function(element, index, array){
+    if (isNaN(element) || element == undefined){ //we use the is NaN() function to test for NaN, as regular comparisons do not work, as NaN is equal to nothing, including itself :S
+      if (index == (array.length -1) && array.length > 2) array[index] = (array[index-1] + array[index-2])/2;
+      else if (index == 0 && array.length > 2) array[index] = (array[index+1] + array[index+2])/2;
+      else if (array.length > 2) array[index] = (array[index-1] + array[index+1])/2;
+      else if (array.length == 2 && index == 0) array[index] = array[index+1];
+      else if (array.length == 2 && index == 1) array[index] = array[index-1];
+      if (array[index] == NaN) array[index] = 0;
+    }
+  };
+	
+	setVesselName();
+	
+};
